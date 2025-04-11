@@ -1,0 +1,9 @@
+.venv/
+.vscode/
+codegen/
+
+a.out
+mysoc
+**/*.o
+
+.~*.xlsx
