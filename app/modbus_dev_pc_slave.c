@@ -18,29 +18,38 @@
 /* Includes -------------------------------------------------------------------------------------*/
 #include <stdlib.h>
 #include <stdio.h>
-#include <readline/readline.h>
-#include <readline/history.h>
+#include <stdint.h>
+#include <string.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <termios.h>
+#include <sys/select.h>
+#include <time.h>
+#include <sys/time.h>
 #include "../src/modbus.h"
 #include "../src/modbus_rtu.h"
+#include "../src/modbus_rtu_master.h"
+#include "../src/modbus_rtu_slave.h"
 #include "../src/modbus_port.h"
 /* Private define -------------------------------------------------------------------------------*/
 
 /* Private typedef ------------------------------------------------------------------------------*/
 /* Private functions prototypes -----------------------------------------------------------------*/
 int8_t uart_pc_send(uint8_t *buff, uint16_t len);
-int8_t uart_pc_recv(uint8_t *buff, uint16_t len);
+int8_t uart_pc_recv(uint8_t *buff, uint16_t *len);
 int8_t rtu_pc_read_input(stModbus_RTU_InputReader *reader);
 int8_t rtu_pc_read_hold(stModbus_RTU_HoldReader *reader);
 int8_t rtu_pc_write_hold(stModbus_RTU_HoldWriter *writer);
 
 
 /* Private variable -----------------------------------------------------------------------------*/
+int g_fd;
 stModebus_RTU_Fun_Table rtu_fun_table_pc[] =
 {
-    {0x03, modbus_fun_response_03, modbus_fun_request_03, NULL, NULL},                // std: read hold 
-    {0x04, NULL, NULL, NULL, NULL},                                                     // std: read input
-    {0x06, NULL, NULL, NULL, NULL},                                                     // std: wirte single hold
-    {0x10, NULL, NULL, NULL, NULL},                                                     // std: write multi  hold
+    {0x03, modbus_fun_request_03, modbus_fun_parse_slave_03, modbus_fun_parse_03_master},                // std: read hold 
+    {0x04, NULL, NULL, NULL},                                                     // std: read input
+    {0x06, NULL, NULL, NULL},                                                     // std: wirte single hold
+    {0x10, NULL, NULL, NULL},                                                     // std: write multi  hold
 
 };
 #define RTU_FUN_TABLE_ITEMS (sizeof(rtu_fun_table_pc) / sizeof(stModebus_RTU_Fun_Table))
@@ -83,32 +92,107 @@ stModbus_RTU_Handler_Attr rtu_pc_attr = {
 
 
 
-  int8_t uart_pc_send(uint8_t *buff, uint16_t len)
-  {
-  
-  }
-  int8_t uart_pc_recv(uint8_t *buff, uint16_t len)
-  {
-      readline(buff);
-  }
-  
+int8_t uart_pc_send(uint8_t *buff, uint16_t len)
+{
+    write(g_fd, buff, len);
+}
 
 
-  int8_t rtu_pc_read_input(stModbus_RTU_InputReader *reader)
-  {
 
-  }
-  int8_t rtu_pc_read_hold(stModbus_RTU_HoldReader *reader)
-  {
+void print_time_us(void)
+{
 
-  }
-  int8_t rtu_pc_write_hold(stModbus_RTU_HoldWriter *writer)
-  {
+    struct timeval tv;
+    struct tm *tm_info;
+    char time_str[64];
 
-  }
+    // 获取当前时间（秒 + 微秒）
+    gettimeofday(&tv, NULL);
+
+    // 转换为本地时间（tm 结构体）
+    tm_info = localtime(&tv.tv_sec);
+
+    // 格式化时间字符串（精确到秒）
+    strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", tm_info);
+
+    // 打印时间
+    printf("[%s.%03ld] --> ", time_str, tv.tv_usec/1000);
+
+}
+
+int8_t uart_pc_recv(uint8_t *buff, uint16_t *len)
+{
+    int8_t ret = 0;
+
+    static uint8_t recv_buff[256];
+    static uint16_t recv_idx;
+    static uint32_t last_read_time_ms, now_ms;
+
+    fd_set fds;
+    FD_ZERO(&fds);
+    FD_SET(g_fd, &fds);
+    #define BUF_SIZE 256
+    uint8_t read_buf[BUF_SIZE];
+    memset(read_buf, 0, BUF_SIZE);
+    struct timeval timeout = { .tv_sec = 0, .tv_usec = 0 };
+    if (select(g_fd + 1, &fds, NULL, NULL, &timeout) > 0) {
+        ssize_t n = read(g_fd, read_buf, BUF_SIZE);
+        if (n > 0) {
+            struct timeval tv; 
+            gettimeofday(&tv, NULL);
+            last_read_time_ms = tv.tv_sec*1000+tv.tv_usec/1000;
+            memcpy(recv_buff+recv_idx, read_buf, n);
+            recv_idx += n;
+        }
+    }
+    struct timeval tv; 
+    gettimeofday(&tv, NULL);
+    now_ms = tv.tv_sec*1000+tv.tv_usec/1000;
+    if(now_ms - last_read_time_ms > 3)
+    {
+        if(recv_idx > 0)
+        {
+            print_time_us();
+            for(int i=0; i<recv_idx; i++)
+            {
+                printf("%02x ", recv_buff[i]);
+            }
+            printf("\n");
+            memcpy(buff, recv_buff, recv_idx);
+            *len = recv_idx;
+            ret = recv_idx;
+            recv_idx = 0;
+        }
+    }
+    return ret;
+}
+
+
+
+int8_t rtu_pc_read_input(stModbus_RTU_InputReader *reader)
+{
+
+}
+int8_t rtu_pc_read_hold(stModbus_RTU_HoldReader *reader)
+{
+    for(int i = 0; i < 2*reader->reg_num; i++)
+    {
+        reader->reg_data[i] = i;
+    }
+    return 0;
+}
+int8_t rtu_pc_write_hold(stModbus_RTU_HoldWriter *writer)
+{
+
+}
 
 int8_t modbus_dev_pc_slave_init()
 {
+    g_fd = open("/dev/pts/3", O_RDWR|O_NOCTTY);  
+    if (g_fd == -1) {
+        perror("open serial port");
+        return -1;
+    }
     modbus_rtu_init(&stModbus_RTU_Handler_PC,  emModebus_RTU_Bus_PC, &rtu_pc_attr);
 }
 
@@ -116,6 +200,12 @@ int8_t modbus_dev_pc_slave_run()
 {
     modbus_rtu_run(&stModbus_RTU_Handler_PC);
 }
+
+int8_t modbus_dev_pc_slave_exit()
+{
+    close(g_fd);
+}
+
 
 
 

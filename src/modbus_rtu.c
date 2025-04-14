@@ -20,30 +20,16 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <string.h> 
+#include <stdio.h>
 #include "./modbus.h"
 #include "./modbus_rtu.h"
+#include "./modbus_rtu_slave.h"
+#include "./modbus_rtu_master.h"
 #include "./modbus_port.h"
 /* Private define -------------------------------------------------------------------------------*/
 
 /* Private typedef ------------------------------------------------------------------------------*/
 
-
-
-
-
-
-
- 
-
-
-
-
-typedef struct Modbus_Interface_Bind
-{
-    emModebus_RTU_Bus bus;
-    stModbus_RTU_Handler *handler;
-
-}stModbus_Interface_Bind;
 
 
 /* Private functions prototypes -----------------------------------------------------------------*/
@@ -53,15 +39,13 @@ typedef struct Modbus_Interface_Bind
 int8_t modbus_fun_request_03(stModbus_RTU_Handler *pstModbus_RTU_Handler, stModbus_RTU_Sender *sender);
 /* Private variable -----------------------------------------------------------------------------*/
 
-
-
-
-
-
-
 stModbus_Interface_Bind stModbus_Interface_Bind_Table[10];
 
-#define MODBUS_INTERFACE_BIND_TABLE_ITEMS (sizeof(stModbus_Interface_Bind_Table)/sizeof(stModbus_Interface_Bind))
+
+
+
+
+
 /* Global  variable -----------------------------------------------------------------------------*/
 
 /* Extern  variable -----------------------------------------------------------------------------*/
@@ -83,63 +67,10 @@ stModbus_Interface_Bind stModbus_Interface_Bind_Table[10];
   *************************************************************************************************
   */
 
-void modbus_rtu_slave(stModbus_RTU_Handler *handler)
-{
-
-    emModebus_RTU_Mode mode = handler->mode;
-    if(handler->mode != handler->last_mode)
-    {
-        mode = emModbus_RTU_State_init;
-        handler->mode = emModbus_RTU_State_init;
-    }
-    switch (mode)
-    {
-    case emModbus_RTU_State_init:
-        
-        break;
-    case emModbus_RTU_State_IDLE:
-        if(handler->recv(handler->rx_buff, handler->rx_len))
-        {
-
-        }
-        
-        break;
-    case emModbus_RTU_State_Receive:
-        break;
-
-    case emModbus_RTU_State_Send:
-        break;
-    default:
-        break;
-    }
-}
 
 
-void modbus_rtu_master(stModbus_RTU_Handler *pstModbus_RTU_Handler)
-{   
-    emModebus_RTU_Mode mode = pstModbus_RTU_Handler->mode;
-    if(pstModbus_RTU_Handler->mode != pstModbus_RTU_Handler->last_mode)
-    {
-        mode = emModbus_RTU_State_init;
-        pstModbus_RTU_Handler->mode = emModbus_RTU_State_init;
-    }
-    switch (mode)
-    {
-    case emModbus_RTU_State_init:
-        
-        break;
-    case emModbus_RTU_State_IDLE:
-        if(pstModbus_RTU_Handler->tx_len != 0)
-        break;
-    case emModbus_RTU_State_Receive:
-        break;
 
-    case emModbus_RTU_State_Send:
-        break;
-    default:
-        break;
-    }
-}
+
 
 
 void modbus_rtu_run(stModbus_RTU_Handler *handler)
@@ -186,40 +117,16 @@ int8_t modbus_rtu_send(stModbus_RTU_Handler *handler, stModbus_RTU_Sender sender
         if(handler->fun_table[i].fcode == sender.fun_code)
         {
             match_item.fcode = handler->fun_table[i].fcode;
-            match_item.Reqst = handler->fun_table[i].Reqst;
+            match_item.request = handler->fun_table[i].request;
             break;
         }
     }
 
-    match_item.Reqst(handler, &sender);
-    if(match_item.Reqst_CB)
-    {
-        match_item.Reqst_CB(NULL, 0); 
-    }
-
+    match_item.request(handler, &sender);
 
 }
 
 
-int8_t modbus_rtu_read_hold(emModebus_RTU_Bus bus, uint8_t dev_addr, uint16_t reg_addr, uint16_t reg_num, uint16_t *reg_data)
-{
-    stModbus_RTU_Sender sender;
-    sender.dev_addr = dev_addr;
-    sender.fun_code = 0x03;
-    sender.reg_addr = reg_addr;
-    sender.reg_num = reg_num;
-
-    stModbus_RTU_Handler *handler = NULL;
-    for(int i = 0; i < MODBUS_INTERFACE_BIND_TABLE_ITEMS; i++)
-    {
-        if(stModbus_Interface_Bind_Table[i].bus == bus)
-        {
-            handler = stModbus_Interface_Bind_Table[i].handler;
-            break;
-        }
-    }
-    modbus_rtu_send(handler, sender);
-}
 
 
 int8_t modbus_rtu_opt_status(emModebus_RTU_Bus bus)
@@ -247,122 +154,104 @@ int8_t modbus_rtu_opt_status(emModebus_RTU_Bus bus)
     }
 }
 
-
-int8_t modbus_crc_cal(uint8_t *buff, uint16_t len)
+/*
+函数名：Modbus_CRC16
+作者：詹候林
+日期：2024-8
+功能：modbus接收数据解析
+返回参数：无
+修改记录：
+*/
+static const uint8_t ucCrc16_HighTable[256] =
 {
+    0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 
+    0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 
+    0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 
+    0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 
+    0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 
+    0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41,
+    0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 
+    0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 
+    0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 
+    0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 
+    0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 
+    0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40,
+    0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 
+    0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 
+    0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 
+    0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 
+    0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 
+    0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41,
+    0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 
+    0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 
+    0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 
+    0x80, 0x41, 0x00, 0xC1, 0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 
+    0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 0x80, 0x41, 0x00, 0xC1, 
+    0x81, 0x40, 0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41,
+    0x00, 0xC1, 0x81, 0x40, 0x01, 0xC0, 0x80, 0x41, 0x01, 0xC0, 
+    0x80, 0x41, 0x00, 0xC1, 0x81, 0x40
+};
 
-
-
-
-}
-
-
-
-
-int8_t modbus_fun_request_03(stModbus_RTU_Handler *handler, stModbus_RTU_Sender *sender)
+static const uint8_t ucCrc16_LowTable[256] =
 {
-    uint8_t dev_addr = sender->dev_addr;
-    uint8_t fun_code = sender->fun_code;
-    uint16_t reg_addr = sender->reg_addr;
-    uint16_t reg_num = sender->reg_num;
+    0x00, 0xC0, 0xC1, 0x01, 0xC3, 0x03, 0x02, 0xC2, 0xC6, 0x06, 
+    0x07, 0xC7, 0x05, 0xC5, 0xC4, 0x04, 0xCC, 0x0C, 0x0D, 0xCD, 
+    0x0F, 0xCF, 0xCE, 0x0E, 0x0A, 0xCA, 0xCB, 0x0B, 0xC9, 0x09, 
+    0x08, 0xC8, 0xD8, 0x18, 0x19, 0xD9, 0x1B, 0xDB, 0xDA, 0x1A, 
+    0x1E, 0xDE, 0xDF, 0x1F, 0xDD, 0x1D, 0x1C, 0xDC, 0x14, 0xD4, 
+    0xD5, 0x15, 0xD7, 0x17, 0x16, 0xD6, 0xD2, 0x12, 0x13, 0xD3,
+    0x11, 0xD1, 0xD0, 0x10, 0xF0, 0x30, 0x31, 0xF1, 0x33, 0xF3, 
+    0xF2, 0x32, 0x36, 0xF6, 0xF7, 0x37, 0xF5, 0x35, 0x34, 0xF4, 
+    0x3C, 0xFC, 0xFD, 0x3D, 0xFF, 0x3F, 0x3E, 0xFE, 0xFA, 0x3A, 
+    0x3B, 0xFB, 0x39, 0xF9, 0xF8, 0x38, 0x28, 0xE8, 0xE9, 0x29, 
+    0xEB, 0x2B, 0x2A, 0xEA, 0xEE, 0x2E, 0x2F, 0xEF, 0x2D, 0xED, 
+    0xEC, 0x2C, 0xE4, 0x24, 0x25, 0xE5, 0x27, 0xE7, 0xE6, 0x26,
+    0x22, 0xE2, 0xE3, 0x23, 0xE1, 0x21, 0x20, 0xE0, 0xA0, 0x60, 
+    0x61, 0xA1, 0x63, 0xA3, 0xA2, 0x62, 0x66, 0xA6, 0xA7, 0x67, 
+    0xA5, 0x65, 0x64, 0xA4, 0x6C, 0xAC, 0xAD, 0x6D, 0xAF, 0x6F, 
+    0x6E, 0xAE, 0xAA, 0x6A, 0x6B, 0xAB, 0x69, 0xA9, 0xA8, 0x68, 
+    0x78, 0xB8, 0xB9, 0x79, 0xBB, 0x7B, 0x7A, 0xBA, 0xBE, 0x7E, 
+    0x7F, 0xBF, 0x7D, 0xBD, 0xBC, 0x7C, 0xB4, 0x74, 0x75, 0xB5,
+    0x77, 0xB7, 0xB6, 0x76, 0x72, 0xB2, 0xB3, 0x73, 0xB1, 0x71, 
+    0x70, 0xB0, 0x50, 0x90, 0x91, 0x51, 0x93, 0x53, 0x52, 0x92, 
+    0x96, 0x56, 0x57, 0x97, 0x55, 0x95, 0x94, 0x54, 0x9C, 0x5C, 
+    0x5D, 0x9D, 0x5F, 0x9F, 0x9E, 0x5E, 0x5A, 0x9A, 0x9B, 0x5B, 
+    0x99, 0x59, 0x58, 0x98, 0x88, 0x48, 0x49, 0x89, 0x4B, 0x8B, 
+    0x8A, 0x4A, 0x4E, 0x8E, 0x8F, 0x4F, 0x8D, 0x4D, 0x4C, 0x8C,
+    0x44, 0x84, 0x85, 0x45, 0x87, 0x47, 0x46, 0x86, 0x82, 0x42, 
+    0x43, 0x83, 0x41, 0x81, 0x80, 0x40
+};
 
-    uint8_t *buff = handler->rx_buff;
+uint16_t modbus_crc_cal(uint8_t *pData, uint32_t Size)
+{
+    uint8_t ucCRCHi = 0xFFU;
+    uint8_t ucCRCLo = 0xFFU;
+    uint8_t ucIndex = 0U;
 
-    buff[0] = dev_addr;
-    buff[1] = fun_code;
-    buff[2] = reg_addr>>8;
-    buff[3] = (uint8_t)reg_addr;
-    buff[4] = reg_num>>8;
-    buff[5] = (uint8_t)reg_num;
-    uint16_t crc = modbus_crc_cal(buff, 6);
-
-    buff[6] = crc>>8;
-    buff[8] = (uint8_t)crc;
-
-    handler->rx_len = 9;
-    if(handler->state == emModbus_RTU_State_IDLE)
+    if ((NULL == pData) || (0U == Size))
     {
-        handler->state = emModbus_RTU_State_Send;
-    }
-    
-
-}
-
-
-
-int8_t modbus_fun_response(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)
-{
-    int8_t ret = -1;
-    // adu and addr parse
-    if(ret == 0){
-        uint8_t dev_addr = buff[0];
-        if(dev_addr == 0 || dev_addr == handler->dev_addr)
-        {
-            uint8_t f_code = buff[1];
-            bool match = false;
-            int8_t (*Parse)(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len) = NULL;
-            int8_t (*Parse_CB)(uint8_t *buff, uint16_t len) = NULL;
-            for(int i = 0; i < handler->fun_table_items; i++)
-            {
-                if(f_code == handler->fun_table[i].fcode)
-                {
-                    match =true;
-                    Parse = handler->fun_table[i].Parse;
-                    Parse_CB = handler->fun_table[i].Parse_CB;
-                }
-                if(match)
-                {
-                    ret = Parse(handler, buff, len);
-                    if(ret == 0)
-                    {
-                        if(Parse_CB)
-                        {
-                            Parse_CB(buff, len);
-                        }
-                    }
-                }else{
-                    ret = Modebus_RTU_Erno_FUN_CODE_NOT_FOUND;
-                }
-            }
-        }
+        return 0;
     }
 
-    return ret;
-}
-
-
-
-int8_t modbus_fun_response_03(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)
-{
-    int8_t ret = -1;
-    // pdu parse
-    uint16_t reg_addr = buff[2]<<8|buff[3];
-    uint16_t read_len = buff[4]<<8|buff[5];
-
-    stModbus_RTU_HoldReader reader;
-    reader.reg_map_id = handler->reg_map_id;
-    reader.reg_addr = reg_addr;
-    reader.reg_num = read_len;
-
-    ret = handler->read_hold(&reader);
-    if(ret == 0)
+    while (Size--)
     {
-        handler->tx_buff[0] = handler->dev_addr;
-        handler->tx_buff[1] = 0x03;
-        handler->tx_buff[2] = 2*read_len;
-        memcpy(&handler->tx_buff[3], reader.reg_data, 2*read_len);
-        uint16_t crc_cal = modbus_crc_cal(handler->tx_buff, 3+2*read_len);
-        handler->tx_buff[3+2*read_len] = (uint8_t)(crc_cal>>8);
-        handler->tx_buff[3+2*read_len+1] = (uint8_t)crc_cal;
-        handler->tx_len = 3+2*read_len+2;
+        ucIndex = ucCRCLo ^ *pData++;
+        ucCRCLo = ucCRCHi ^ ucCrc16_HighTable[ucIndex];
+        ucCRCHi = ucCrc16_LowTable[ucIndex];
     }
-
-    return ret;
+    uint16_t crc = (uint16_t)(((uint16_t)ucCRCLo << 8)|ucCRCHi);
+    return crc;
 }
+
+
+
+
+
+
 
 int8_t modbus_rtu_init(stModbus_RTU_Handler *handler, emModebus_RTU_Bus bus, stModbus_RTU_Handler_Attr *attr)
 {
-    if(bus =- 0)
+    if(bus = 0)
     {
         return -1;
     }
@@ -375,8 +264,11 @@ int8_t modbus_rtu_init(stModbus_RTU_Handler *handler, emModebus_RTU_Bus bus, stM
             break;
         }
     }
+    handler->state = emModbus_RTU_State_init;
+    handler->last_state = handler->state;
     handler->dev_addr = attr->dev_addr;
     handler->mode = attr->mode;
+    handler->last_mode = handler->mode;
     handler->reg_map_id = attr->reg_map_id;
     handler->send = attr->send;
     handler->recv = attr->recv;
@@ -408,7 +300,7 @@ int8_t modbus_rtu_set_send(emModebus_RTU_Bus bus, int8_t (*send)(uint8_t *, uint
     handler->send = send;
 }
 
-int8_t modbus_rtu_set_recv(emModebus_RTU_Bus bus, int8_t (*recv)(uint8_t *, uint16_t))
+int8_t modbus_rtu_set_recv(emModebus_RTU_Bus bus, int8_t (*recv)(uint8_t *, uint16_t *))
 {
     if(bus == 0)
     {

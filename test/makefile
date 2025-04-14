@@ -37,7 +37,7 @@ build_dir/modbus_rtu_master.o: ../src/modbus_rtu_master.c ../src/modbus_rtu_mast
 build_dir/modbus_rtu_slave.o: ../src/modbus_rtu_slave.c ../src/modbus_rtu_slave.h
 	gcc -c  ../src/modbus_rtu_slave.c -o build_dir/modbus_rtu_slave.o -g
 
-build_dir/modbus_rtu.o: ../src/modbus_rtu.c
+build_dir/modbus_rtu.o: ../src/modbus_rtu.c ../src/modbus_rtu.h
 	gcc -c  ../src/modbus_rtu.c -o build_dir/modbus_rtu.o -g
 
 build_dir/modbus.o: ../src/modbus.c ../src/modbus.h

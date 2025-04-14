@@ -11,7 +11,8 @@
 
 
 int main() {
-    int fd = open("/dev/pts/2", O_RDWR|O_NOCTTY);  // 替换为你的虚拟串口
+    int fd = open("/dev/pts/2", O_RDWR|O_NOCTTY);  
+    printf("fd = %d\n", fd);
     if (fd == -1) {
         perror("open serial port");
         return 1;
