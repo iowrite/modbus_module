@@ -3,7 +3,8 @@
 codegen/
 
 a.out
-mysoc
+modbus_test
+virtual_serial
 **/*.o
 
 .~*.xlsx
