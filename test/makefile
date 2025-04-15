@@ -51,31 +51,31 @@ libmodbus_module.a: 	build_dir/modbus_port.o \
 
 
 
-build_dir/modbus_port.o: ../src/modbus_port.c ../src/modbus_port.h
+build_dir/modbus_port.o: ../src/modbus_port.c ../src/modbus_port.h ../src/modbus_config.h
 	gcc -c  ../src/modbus_port.c -o build_dir/modbus_port.o -g
 
-build_dir/modbus_rtu_master.o: ../src/modbus_rtu_master.c ../src/modbus_rtu_master.h 
+build_dir/modbus_rtu_master.o: ../src/modbus_rtu_master.c ../src/modbus_rtu_master.h ../src/modbus_config.h
 	gcc -c  ../src/modbus_rtu_master.c -o build_dir/modbus_rtu_master.o -g
 
-build_dir/modbus_rtu_slave.o: ../src/modbus_rtu_slave.c ../src/modbus_rtu_slave.h
+build_dir/modbus_rtu_slave.o: ../src/modbus_rtu_slave.c ../src/modbus_rtu_slave.h ../src/modbus_config.h
 	gcc -c  ../src/modbus_rtu_slave.c -o build_dir/modbus_rtu_slave.o -g
 
-build_dir/modbus_rtu.o: ../src/modbus_rtu.c ../src/modbus_rtu.h
+build_dir/modbus_rtu.o: ../src/modbus_rtu.c ../src/modbus_rtu.h ../src/modbus_config.h
 	gcc -c  ../src/modbus_rtu.c -o build_dir/modbus_rtu.o -g
 
-build_dir/modbus.o: ../src/modbus.c ../src/modbus.h
+build_dir/modbus.o: ../src/modbus.c ../src/modbus.h ../src/modbus_config.h
 	gcc -c  ../src/modbus.c -o build_dir/modbus.o -g
 
-build_dir/modbus_dev_pc_slave.o: ../app/modbus_dev_pc_slave.c ../app/modbus_dev_pc_slave.h
+build_dir/modbus_dev_pc_slave.o: ../app/modbus_dev_pc_slave.c ../app/modbus_dev_pc_slave.h ../src/modbus_config.h
 	gcc -c  ../app/modbus_dev_pc_slave.c -o build_dir/modbus_dev_pc_slave.o -g
 
-build_dir/modbus_dev_pc_master.o: ../app/modbus_dev_pc_master.c ../app/modbus_dev_pc_master.h
+build_dir/modbus_dev_pc_master.o: ../app/modbus_dev_pc_master.c ../app/modbus_dev_pc_master.h ../src/modbus_config.h
 	gcc -c  ../app/modbus_dev_pc_master.c -o build_dir/modbus_dev_pc_master.o -g
 
-build_dir/test_pc_slave.o: test_pc_slave.c
+build_dir/test_pc_slave.o: test_pc_slave.c ../src/modbus_config.h
 	gcc -c  test_pc_slave.c -o build_dir/test_pc_slave.o -g
 
-build_dir/test_pc_master.o: test_pc_master.c
+build_dir/test_pc_master.o: test_pc_master.c ../src/modbus_config.h
 	gcc -c  test_pc_master.c -o build_dir/test_pc_master.o -g
 
 

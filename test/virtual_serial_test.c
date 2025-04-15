@@ -12,7 +12,7 @@
 
 int main() {
     int fd = open("/dev/pts/2", O_RDWR|O_NOCTTY);  
-    printf("fd = %d\n", fd);
+    mylog("fd = %d\n", fd);
     if (fd == -1) {
         perror("open serial port");
         return 1;
@@ -32,9 +32,9 @@ int main() {
             if (n > 0) {
                 for(int i = 0; i < n; i++)
                 {
-                    printf("%x ", read_buf[i]);
+                    mylog("%x ", read_buf[i]);
                 }
-                printf("\n");
+                mylog("\n");
             }
         }
     }

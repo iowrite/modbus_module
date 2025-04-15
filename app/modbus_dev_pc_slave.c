@@ -99,7 +99,7 @@ int8_t uart_pc_send(uint8_t *buff, uint16_t len)
 
 
 
-void print_time_us(void)
+void print_time_ms(void)
 {
 
     struct timeval tv;
@@ -116,7 +116,7 @@ void print_time_us(void)
     strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", tm_info);
 
     // 打印时间
-    printf("[%s.%03ld] --> ", time_str, tv.tv_usec/1000);
+    mylog("[%s.%03ld] --> ", time_str, tv.tv_usec/1000);
 
 }
 
@@ -152,12 +152,12 @@ int8_t uart_pc_recv(uint8_t *buff, uint16_t *len)
     {
         if(recv_idx > 0)
         {
-            print_time_us();
+            print_time_ms();
             for(int i=0; i<recv_idx; i++)
             {
-                printf("%02x ", recv_buff[i]);
+                mylog("%02x ", recv_buff[i]);
             }
-            printf("\n");
+            mylog("\n");
             memcpy(buff, recv_buff, recv_idx);
             *len = recv_idx;
             ret = recv_idx;

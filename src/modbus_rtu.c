@@ -75,7 +75,7 @@ stModbus_Interface_Bind stModbus_Interface_Bind_Table[10];
 
 void modbus_rtu_run(stModbus_RTU_Handler *handler)
 {
-    handler->last_call_tick = modbus_port_get_tick();
+    handler->last_call_tick = modbus_port_get_time_ms();
 
     if(handler->mode == emModebus_RTU_Mode_Master)
     {
@@ -95,64 +95,6 @@ int8_t modbus_rtu_set_mode(stModbus_RTU_Handler *handler, emModebus_RTU_Mode mod
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-int8_t modbus_rtu_send(stModbus_RTU_Handler *handler, stModbus_RTU_Sender sender)
-{
-    stModebus_RTU_Fun_Table match_item = {0};
-    for(int i = 0; i < handler->fun_table_items; i++)
-    {
-        if(handler->fun_table[i].fcode == sender.fun_code)
-        {
-            match_item.fcode = handler->fun_table[i].fcode;
-            match_item.request = handler->fun_table[i].request;
-            break;
-        }
-    }
-
-    match_item.request(handler, &sender);
-
-}
-
-
-
-
-int8_t modbus_rtu_opt_status(emModebus_RTU_Bus bus)
-{
-    if(bus == 0)
-    {
-        return -1;
-    }
-    stModbus_RTU_Handler *handler = NULL;
-    for(int i = 0; i < MODBUS_INTERFACE_BIND_TABLE_ITEMS; i++)
-    {
-        if(stModbus_Interface_Bind_Table[i].bus == bus)
-        {
-            handler = stModbus_Interface_Bind_Table[i].handler;
-            break;
-        }
-    }
-    if(handler->mode == emModebus_RTU_Mode_Slave)
-    {
-        return -1;
-    }
-    if(handler->last_state == emModbus_RTU_State_Receive && handler->state == emModbus_RTU_State_Send)
-    {
-        return 0;
-    }
-}
 
 /*
 函数名：Modbus_CRC16

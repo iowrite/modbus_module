@@ -79,17 +79,18 @@ void modbus_rtu_slave(stModbus_RTU_Handler *handler)
     if(handler->mode != handler->last_mode)
     {
         handler->state = emModbus_RTU_State_init;
+        handler->last_mode = handler->mode;
     }
     switch (handler->state)
     {
     case emModbus_RTU_State_init:
-        printf("bus init\n");
+        mylog("bus init\n");
         handler->state = emModbus_RTU_State_IDLE;
         break;
     case emModbus_RTU_State_IDLE:
         if(handler->recv(handler->rx_buff, &handler->rx_len))
         {
-            printf("bus recv\n");
+            mylog("bus recv\n");
             handler->state = emModbus_RTU_State_Receive;
         }
         break;

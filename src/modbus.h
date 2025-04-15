@@ -17,6 +17,13 @@
 extern "C"
 {
 #endif
+#include <stdio.h>
+#include "modbus_config.h"
+#if ENABLE_PRINTF
+#define mylog(fmt, ...) printf(fmt, ##__VA_ARGS__)
+#else
+#define mylog(fmt, ...)
+#endif
 
 /* Includes -------------------------------------------------------------------------------------*/
 #include <stdint.h>

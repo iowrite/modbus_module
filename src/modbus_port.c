@@ -16,6 +16,8 @@
   *************************************************************************************************
   */
 /* Includes -------------------------------------------------------------------------------------*/
+#include <time.h>
+#include <sys/time.h>
 #include "./modbus.h"
 #include "./modbus_rtu.h"
 
@@ -49,12 +51,12 @@
 
 
 
-uint32_t modbus_port_get_tick()
+uint32_t modbus_port_get_time_ms()
 {
-
-
-
-    
+    struct timeval tv; 
+    gettimeofday(&tv, NULL);
+    uint32_t now_ms = tv.tv_sec*1000+tv.tv_usec/1000;
+    return now_ms;
 }
 
 

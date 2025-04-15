@@ -58,7 +58,7 @@ typedef enum
 /* Exported functions prototypes ----------------------------------------------------------------*/
 
 
-uint32_t modbus_port_get_tick();
+uint32_t modbus_port_get_time_ms();
 
 
 #ifdef __cplusplus

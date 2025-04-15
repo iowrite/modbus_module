@@ -1,4 +1,5 @@
 #include <stddef.h>
+#include <stdbool.h>
 #include "./modbus_rtu.h"
 
 int8_t modbus_fun_request_03(stModbus_RTU_Handler *handler, stModbus_RTU_Sender *sender)
@@ -27,14 +28,32 @@ int8_t modbus_fun_request_03(stModbus_RTU_Handler *handler, stModbus_RTU_Sender 
     {
         handler->state = emModbus_RTU_State_Send;
     }
-    
+    return 0;
 }
 
-int8_t modbus_fun_parse_03_master(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)
+
+
+
+
+int8_t modbus_rtu_send(stModbus_RTU_Handler *handler, stModbus_RTU_Sender sender)
 {
-    int8_t ret = -1;
-
-
+    stModebus_RTU_Fun_Table match_item = {0};
+    bool match = false;
+    for(int i = 0; i < handler->fun_table_items; i++)
+    {
+        if(handler->fun_table[i].fcode == sender.fun_code)
+        {
+            match = true;
+            match_item.fcode = handler->fun_table[i].fcode;
+            match_item.request = handler->fun_table[i].request;
+            break;
+        }
+    }
+    if(!match || match_item.request == NULL)
+    {
+        return -1;
+    }
+    int8_t ret = match_item.request(handler, &sender);
     return ret;
 }
 
@@ -60,30 +79,135 @@ int8_t modbus_rtu_read_hold(emModebus_RTU_Bus bus, uint8_t dev_addr, uint16_t re
             break;
         }
     }
-    modbus_rtu_send(handler, sender);
+    if(handler->tx_len)
+    {
+        // send busy
+        return -1;
+    }
+    int8_t ret = modbus_rtu_send(handler, sender);
+    return ret;
     
 }
 
+int8_t modbus_rtu_opt_status(emModebus_RTU_Bus bus)
+{
+    if(bus == 0)
+    {
+        return -1;
+    }
+    stModbus_RTU_Handler *handler = NULL;
+    for(int i = 0; i < MODBUS_INTERFACE_BIND_TABLE_ITEMS; i++)
+    {
+        if(stModbus_Interface_Bind_Table[i].bus == bus)
+        {
+            handler = stModbus_Interface_Bind_Table[i].handler;
+            break;
+        }
+    }
+    if(handler->mode == emModebus_RTU_Mode_Slave)
+    {
+        return -1;
+    }
+    if(handler->last_state == emModbus_RTU_State_Receive && handler->state == emModbus_RTU_State_IDLE)
+    {
+        return 0;
+    }
+}
+
+
+int8_t modbus_fun_parse_03_master(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)
+{
+    int8_t ret = -1;
+
+
+    return ret;
+}
+
+int8_t modbus_fun_parse_master(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)
+{
+    int8_t ret = 0;
+    uint16_t crc_local = modbus_crc_cal(buff, len-2);
+    uint16_t crc_remote = (buff[len-2]<<8) | buff[len-1];
+    if(crc_local == crc_remote)
+    {
+        // adu and addr parse
+        uint8_t dev_addr = buff[0];
+        if(dev_addr == 0 || dev_addr == handler->dev_addr)
+        {
+            uint8_t f_code = buff[1];
+            bool match = false;
+            int8_t (*parse)(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len) = NULL;
+            for(int i = 0; i < handler->fun_table_items; i++)
+            {
+                if(f_code == handler->fun_table[i].fcode)
+                {
+                    match =true;
+                    parse = handler->fun_table[i].master_parse;
+                    break;
+                }
+            }
+            if(match)
+            {
+                ret = parse(handler, buff, len);
+            }else{
+                ret = Modebus_RTU_Erno_FUN_CODE_NOT_FOUND;
+            }
+        }
+        
+    }
+
+    return ret;
+}
+
+
+
 void modbus_rtu_master(stModbus_RTU_Handler *handler)
 {   
-    emModebus_RTU_Mode mode = handler->mode;
     if(handler->mode != handler->last_mode)
     {
-        mode = emModbus_RTU_State_init;
-        handler->mode = emModbus_RTU_State_init;
+        handler->state = emModbus_RTU_State_init;
+        handler->last_mode = handler->mode;
     }
-    switch (mode)
+    switch (handler->state)
     {
     case emModbus_RTU_State_init:
-        
+        mylog("bus init\n");
+        handler->last_state = emModbus_RTU_State_init;
+        handler->state = emModbus_RTU_State_IDLE;
         break;
     case emModbus_RTU_State_IDLE:
         if(handler->tx_len != 0)
+        {
+            handler->last_mode = emModbus_RTU_State_IDLE;
+            handler->state = emModbus_RTU_State_Send;
+        }
         break;
     case emModbus_RTU_State_Receive:
+        uint32_t now = modbus_port_get_time_ms();
+        if(now - handler->Master_Wait_Count > handler->Master_Wait_Recv_Limt)
+        {
+            mylog("bus receive timeout\n");
+            handler->Master_Wait_Count = 0;
+            handler->state = emModbus_RTU_State_IDLE;
+            break;
+        }
+        if(handler->recv(handler->rx_buff, &handler->rx_len))
+        {
+            int8_t ret = modbus_fun_parse_master(handler, handler->rx_buff, handler->rx_len);
+            if(ret == 0)
+            {
+                handler->last_state = emModbus_RTU_State_Receive;
+                handler->state = emModbus_RTU_State_IDLE;
+            }
+        }
         break;
 
     case emModbus_RTU_State_Send:
+        handler->send(handler->tx_buff, handler->tx_len);
+        handler->tx_len = 0;
+        handler->Master_Wait_Count = modbus_port_get_time_ms();
+        handler->last_state = emModbus_RTU_State_Send;
+        handler->state = emModbus_RTU_State_Receive;
         break;
     default:
         break;

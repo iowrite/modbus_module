@@ -20,6 +20,7 @@ extern "C"
 
 /* Includes -------------------------------------------------------------------------------------*/
 #include "./modbus_port.h"
+#include "./modbus.h"
 /* Exported defines -----------------------------------------------------------------------------*/
 
 
@@ -103,8 +104,9 @@ typedef struct Modbus_RTU_Handler
     uint16_t tx_len;
     uint8_t rx_buff[300];
     uint16_t rx_len;
-    uint8_t *master_parse_addr;                             // master parse address(master mode only)
-    uint32_t Master_Wait_Recv_Limt;                         // master wait recv limit(master mode only)
+    uint8_t *master_parse_addr;                             // master parse address(master mode use only)
+    uint8_t Master_Wait_Count;                              // master wait recv time count(master mode use only)
+    uint32_t Master_Wait_Recv_Limt;                         // master wait recv limit(master mode use only)
     stModebus_RTU_Fun_Table *fun_table;                    // callback function table
     uint8_t fun_table_items;
     int8_t (*send)(uint8_t *buff, uint16_t len);                    
