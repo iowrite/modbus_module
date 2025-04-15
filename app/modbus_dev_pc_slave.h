@@ -10,8 +10,8 @@
   * All rights reserved.
   *************************************************************************************************
   */
- #ifndef __MODBUS__PORT_PC_H__
- #define __MODBUS__PORT_PC_H__
+ #ifndef __MODBUS__PORT_PC_SLAVE_H__
+ #define __MODBUS__PORT_PC_SLAVE_H__
  
  #ifdef __cplusplus
  extern "C"

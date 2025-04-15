@@ -54,8 +54,8 @@ stModebus_RTU_Fun_Table rtu_fun_table_pc[] =
 };
 #define RTU_FUN_TABLE_ITEMS (sizeof(rtu_fun_table_pc) / sizeof(stModebus_RTU_Fun_Table))
 
-stModbus_RTU_Handler stModbus_RTU_Handler_PC ;
-stModbus_RTU_Handler_Attr rtu_pc_attr = {
+stModbus_RTU_Handler stModbus_RTU_Handler_PC_slave ;
+stModbus_RTU_Handler_Attr rtu_pc_attr_slave = {
     .dev_addr = 1,
     .mode = emModebus_RTU_Mode_Slave,
     .reg_map_id = 0,
@@ -193,12 +193,12 @@ int8_t modbus_dev_pc_slave_init()
         perror("open serial port");
         return -1;
     }
-    modbus_rtu_init(&stModbus_RTU_Handler_PC,  emModebus_RTU_Bus_PC, &rtu_pc_attr);
+    modbus_rtu_init(&stModbus_RTU_Handler_PC_slave,  emModebus_RTU_Bus_PC, &rtu_pc_attr_slave);
 }
 
 int8_t modbus_dev_pc_slave_run()
 {
-    modbus_rtu_run(&stModbus_RTU_Handler_PC);
+    modbus_rtu_run(&stModbus_RTU_Handler_PC_slave);
 }
 
 int8_t modbus_dev_pc_slave_exit()
