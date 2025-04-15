@@ -44,7 +44,7 @@ int8_t rtu_pc_write_hold(stModbus_RTU_HoldWriter *writer);
 
 /* Private variable -----------------------------------------------------------------------------*/
 int g_fd;
-stModebus_RTU_Fun_Table rtu_fun_table_pc[] =
+stModebus_RTU_Fun_Table rtu_fun_table_pc_slave[] =
 {
     {0x03, modbus_fun_request_03, modbus_fun_parse_slave_03, modbus_fun_parse_03_master},                // std: read hold 
     {0x04, NULL, NULL, NULL},                                                     // std: read input
@@ -52,7 +52,7 @@ stModebus_RTU_Fun_Table rtu_fun_table_pc[] =
     {0x10, NULL, NULL, NULL},                                                     // std: write multi  hold
 
 };
-#define RTU_FUN_TABLE_ITEMS (sizeof(rtu_fun_table_pc) / sizeof(stModebus_RTU_Fun_Table))
+#define RTU_FUN_TABLE_ITEMS (sizeof(rtu_fun_table_pc_slave) / sizeof(stModebus_RTU_Fun_Table))
 
 stModbus_RTU_Handler stModbus_RTU_Handler_PC_slave ;
 stModbus_RTU_Handler_Attr rtu_pc_attr_slave = {
@@ -64,7 +64,7 @@ stModbus_RTU_Handler_Attr rtu_pc_attr_slave = {
     .read_input = rtu_pc_read_input,
     .read_hold = rtu_pc_read_hold,
     .write_hold = rtu_pc_write_hold,
-    .fun_table = rtu_fun_table_pc,
+    .fun_table = rtu_fun_table_pc_slave,
     .fun_table_items = RTU_FUN_TABLE_ITEMS,
 };
 
