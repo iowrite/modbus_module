@@ -4,6 +4,7 @@ codegen/
 
 a.out
 modbus_test
+modbus_test_slave
 virtual_serial
 **/*.o
 

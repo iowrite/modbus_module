@@ -1,27 +1,27 @@
 .PHONY:  all clean 
 
 
-all: build_dir modbus_test
+all: build_dir modbus_test_slave
 
 build_dir:
 	mkdir -p build_dir
 clean:
 	rm  -rf build_dir
 
-modbus_test: 	build_dir/test.o \
+modbus_test_slave: 	build_dir/test_pc_slave.o \
 				build_dir/modbus_port.o \
 				build_dir/modbus_rtu_master.o \
 				build_dir/modbus_rtu_slave.o \
 				build_dir/modbus_rtu.o \
 				build_dir/modbus_dev_pc_slave.o \
 
-	gcc build_dir/test.o \
+	gcc build_dir/test_pc_slave.o \
 		build_dir/modbus_port.o \
 		build_dir/modbus_rtu_master.o \
 		build_dir/modbus_rtu_slave.o \
 		build_dir/modbus_rtu.o \
 		build_dir/modbus_dev_pc_slave.o \
-			-o modbus_test -g
+			-o modbus_test_slave -g
 
 
 
@@ -46,8 +46,8 @@ build_dir/modbus.o: ../src/modbus.c ../src/modbus.h
 build_dir/modbus_dev_pc_slave.o: ../app/modbus_dev_pc_slave.c ../app/modbus_dev_pc_slave.h
 	gcc -c  ../app/modbus_dev_pc_slave.c -o build_dir/modbus_dev_pc_slave.o -g
 
-build_dir/test.o: test.c
-	gcc -c  test.c -o build_dir/test.o -g
+build_dir/test_pc_slave.o: test_pc_slave.c
+	gcc -c  test_pc_slave.c -o build_dir/test_pc_slave.o -g
 
 
 
