@@ -1,27 +1,50 @@
 .PHONY:  all clean 
 
 
-all: build_dir modbus_test_slave
+all: 	build_dir \
+		modbus_test_slave \
+		modbus_test_master \
+		libmodbus_module.a
 
 build_dir:
 	mkdir -p build_dir
 clean:
-	rm  -rf build_dir
+	rm  -rf build_dir \
+		modbus_test_slave \
+		modbus_test_master \
+		libmodbus_module.a
 
-modbus_test_slave: 	build_dir/test_pc_slave.o \
-				build_dir/modbus_port.o \
-				build_dir/modbus_rtu_master.o \
-				build_dir/modbus_rtu_slave.o \
-				build_dir/modbus_rtu.o \
-				build_dir/modbus_dev_pc_slave.o \
-
+modbus_test_slave: 	libmodbus_module.a\
+					build_dir/test_pc_slave.o \
+					build_dir/modbus_dev_pc_slave.o 
 	gcc build_dir/test_pc_slave.o \
-		build_dir/modbus_port.o \
-		build_dir/modbus_rtu_master.o \
-		build_dir/modbus_rtu_slave.o \
-		build_dir/modbus_rtu.o \
 		build_dir/modbus_dev_pc_slave.o \
-			-o modbus_test_slave -g
+		-L.\
+		-lmodbus_module \
+		-o modbus_test_slave -g
+
+
+
+modbus_test_master: 	libmodbus_module.a\
+						build_dir/test_pc_master.o \
+						build_dir/modbus_dev_pc_master.o 
+	gcc build_dir/test_pc_master.o \
+		build_dir/modbus_dev_pc_master.o \
+		-L.\
+		-lmodbus_module \
+		-o modbus_test_master -g
+
+
+libmodbus_module.a: 	build_dir/modbus_port.o \
+						build_dir/modbus_rtu_master.o \
+						build_dir/modbus_rtu_slave.o \
+						build_dir/modbus_rtu.o 
+	ar rcs 	libmodbus_module.a		build_dir/modbus_port.o \
+									build_dir/modbus_rtu_master.o \
+									build_dir/modbus_rtu_slave.o \
+									build_dir/modbus_rtu.o 
+
+
 
 
 
@@ -46,8 +69,14 @@ build_dir/modbus.o: ../src/modbus.c ../src/modbus.h
 build_dir/modbus_dev_pc_slave.o: ../app/modbus_dev_pc_slave.c ../app/modbus_dev_pc_slave.h
 	gcc -c  ../app/modbus_dev_pc_slave.c -o build_dir/modbus_dev_pc_slave.o -g
 
+build_dir/modbus_dev_pc_master.o: ../app/modbus_dev_pc_master.c ../app/modbus_dev_pc_master.h
+	gcc -c  ../app/modbus_dev_pc_master.c -o build_dir/modbus_dev_pc_master.o -g
+
 build_dir/test_pc_slave.o: test_pc_slave.c
 	gcc -c  test_pc_slave.c -o build_dir/test_pc_slave.o -g
+
+build_dir/test_pc_master.o: test_pc_master.c
+	gcc -c  test_pc_master.c -o build_dir/test_pc_master.o -g
 
 
 
