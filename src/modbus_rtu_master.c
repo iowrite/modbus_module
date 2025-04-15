@@ -1,5 +1,7 @@
 #include <stddef.h>
 #include <stdbool.h>
+#include <string.h>
+#include "./modbus_config.h"
 #include "./modbus_rtu.h"
 
 int8_t modbus_fun_request_03(stModbus_RTU_Handler *handler, stModbus_RTU_Sender *sender)
@@ -8,8 +10,7 @@ int8_t modbus_fun_request_03(stModbus_RTU_Handler *handler, stModbus_RTU_Sender 
     uint8_t fun_code = sender->fun_code;
     uint16_t reg_addr = sender->reg_addr;
     uint16_t reg_num = sender->reg_num;
-    handler->master_parse_addr = sender->reg_data;
-    uint8_t *buff = handler->rx_buff;
+    uint8_t *buff = handler->tx_buff;
 
     buff[0] = dev_addr;
     buff[1] = fun_code;
@@ -20,14 +21,10 @@ int8_t modbus_fun_request_03(stModbus_RTU_Handler *handler, stModbus_RTU_Sender 
     uint16_t crc = modbus_crc_cal(buff, 6);
 
     buff[6] = crc>>8;
-    buff[8] = (uint8_t)crc;
+    buff[7] = (uint8_t)crc;
 
-    handler->rx_len = 9;
+    handler->tx_len = 8;
 
-    if(handler->state == emModbus_RTU_State_IDLE)
-    {
-        handler->state = emModbus_RTU_State_Send;
-    }
     return 0;
 }
 
@@ -58,7 +55,7 @@ int8_t modbus_rtu_send(stModbus_RTU_Handler *handler, stModbus_RTU_Sender sender
 }
 
 
-int8_t modbus_rtu_read_hold(emModebus_RTU_Bus bus, uint8_t dev_addr, uint16_t reg_addr, uint16_t reg_num, uint16_t *reg_data)
+int8_t modbus_rtu_read_hold(emModebus_RTU_Bus bus, uint8_t dev_addr, uint16_t reg_addr, uint16_t reg_num, uint16_t *output)
 {
     if(bus == 0)
     {
@@ -84,7 +81,12 @@ int8_t modbus_rtu_read_hold(emModebus_RTU_Bus bus, uint8_t dev_addr, uint16_t re
         // send busy
         return -1;
     }
+
     int8_t ret = modbus_rtu_send(handler, sender);
+    if(ret == 0)
+    {
+        handler->master_parse_addr = output;
+    }
     return ret;
     
 }
@@ -108,17 +110,31 @@ int8_t modbus_rtu_opt_status(emModebus_RTU_Bus bus)
     {
         return -1;
     }
+    if(handler->last_state == emModbus_RTU_State_Send && handler->state == emModbus_RTU_State_IDLE)
+    {
+        return 2;
+    }
     if(handler->last_state == emModbus_RTU_State_Receive && handler->state == emModbus_RTU_State_IDLE)
     {
         return 0;
     }
+    return 1;
 }
 
 
 int8_t modbus_fun_parse_03_master(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)
 {
     int8_t ret = -1;
-
+    uint16_t crc_local = modbus_crc_cal(buff, len-2);
+    uint16_t crc_remote = (buff[len-2]<<8) | buff[len-1];
+    if(crc_local == crc_remote)
+    {
+        ret = 0;
+        for(int i = 0; i < len-5; i+=2){
+            handler->master_parse_addr[i/2] = (buff[4+i]<<8) | buff[3+i];
+        }
+        
+    }
 
     return ret;
 }
@@ -132,27 +148,25 @@ int8_t modbus_fun_parse_master(stModbus_RTU_Handler *handler, uint8_t *buff, uin
     {
         // adu and addr parse
         uint8_t dev_addr = buff[0];
-        if(dev_addr == 0 || dev_addr == handler->dev_addr)
+        uint8_t f_code = buff[1];
+        bool match = false;
+        int8_t (*parse)(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len) = NULL;
+        for(int i = 0; i < handler->fun_table_items; i++)
         {
-            uint8_t f_code = buff[1];
-            bool match = false;
-            int8_t (*parse)(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len) = NULL;
-            for(int i = 0; i < handler->fun_table_items; i++)
+            if(f_code == handler->fun_table[i].fcode)
             {
-                if(f_code == handler->fun_table[i].fcode)
-                {
-                    match =true;
-                    parse = handler->fun_table[i].master_parse;
-                    break;
-                }
-            }
-            if(match)
-            {
-                ret = parse(handler, buff, len);
-            }else{
-                ret = Modebus_RTU_Erno_FUN_CODE_NOT_FOUND;
+                match =true;
+                parse = handler->fun_table[i].master_parse;
+                break;
             }
         }
+        if(match)
+        {
+            ret = parse(handler, buff, len);
+        }else{
+            ret = Modebus_RTU_Erno_FUN_CODE_NOT_FOUND;
+        }
+        
         
     }
 

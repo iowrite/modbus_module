@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "modbus.h": "c",
+        "modbus_rtu.h": "c",
+        "cstdlib": "c",
+        "modbus_dev_pc_slave.h": "c",
+        "modbus_dev_pc_master.h": "c",
+        "modbus_config.h": "c",
+        "modbus_rtu_master.h": "c"
+    },
+    "C_Cpp.default.compilerPath": "/usr/bin/gcc"
+}

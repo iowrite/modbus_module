@@ -21,7 +21,7 @@
 #include <stddef.h>
 #include <string.h> 
 #include <stdio.h>
-#include "./modbus.h"
+#include "./modbus_config.h"
 #include "./modbus_rtu.h"
 #include "./modbus_rtu_slave.h"
 #include "./modbus_rtu_master.h"
@@ -193,7 +193,7 @@ uint16_t modbus_crc_cal(uint8_t *pData, uint32_t Size)
 
 int8_t modbus_rtu_init(stModbus_RTU_Handler *handler, emModebus_RTU_Bus bus, stModbus_RTU_Handler_Attr *attr)
 {
-    if(bus = 0)
+    if(bus == 0)
     {
         return -1;
     }
@@ -219,6 +219,7 @@ int8_t modbus_rtu_init(stModbus_RTU_Handler *handler, emModebus_RTU_Bus bus, stM
     handler->write_hold = attr->write_hold;
     handler->fun_table = attr->fun_table;
     handler->fun_table_items = attr->fun_table_items;
+    handler->Master_Wait_Recv_Limt = DEFAULT_MASTER_RECEVIE_TIMEOUT;
 
 }
 

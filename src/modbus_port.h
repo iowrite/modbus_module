@@ -1,15 +1,6 @@
- /**
-  *************************************************************************************************
-  * @file name : c_template.h
-  * @encoding  : UTF-8
-  * @author    : HDY(803098)
-  * @date      : 2025.1.1
-  * @brief     : This file provides
-  * @attention 
-  * Copyright (c) 2024 HOYPower.
-  * All rights reserved.
-  *************************************************************************************************
-  */
+#include <stdint.h>
+
+
 #ifndef __MODBUS_PORT_H__
 #define __MODBUS_PORT_H__
 
@@ -19,7 +10,7 @@ extern "C"
 #endif
 
 /* Includes -------------------------------------------------------------------------------------*/
-#include <stdint.h>
+
 //#include "system_hoy.h"
 /* Exported defines -----------------------------------------------------------------------------*/
 

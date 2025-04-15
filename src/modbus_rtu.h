@@ -1,15 +1,5 @@
- /**
-  *************************************************************************************************
-  * @file name : c_template.h
-  * @encoding  : UTF-8
-  * @author    : HDY(803098)
-  * @date      : 2025.1.1
-  * @brief     : This file provides
-  * @attention 
-  * Copyright (c) 2024 HOYPower.
-  * All rights reserved.
-  *************************************************************************************************
-  */
+#include "./modbus_port.h"
+
 #ifndef __MODBUS_RTU_H__
 #define __MODBUS_RTU_H__
 
@@ -19,8 +9,8 @@ extern "C"
 #endif
 
 /* Includes -------------------------------------------------------------------------------------*/
-#include "./modbus_port.h"
-#include "./modbus.h"
+
+
 /* Exported defines -----------------------------------------------------------------------------*/
 
 
@@ -80,7 +70,6 @@ typedef struct Modbus_RTU_Sender
     uint8_t fun_code;
     uint16_t reg_addr;
     uint8_t reg_num;
-    uint8_t reg_data[300];
 }stModbus_RTU_Sender;
 
 
@@ -104,8 +93,8 @@ typedef struct Modbus_RTU_Handler
     uint16_t tx_len;
     uint8_t rx_buff[300];
     uint16_t rx_len;
-    uint8_t *master_parse_addr;                             // master parse address(master mode use only)
-    uint8_t Master_Wait_Count;                              // master wait recv time count(master mode use only)
+    uint16_t *master_parse_addr;                             // master parse address(master mode use only)
+    uint32_t Master_Wait_Count;                              // master wait recv time count(master mode use only)
     uint32_t Master_Wait_Recv_Limt;                         // master wait recv limit(master mode use only)
     stModebus_RTU_Fun_Table *fun_table;                    // callback function table
     uint8_t fun_table_items;

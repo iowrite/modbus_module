@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include "./modbus_config.h"
 #include "./modbus_rtu.h"
 
 int8_t modbus_fun_parse_slave(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)

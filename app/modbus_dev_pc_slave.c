@@ -26,7 +26,7 @@
 #include <sys/select.h>
 #include <time.h>
 #include <sys/time.h>
-#include "../src/modbus.h"
+#include "../src/modbus_config.h"
 #include "../src/modbus_rtu.h"
 #include "../src/modbus_rtu_master.h"
 #include "../src/modbus_rtu_slave.h"
@@ -186,9 +186,9 @@ int8_t rtu_pc_write_hold(stModbus_RTU_HoldWriter *writer)
 
 }
 
-int8_t modbus_dev_pc_slave_init()
+int8_t modbus_dev_pc_slave_init(char *dev_name)
 {
-    g_fd = open("/dev/pts/3", O_RDWR|O_NOCTTY);  
+    g_fd = open(dev_name, O_RDWR|O_NOCTTY);  
     if (g_fd == -1) {
         perror("open serial port");
         return -1;

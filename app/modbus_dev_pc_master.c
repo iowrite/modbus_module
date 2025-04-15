@@ -26,11 +26,12 @@
 #include <sys/select.h>
 #include <time.h>
 #include <sys/time.h>
-#include "../src/modbus.h"
+#include "../src/modbus_config.h"
 #include "../src/modbus_rtu.h"
 #include "../src/modbus_rtu_master.h"
 #include "../src/modbus_rtu_slave.h"
 #include "../src/modbus_port.h"
+
 /* Private define -------------------------------------------------------------------------------*/
 
 /* Private typedef ------------------------------------------------------------------------------*/
@@ -94,7 +95,7 @@ int8_t uart_pc_send(uint8_t *buff, uint16_t len)
 
 
 
-void print_time_us(void)
+void print_time_ms(void)
 {
 
     struct timeval tv;
@@ -147,7 +148,7 @@ int8_t uart_pc_recv(uint8_t *buff, uint16_t *len)
     {
         if(recv_idx > 0)
         {
-            print_time_us();
+            print_time_ms();
             for(int i=0; i<recv_idx; i++)
             {
                 mylog("%02x ", recv_buff[i]);
@@ -181,9 +182,9 @@ int8_t rtu_pc_write_hold(stModbus_RTU_HoldWriter *writer)
 
 }
 
-int8_t modbus_dev_pc_master_init()
+int8_t modbus_dev_pc_master_init(char *dev_name)
 {
-    g_fd = open("/dev/pts/3", O_RDWR|O_NOCTTY);  
+    g_fd = open(dev_name, O_RDWR|O_NOCTTY);  
     if (g_fd == -1) {
         perror("open serial port");
         return -1;
