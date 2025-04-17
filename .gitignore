@@ -9,3 +9,4 @@ virtual_serial
 **/*.o
 
 .~*.xlsx
+*.drawio.bkp
