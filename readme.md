@@ -110,6 +110,7 @@ int8_t modbus_rtu_opt_status(emModebus_RTU_Bus bus);
 
 ## 4. 移植/应用
 
+
 ### 4.1 回调接口
 
 ```
@@ -120,5 +121,12 @@ int8_t reg_map_id;                                          // reserve for selec
 int8_t (*read_input)(stModbus_RTU_InputReader *reader);         //　应用层读输入寄存器回调
 int8_t (*read_hold)(stModbus_RTU_HoldReader *reader);           //　应用层读保持寄存器回调
 int8_t (*write_hold)(stModbus_RTU_HoldWriter *writer);          //　应用层写保持寄存器回调
+
+```
+
+### 4.2 移植接口
+
+```
+uint32_t modbus_port_get_time_ms();
 
 ```
