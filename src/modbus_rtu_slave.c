@@ -33,8 +33,17 @@ int8_t modbus_fun_parse_slave(stModbus_RTU_Handler *handler, uint8_t *buff, uint
             }else{
                 ret = Modebus_RTU_Erno_FUN_CODE_NOT_FOUND;
             }
+            if(ret)
+            {
+                handler->tx_buff[0] = handler->dev_addr;
+                handler->tx_buff[1] = 0x80 | f_code;
+                handler->tx_buff[2] = ret;
+                uint16_t crc_cal = modbus_crc_cal(handler->tx_buff, 3);
+                handler->tx_buff[3] = (uint8_t)(crc_cal>>8);
+                handler->tx_buff[4] = (uint8_t)crc_cal;
+                handler->tx_len = 5;
+            }
         }
-        
     }
 
     return ret;
@@ -125,7 +134,7 @@ void modbus_rtu_slave(stModbus_RTU_Handler *handler)
     case emModbus_RTU_State_Receive:
     {
         int8_t ret = modbus_fun_parse_slave(handler, handler->rx_buff, handler->rx_len);
-        if(ret == 0 && handler->tx_len > 0)
+        if(handler->tx_len > 0)
         {
             handler->state = emModbus_RTU_State_Send;
         }
