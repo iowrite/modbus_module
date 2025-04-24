@@ -74,6 +74,33 @@ int8_t modbus_fun_parse_slave_03(stModbus_RTU_Handler *handler, uint8_t *buff, u
 }
 
 
+
+int8_t modbus_fun_parse_slave_06(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)
+{
+    int8_t ret = -1;
+    // pdu parse
+    uint16_t reg_addr = buff[2]<<8|buff[3];
+    uint16_t read_value = buff[4]<<8|buff[5];
+
+    stModbus_RTU_HoldWriter writer;
+    writer.reg_map_id = handler->reg_map_id;
+    writer.reg_addr = reg_addr;
+    writer.reg_num = 1;
+    writer.reg_data[0] = read_value;
+
+    ret = handler->write_hold(&writer);
+    if(ret == 0)
+    {
+        memcpy(&handler->tx_buff[0], buff, 8);
+        handler->tx_len = 8;
+    }
+
+    return ret;
+}
+
+
+
+
 void modbus_rtu_slave(stModbus_RTU_Handler *handler)
 {
 

@@ -169,9 +169,22 @@ int8_t rtu_pc_read_input(stModbus_RTU_InputReader *reader)
 {
 
 }
+
+#define RTU_PC_MASTER_HOLD_ADDR_MIN 0x01
+#define RTU_PC_MASTER_HOLD_ADDR_MAX 0x03
 int8_t rtu_pc_read_hold(stModbus_RTU_HoldReader *reader)
 {
-    for(int i = 0; i < 2*reader->reg_num; i++)
+    if(reader->reg_addr < RTU_PC_MASTER_HOLD_ADDR_MIN || reader->reg_addr > RTU_PC_MASTER_HOLD_ADDR_MAX)
+    {
+        return Modebus_RTU_Erno_REG_ADDR_INVALID;
+    }
+
+    if(reader->reg_addr + reader->reg_num > reader->reg_addr > RTU_PC_MASTER_HOLD_ADDR_MAX)
+    {
+        return Modebus_RTU_Erno_REG_ADDR_INVALID;
+    }
+
+    for(int i = 0; i < reader->reg_num; i++)
     {
         reader->reg_data[i] = i;
     }

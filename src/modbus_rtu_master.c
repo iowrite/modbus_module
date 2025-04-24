@@ -28,6 +28,30 @@ int8_t modbus_fun_request_03(stModbus_RTU_Handler *handler, stModbus_RTU_Sender 
     return 0;
 }
 
+int8_t modbus_fun_request_06(stModbus_RTU_Handler *handler, stModbus_RTU_Sender *sender)
+{
+    uint8_t dev_addr = sender->dev_addr;
+    uint8_t fun_code = sender->fun_code;
+    uint16_t reg_addr = sender->reg_addr;
+    uint16_t reg_num = sender->reg_num;
+    uint16_t *reg_data = sender->reg_data;
+    uint8_t *buff = handler->tx_buff;
+
+    buff[0] = dev_addr;
+    buff[1] = fun_code;
+    buff[2] = reg_addr>>8;
+    buff[3] = (uint8_t)reg_addr;
+    buff[4] = reg_data[0]>>8;
+    buff[5] = (uint8_t)reg_data[0];
+    uint16_t crc = modbus_crc_cal(buff, 6);
+
+    buff[6] = crc>>8;
+    buff[7] = (uint8_t)crc;
+
+    handler->tx_len = 8;
+
+    return 0;
+}
 
 
 
@@ -91,6 +115,50 @@ int8_t modbus_rtu_read_hold(emModebus_RTU_Bus bus, uint8_t dev_addr, uint16_t re
     
 }
 
+
+int8_t modbus_rtu_write_hold(emModebus_RTU_Bus bus, uint8_t dev_addr, uint16_t reg_addr, uint16_t reg_num, uint16_t *input)
+{
+    if(bus == 0)
+    {
+        return -1;
+    }
+    stModbus_RTU_Sender sender;
+    sender.dev_addr = dev_addr;
+    sender.reg_addr = reg_addr;
+    sender.reg_num = reg_num;
+    if(reg_num == 1)
+    {
+        sender.fun_code = 0x06;
+        memcpy(sender.reg_data, input, 2);
+    }else{
+        sender.fun_code = 0x10;
+        memcpy(sender.reg_data, input, reg_num*2);
+    }
+    
+
+    stModbus_RTU_Handler *handler = NULL;
+    for(int i = 0; i < MODBUS_INTERFACE_BIND_TABLE_ITEMS; i++)
+    {
+        if(stModbus_Interface_Bind_Table[i].bus == bus)
+        {
+            handler = stModbus_Interface_Bind_Table[i].handler;
+            break;
+        }
+    }
+    if(handler->tx_len)
+    {
+        // send busy
+        return -1;
+    }
+
+    int8_t ret = modbus_rtu_send(handler, sender);
+    if(ret == 0)
+    {
+
+    }
+    return ret;
+    
+}
 int8_t modbus_rtu_opt_status(emModebus_RTU_Bus bus)
 {
     if(bus == 0)
@@ -123,6 +191,24 @@ int8_t modbus_rtu_opt_status(emModebus_RTU_Bus bus)
 
 
 int8_t modbus_fun_parse_03_master(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)
+{
+    int8_t ret = -1;
+    uint16_t crc_local = modbus_crc_cal(buff, len-2);
+    uint16_t crc_remote = (buff[len-2]<<8) | buff[len-1];
+    if(crc_local == crc_remote)
+    {
+        ret = 0;
+        for(int i = 0; i < len-5; i+=2){
+            handler->master_parse_addr[i/2] = (buff[4+i]<<8) | buff[3+i];
+        }
+        
+    }
+
+    return ret;
+}
+
+
+int8_t modbus_fun_parse_06_master(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)
 {
     int8_t ret = -1;
     uint16_t crc_local = modbus_crc_cal(buff, len-2);

@@ -47,7 +47,7 @@ int g_fd;
 stModebus_RTU_Fun_Table rtu_fun_table_pc_slave[] =
 {
     {0x03, modbus_fun_request_03, modbus_fun_parse_slave_03, modbus_fun_parse_03_master},                // std: read hold 
-    {0x04, NULL, NULL, NULL},                                                     // std: read input
+    {0x04, NULL, modbus_fun_parse_slave_06, NULL},                                                     // std: read input
     {0x06, NULL, NULL, NULL},                                                     // std: wirte single hold
     {0x10, NULL, NULL, NULL},                                                     // std: write multi  hold
 

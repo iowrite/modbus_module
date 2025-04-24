@@ -17,8 +17,13 @@ extern "C"
 /* Exported typedef -----------------------------------------------------------------------------*/
 typedef enum Modebus_RTU_Erno
 {
-    Modebus_RTU_Erno_START,
-    Modebus_RTU_Erno_FUN_CODE_NOT_FOUND,
+    Modebus_RTU_Erno_START = -1,
+    Modebus_RTU_Erno_SUCCESS = 0,
+    Modebus_RTU_Erno_FUN_CODE_NOT_FOUND = 1,
+    Modebus_RTU_Erno_REG_ADDR_INVALID = 2,
+    Modebus_RTU_Erno_REG_VALUE_INVALID = 3,
+    Modebus_RTU_Erno_MASTER_BUS_BUSY,
+    Modebus_RTU_Erno_END,
     
 }emModebus_RTU_Erno;
 
@@ -51,7 +56,7 @@ typedef struct Modbus_RTU_HoldReader
     uint8_t reg_map_id;
     uint16_t reg_addr;
     uint8_t reg_num;
-    uint8_t reg_data[300];
+    uint16_t reg_data[128];
 
 }stModbus_RTU_HoldReader;
 
@@ -60,7 +65,7 @@ typedef struct Modbus_RTU_HoldWriter
     uint8_t reg_map_id;
     uint16_t reg_addr;
     uint8_t reg_num;
-    uint8_t reg_data[300];
+    uint16_t reg_data[128];
 
 }stModbus_RTU_HoldWriter;
 
@@ -70,6 +75,7 @@ typedef struct Modbus_RTU_Sender
     uint8_t fun_code;
     uint16_t reg_addr;
     uint8_t reg_num;
+    uint16_t reg_data[128];
 }stModbus_RTU_Sender;
 
 
