@@ -23,7 +23,8 @@ typedef enum Modebus_RTU_Erno
     Modebus_RTU_Erno_REG_ADDR_INVALID = 2,              // std error code
     Modebus_RTU_Erno_REG_VALUE_INVALID = 3,             // std error code
     Modebus_RTU_Erno_PERMISSION_DENIED = 12,        //Custom error codes: wirte more than once to a  hold register that can only be written once, or wirte a hold register that can only be read.
-    Modebus_RTU_Erno_MASTER_BUS_BUSY,
+    Modebus_RTU_Erno_FRAME_FORMAT_ERROR = 13,           // 自定义错误码：帧格式错误
+    Modebus_RTU_Erno_MASTER_BUS_BUSY = 14,              // 自定义错误码：主机模式总线忙
     Modebus_RTU_Erno_END,
     
 }emModebus_RTU_Erno;

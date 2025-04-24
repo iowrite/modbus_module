@@ -57,6 +57,10 @@ int8_t modbus_fun_parse_slave(stModbus_RTU_Handler *handler, uint8_t *buff, uint
 int8_t modbus_fun_parse_slave_03(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)
 {
     int8_t ret = -1;
+    if(len != 8)
+    {
+        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+    }
     // pdu parse
     uint16_t reg_addr = buff[2]<<8|buff[3];     // big endian
     uint16_t read_len = buff[4]<<8|buff[5];     // big endian
@@ -87,15 +91,19 @@ int8_t modbus_fun_parse_slave_03(stModbus_RTU_Handler *handler, uint8_t *buff, u
 int8_t modbus_fun_parse_slave_06(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)
 {
     int8_t ret = -1;
+    if(len != 8)
+    {
+        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+    }
     // pdu parse
     uint16_t reg_addr = buff[2]<<8|buff[3];         // big endian
-    uint16_t read_value = buff[4]<<8|buff[5];       // big endian
+    uint16_t write_value = buff[4]<<8|buff[5];       // big endian
 
     stModbus_RTU_HoldWriter writer;
     writer.reg_map_id = handler->reg_map_id;
     writer.reg_addr = reg_addr;
     writer.reg_num = 1;
-    writer.reg_data[0] = read_value;
+    writer.reg_data[0] = write_value;
 
     ret = handler->write_hold(&writer);
     if(ret == 0)
@@ -106,6 +114,43 @@ int8_t modbus_fun_parse_slave_06(stModbus_RTU_Handler *handler, uint8_t *buff, u
 
     return ret;
 }
+
+int8_t modbus_fun_parse_slave_10(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)
+{
+    int8_t ret = -1;
+    
+    // pdu parse
+    uint16_t reg_addr = buff[2]<<8|buff[3];         // big endian
+    uint16_t write_num = buff[4]<<8|buff[5];       // big endian
+    uint16_t write_len = buff[6];
+
+    if(write_len != write_num*2)
+    {
+        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+    }
+    if(len != 9+write_len)
+    {
+        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+    }
+    stModbus_RTU_HoldWriter writer;
+    writer.reg_map_id = handler->reg_map_id;
+    writer.reg_addr = reg_addr;
+    writer.reg_num = 1;
+    for(int i = 0; i < write_num; i++)
+    {
+        writer.reg_data[i] = buff[7+2*i]<<8|buff[7+2*i+1];
+    }
+
+    ret = handler->write_hold(&writer);
+    if(ret == 0)
+    {
+        memcpy(&handler->tx_buff[0], buff, 8);
+        handler->tx_len = 8;
+    }
+
+    return ret;
+}
+
 
 
 
