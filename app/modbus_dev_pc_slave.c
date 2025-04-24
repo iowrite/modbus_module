@@ -94,7 +94,13 @@ stModbus_RTU_Handler_Attr rtu_pc_attr_slave = {
 
 int8_t uart_pc_send(uint8_t *buff, uint16_t len)
 {
-    write(g_fd, buff, len);
+    int ret = write(g_fd, buff, len);
+    if(ret < 0)
+    {
+        return -1;
+    }else {
+        return 0;
+    }
 }
 
 

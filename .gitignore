@@ -2,6 +2,7 @@
 codegen/
 
 a.out
+libmodbus_module.a
 modbus_test
 modbus_test_slave
 modbus_test_master

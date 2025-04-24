@@ -137,11 +137,14 @@ void modbus_rtu_slave(stModbus_RTU_Handler *handler)
         if(handler->tx_len > 0)
         {
             handler->state = emModbus_RTU_State_Send;
+        }else{
+            handler->state = emModbus_RTU_State_IDLE;
         }
     }
         break;
     case emModbus_RTU_State_Send:
-        handler->send(handler->tx_buff, handler->tx_len);
+        int8_t ret = handler->send(handler->tx_buff, handler->tx_len);
+        handler->tx_len = 0;
         handler->state = emModbus_RTU_State_IDLE;
         break;
     default:
