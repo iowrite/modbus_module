@@ -206,21 +206,34 @@ int8_t modbus_rtu_init(stModbus_RTU_Handler *handler, emModebus_RTU_Bus bus, stM
             break;
         }
     }
-    handler->state = emModbus_RTU_State_init;
-    handler->last_state = handler->state;
-    handler->dev_addr = attr->dev_addr;
     handler->mode = attr->mode;
     handler->last_mode = handler->mode;
-    handler->reg_map_id = attr->reg_map_id;
-    handler->send = attr->send;
-    handler->recv = attr->recv;
-    handler->read_input = attr->read_input;
-    handler->read_hold = attr->read_hold;
-    handler->write_hold = attr->write_hold;
+    handler->state = emModbus_RTU_State_init;
+    handler->last_state = handler->state;
     handler->fun_table = attr->fun_table;
     handler->fun_table_items = attr->fun_table_items;
-    handler->Master_Wait_Recv_Limt = DEFAULT_MASTER_RECEVIE_TIMEOUT;
+    handler->send = attr->send;
+    handler->recv = attr->recv;
 
+    if(handler->mode == emModebus_RTU_Mode_Master)
+    {
+        if(attr->master_recv_wait_limt == 0)
+        {
+            handler->Master_Wait_Recv_Limt = DEFAULT_MASTER_RECEVIE_TIMEOUT;
+        }else{
+            handler->Master_Wait_Recv_Limt = attr->master_recv_wait_limt;
+        }
+    }else if(handler->mode == emModebus_RTU_Mode_Slave){
+        handler->dev_addr = attr->dev_addr;
+        handler->reg_map_id = attr->reg_map_id;
+        handler->read_input = attr->read_input;
+        handler->read_hold = attr->read_hold;
+        handler->write_hold = attr->write_hold;
+    }else{
+        return -1;
+    }
+
+    return 0;
 }
 
 

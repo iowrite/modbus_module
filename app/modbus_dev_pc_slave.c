@@ -112,8 +112,10 @@ stModbus_RTU_Handler_Attr rtu_pc_attr_slave = {
 
 int8_t uart_pc_send(uint8_t *buff, uint16_t len)
 {
-    int ret = write(g_fd, buff, len);
     print_time_ms();
+    fflush(stdout);
+    int ret = write(g_fd, buff, len);
+    fsync(g_fd);
     for (size_t i = 0; i < len; i++)
     {
         mylog("%02x ", buff[i]);
@@ -240,7 +242,7 @@ int8_t rtu_pc_write_hold(stModbus_RTU_HoldWriter *writer)
 
 int8_t modbus_dev_pc_slave_init(char *dev_name)
 {
-    g_fd = open(dev_name, O_RDWR|O_NOCTTY|O_SYNC);  
+    g_fd = open(dev_name, O_RDWR|O_NOCTTY);  
     if (g_fd == -1) {
         perror("open serial port");
         return -1;
@@ -251,6 +253,7 @@ int8_t modbus_dev_pc_slave_init(char *dev_name)
 int8_t modbus_dev_pc_slave_run()
 {
     modbus_rtu_run(&stModbus_RTU_Handler_PC_slave);
+
 }
 
 int8_t modbus_dev_pc_slave_exit()

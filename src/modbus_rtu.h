@@ -23,8 +23,14 @@ typedef enum Modebus_RTU_Erno
     Modebus_RTU_Erno_REG_ADDR_INVALID = 2,              // std error code
     Modebus_RTU_Erno_REG_VALUE_INVALID = 3,             // std error code
     Modebus_RTU_Erno_PERMISSION_DENIED = 12,        //Custom error codes: wirte more than once to a  hold register that can only be written once, or wirte a hold register that can only be read.
-    Modebus_RTU_Erno_FRAME_FORMAT_ERROR = 13,           // 自定义错误码：帧格式错误
-    Modebus_RTU_Erno_MASTER_BUS_BUSY = 14,              // 自定义错误码：主机模式总线忙
+    Modebus_RTU_Erno_FRAME_FORMAT_ERROR = 13,           // 自定义错误码：帧格式错误                 // master use too
+    Modebus_RTU_Erno_MASTER_BUS_BUSY = 14,              // 自定义错误码：主机模式总线忙         
+    Modebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH = 15, // 自定义错误码：主机模式请求地址与当前地址不匹配
+    Modebus_RTU_Erno_MASTER_REQUEST_FUN_NOT_FOUND = 16, // 自定义错误码：未找到主机发送函数
+    Modebus_RTU_Erno_MASTER_PARSE_FUN_NOT_FOUND = 17, // 自定义错误码：未找到主机解析函数
+    Modebus_RTU_Erno_SLAVE_PARSE_FUN_NOT_FOUND = 18, // 自定义错误码：未找到从机解析函数
+
+
     Modebus_RTU_Erno_END,
     
 }emModebus_RTU_Erno;
@@ -98,26 +104,36 @@ typedef struct Modebus_RTU_Fun_Table
 
 typedef struct Modbus_RTU_Handler
 {
-    uint8_t dev_addr;
     stModbus_RTU_State state, last_state;               // send/receive switch judge
     emModebus_RTU_Mode mode, last_mode;                 // slave/master switch judge
-    uint32_t last_call_tick;
     uint8_t tx_buff[300];
     uint16_t tx_len;
     uint8_t rx_buff[300];
     uint16_t rx_len;
-    uint16_t *master_parse_addr;                             // master parse address(master mode use only)
-    uint32_t Master_Wait_Count;                              // master wait recv time count(master mode use only)
-    uint32_t Master_Wait_Recv_Limt;                         // master wait recv limit(master mode use only)
+    uint32_t last_call_tick;
     stModebus_RTU_Fun_Table *fun_table;                    // callback function table
     uint8_t fun_table_items;
     int8_t (*send)(uint8_t *buff, uint16_t len);                   // 驱动层读接口 
     int8_t (*recv)(uint8_t *buff, uint16_t *len);                   //　驱动层写接口
-    int8_t reg_map_id;                                          // reserve for select register map table
-    int8_t (*read_input)(stModbus_RTU_InputReader *reader);         //　应用层读输入寄存器回调
-    int8_t (*read_hold)(stModbus_RTU_HoldReader *reader);           //　应用层读保持寄存器回调
-    int8_t (*write_hold)(stModbus_RTU_HoldWriter *writer);          //　应用层写保持寄存器回调
-
+    union 
+    {
+        struct                                          // slave mode use only
+        {
+            uint8_t dev_addr;
+            int8_t reg_map_id;                                          // reserve for select register map table
+            int8_t (*read_input)(stModbus_RTU_InputReader *reader);         //　应用层读输入寄存器回调
+            int8_t (*read_hold)(stModbus_RTU_HoldReader *reader);           //　应用层读保持寄存器回调
+            int8_t (*write_hold)(stModbus_RTU_HoldWriter *writer);          //　应用层写保持寄存器回调
+        };
+        struct{                                                // master mode use only
+            uint16_t *master_parse_addr;                             // master parse address(master mode use only)
+            uint32_t Master_Wait_Count;                              // master wait recv time count(master mode use only)
+            uint32_t Master_Wait_Recv_Limt;                         // master wait recv limit(master mode use only)
+            uint8_t master_request_addr;                               // master request code(master mode use only)
+            uint8_t master_request_code;                               // master request code(master mode use only)
+            uint8_t master_request_rw_len;                             // master request read/write len(master mode use only)
+        };
+    };
 }stModbus_RTU_Handler;
 
  
@@ -133,7 +149,7 @@ typedef struct Modbus_RTU_Handler_Attribute
     int8_t (*write_hold)(stModbus_RTU_HoldWriter *writer);
     stModebus_RTU_Fun_Table *fun_table;                    // callback function table
     uint8_t fun_table_items;
-
+    uint16_t master_recv_wait_limt;
 }stModbus_RTU_Handler_Attr;
 
 

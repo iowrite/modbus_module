@@ -49,8 +49,8 @@ stModebus_RTU_Fun_Table rtu_fun_table_pc_master[] =
 {
     {0x03, modbus_fun_request_03, NULL, modbus_fun_parse_03_master},                // std: read hold 
     {0x04, NULL, NULL, NULL},                                                     // std: read input
-    {0x06, NULL, NULL, NULL},                                                     // std: wirte single hold
-    {0x10, NULL, NULL, NULL},                                                     // std: write multi  hold
+    {0x06, modbus_fun_request_06, NULL, modbus_fun_parse_06_master},                                                     // std: wirte single hold
+    {0x10, modbus_fun_request_10, NULL, modbus_fun_parse_10_master},                                                     // std: write multi  hold
 
 };
 #define RTU_FUN_TABLE_ITEMS (sizeof(rtu_fun_table_pc_master) / sizeof(stModebus_RTU_Fun_Table))
@@ -88,32 +88,48 @@ stModbus_RTU_Handler_Attr rtu_pc_attr_master = {
 
 
 
+  void print_time_ms(void)
+  {
+  
+      struct timeval tv;
+      struct tm *tm_info;
+      char time_str[64];
+  
+      // 获取当前时间（秒 + 微秒）
+      gettimeofday(&tv, NULL);
+  
+      // 转换为本地时间（tm 结构体）
+      tm_info = localtime(&tv.tv_sec);
+  
+      // 格式化时间字符串（精确到秒）
+      strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", tm_info);
+  
+      // 打印时间
+      mylog("[%s.%03ld] --> ", time_str, tv.tv_usec/1000);
+  
+  }
+
+
+
 int8_t uart_pc_send(uint8_t *buff, uint16_t len)
 {
-    write(g_fd, buff, len);
-}
-
-
-
-void print_time_ms(void)
-{
-
-    struct timeval tv;
-    struct tm *tm_info;
-    char time_str[64];
-
-    // 获取当前时间（秒 + 微秒）
-    gettimeofday(&tv, NULL);
-
-    // 转换为本地时间（tm 结构体）
-    tm_info = localtime(&tv.tv_sec);
-
-    // 格式化时间字符串（精确到秒）
-    strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", tm_info);
-
-    // 打印时间
-    mylog("[%s.%03ld] --> ", time_str, tv.tv_usec/1000);
-
+    print_time_ms();
+    fflush(stdout);
+    int ret = write(g_fd, buff, len);
+    fsync(g_fd);
+    
+    for (size_t i = 0; i < len; i++)
+    {
+        mylog("%02x ", buff[i]);
+    }
+    mylog("\n");
+    
+    if(ret < 0)
+    {
+        return -1;
+    }else {
+        return 0;
+    }
 }
 
 int8_t uart_pc_recv(uint8_t *buff, uint16_t *len)
@@ -197,7 +213,7 @@ int8_t rtu_pc_write_hold(stModbus_RTU_HoldWriter *writer)
 
 int8_t modbus_dev_pc_master_init(char *dev_name)
 {
-    g_fd = open(dev_name, O_RDWR|O_NOCTTY|O_SYNC);  
+    g_fd = open(dev_name, O_RDWR|O_NOCTTY);  
     if (g_fd == -1) {
         perror("open serial port");
         return -1;

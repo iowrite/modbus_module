@@ -1,5 +1,11 @@
 # how to test
 
+## 1. build
+```
+// go to test directory
+make
+```
+
 ## 1. create pty pair for test
 
 ```

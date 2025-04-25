@@ -25,19 +25,19 @@ int main(int argc, char *argv[]) {
         if(now_ms -last_call_ms > 1000)
         {
             last_call_ms = now_ms;
-            modbus_rtu_read_hold(emModebus_RTU_Bus_PC, 0x01, 0x0000, 1, &reg_data);
+            modbus_rtu_read_hold(emModebus_RTU_Bus_PC, 0x01, 0x0069, 1, &reg_data);
             send = true;
         }
         if(send){
             int8_t ret = modbus_rtu_opt_status(emModebus_RTU_Bus_PC);
             if(ret == 0)
             {
-                printf("master poll data success: %d %d\n", reg_data>>8, (uint8_t)reg_data);
+                printf("master poll success: %d %d\n", reg_data>>8, (uint8_t)reg_data);
                 send = false;
-            }else if(ret == 2)
+            }else if(ret == -1)
             {
                 send = false;
-                printf("master poll data time out\n");
+                printf("master poll fail\n");
             }
         }
  

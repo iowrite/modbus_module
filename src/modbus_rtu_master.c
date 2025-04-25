@@ -53,6 +53,36 @@ int8_t modbus_fun_request_06(stModbus_RTU_Handler *handler, stModbus_RTU_Sender 
     return 0;
 }
 
+int8_t modbus_fun_request_10(stModbus_RTU_Handler *handler, stModbus_RTU_Sender *sender)
+{
+    uint8_t dev_addr = sender->dev_addr;
+    uint8_t fun_code = sender->fun_code;
+    uint16_t reg_addr = sender->reg_addr;
+    uint16_t reg_num = sender->reg_num;
+    uint16_t *reg_data = sender->reg_data;
+    uint8_t *buff = handler->tx_buff;
+
+    buff[0] = dev_addr;
+    buff[1] = fun_code;
+    buff[2] = reg_addr>>8;
+    buff[3] = (uint8_t)reg_addr;
+    buff[4] = reg_data[0]>>8;
+    buff[5] = (uint8_t)reg_data[0];
+    buff[6] = reg_num*2;
+    for(int i = 0; i < reg_num; i++)
+    {
+        buff[i*2+7] = reg_data[i]>>8;
+        buff[i*2+8] = (uint8_t)reg_data[i];
+    }
+    uint16_t crc = modbus_crc_cal(buff, 6);
+
+    buff[6] = crc>>8;
+    buff[7] = (uint8_t)crc;
+
+    handler->tx_len = 8;
+
+    return 0;
+}
 
 
 
@@ -75,6 +105,11 @@ int8_t modbus_rtu_send(stModbus_RTU_Handler *handler, stModbus_RTU_Sender sender
         return -1;
     }
     int8_t ret = match_item.request(handler, &sender);
+    if(ret == 0)                                                        /// XXX 考虑广播与扩展功能码的情况,可能不需要这么做
+    {
+        handler->master_request_addr = sender.dev_addr;
+        handler->master_request_code = sender.fun_code;
+    }
     return ret;
 }
 
@@ -109,6 +144,7 @@ int8_t modbus_rtu_read_hold(emModebus_RTU_Bus bus, uint8_t dev_addr, uint16_t re
     int8_t ret = modbus_rtu_send(handler, sender);
     if(ret == 0)
     {
+        handler->master_request_rw_len = reg_num;
         handler->master_parse_addr = output;
     }
     return ret;
@@ -180,7 +216,7 @@ int8_t modbus_rtu_opt_status(emModebus_RTU_Bus bus)
     }
     if(handler->last_state == emModbus_RTU_State_Send && handler->state == emModbus_RTU_State_IDLE)
     {
-        return 2;
+        return -1;
     }
     if(handler->last_state == emModbus_RTU_State_Receive && handler->state == emModbus_RTU_State_IDLE)
     {
@@ -192,17 +228,39 @@ int8_t modbus_rtu_opt_status(emModebus_RTU_Bus bus)
 
 int8_t modbus_fun_parse_03_master(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)
 {
-    int8_t ret = -1;
-    uint16_t crc_local = modbus_crc_cal(buff, len-2);
-    uint16_t crc_remote = (buff[len-2]<<8) | buff[len-1];
-    if(crc_local == crc_remote)
+    int8_t ret = 0;
+    uint8_t dev_addr = buff[0];
+    uint8_t f_code = buff[1];
+    uint16_t value_len = buff[2];
+
+
+    if(f_code == 0x83)
     {
-        ret = 0;
-        for(int i = 0; i < len-5; i+=2){
-            handler->master_parse_addr[i/2] = (buff[4+i]<<8) | buff[3+i];
+        if(len != 5)
+        {
+            return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+        }else {
+            return buff[2];             // return slave status
         }
-        
+    }else if(f_code != 0x03)
+    {
+        return Modebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH;
     }
+    if(len != 5+value_len)
+    {
+        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+    }
+
+    if(value_len != 2*handler->master_request_rw_len)
+    {
+        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+    }
+
+    for(int i = 0; i < len-5; i+=2){
+        handler->master_parse_addr[i/2] = (buff[4+i]<<8) | buff[3+i];       // big endian to uin16_t
+    }
+        
+    
 
     return ret;
 }
@@ -210,20 +268,69 @@ int8_t modbus_fun_parse_03_master(stModbus_RTU_Handler *handler, uint8_t *buff, 
 
 int8_t modbus_fun_parse_06_master(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)
 {
-    int8_t ret = -1;
-    uint16_t crc_local = modbus_crc_cal(buff, len-2);
-    uint16_t crc_remote = (buff[len-2]<<8) | buff[len-1];
-    if(crc_local == crc_remote)
+    int8_t ret = 0;
+    uint8_t dev_addr = buff[0];
+    uint8_t f_code = buff[1];
+
+
+    if(f_code == 0x86)
     {
-        ret = 0;
-        for(int i = 0; i < len-5; i+=2){
-            handler->master_parse_addr[i/2] = (buff[4+i]<<8) | buff[3+i];
+        if(len != 5)
+        {
+            return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+        }else {
+            return buff[2];             // return slave status
         }
-        
+    }else if(f_code != 0x06)
+    {
+        return Modebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH;
+    }
+    if(len != 10)
+    {
+        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
 
+    if(memcmp(buff, handler->tx_buff, 10))
+    {
+        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+    }
+        
     return ret;
 }
+
+int8_t modbus_fun_parse_10_master(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)
+{
+    int8_t ret = 0;
+    uint8_t dev_addr = buff[0];
+    uint8_t f_code = buff[1];
+    uint16_t value_len = buff[6];
+
+    if(f_code == 0x90)
+    {
+        if(len != 5)
+        {
+            return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+        }else {
+            return buff[2];             // return slave status
+        }
+    }else if(f_code != 0x10)
+    {
+        return Modebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH;
+    }
+    if(len != 9+value_len)
+    {
+        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+    }
+
+    if(memcmp(buff, handler->tx_buff, len))
+    {
+        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+    }
+        
+    return ret;
+}
+
+
 
 int8_t modbus_fun_parse_master(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)
 {
@@ -234,26 +341,26 @@ int8_t modbus_fun_parse_master(stModbus_RTU_Handler *handler, uint8_t *buff, uin
     {
         // adu and addr parse
         uint8_t dev_addr = buff[0];
-        uint8_t f_code = buff[1];
-        bool match = false;
-        int8_t (*parse)(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len) = NULL;
-        for(int i = 0; i < handler->fun_table_items; i++)
-        {
-            if(f_code == handler->fun_table[i].fcode)
+        if(dev_addr == handler->master_request_addr){                                               /// XXX 考虑广播的情况       
+            uint8_t f_code = buff[1];
+            int8_t (*parse)(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len) = NULL;
+            for(int i = 0; i < handler->fun_table_items; i++)
             {
-                match =true;
-                parse = handler->fun_table[i].master_parse;
-                break;
+                if(handler->master_request_code == handler->fun_table[i].fcode)
+                {
+                    parse = handler->fun_table[i].master_parse;
+                    break;
+                }
             }
-        }
-        if(match)
-        {
-            ret = parse(handler, buff, len);
+            if(parse == NULL)
+            {
+                ret = Modebus_RTU_Erno_MASTER_PARSE_FUN_NOT_FOUND;
+            }else{
+                ret = parse(handler, buff, len);
+            }
         }else{
-            ret = Modebus_RTU_Erno_FUN_CODE_NOT_FOUND;
+            ret = Modebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH;
         }
-        
-        
     }
 
     return ret;
@@ -287,24 +394,34 @@ void modbus_rtu_master(stModbus_RTU_Handler *handler)
         if(now - handler->Master_Wait_Count > handler->Master_Wait_Recv_Limt)
         {
             mylog("bus receive timeout\n");
-            handler->Master_Wait_Count = 0;
+            handler->tx_len = 0;
             handler->state = emModbus_RTU_State_IDLE;
             break;
         }
         if(handler->recv(handler->rx_buff, &handler->rx_len))
         {
-            int8_t ret = modbus_fun_parse_master(handler, handler->rx_buff, handler->rx_len);
-            if(ret == 0)
+            int8_t ret = modbus_fun_parse_master(handler, handler->rx_buff, handler->rx_len);                   /// XXX 考虑广播的情况
+            if(ret == 0)                                                                // success
             {
                 handler->last_state = emModbus_RTU_State_Receive;
                 handler->state = emModbus_RTU_State_IDLE;
+                handler->tx_len = 0;
+                break;
+            }else if(ret == Modebus_RTU_Erno_FRAME_FORMAT_ERROR ||                      // fail
+                     ret == Modebus_RTU_Erno_FUN_CODE_NOT_FOUND || 
+                     ret == Modebus_RTU_Erno_REG_ADDR_INVALID   ||
+                     ret == Modebus_RTU_Erno_REG_VALUE_INVALID    ){
+                        handler->state = emModbus_RTU_State_IDLE;
+                        handler->tx_len = 0;
+                        break; 
+            }else if(ret == Modebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH){
+                break;                                                          // parse next frame(may be fail with time out if no next frame)
             }
         }
         break;
-
     case emModbus_RTU_State_Send:
         handler->send(handler->tx_buff, handler->tx_len);
-        handler->tx_len = 0;
+        mylog("bus send\n");
         handler->Master_Wait_Count = modbus_port_get_time_ms();
         handler->last_state = emModbus_RTU_State_Send;
         handler->state = emModbus_RTU_State_Receive;
