@@ -87,13 +87,39 @@ stModbus_RTU_Handler_Attr rtu_pc_attr_slave = {
   *************************************************************************************************
   */
 
-
+  void print_time_ms(void)
+  {
+  
+      struct timeval tv;
+      struct tm *tm_info;
+      char time_str[64];
+  
+      // 获取当前时间（秒 + 微秒）
+      gettimeofday(&tv, NULL);
+  
+      // 转换为本地时间（tm 结构体）
+      tm_info = localtime(&tv.tv_sec);
+  
+      // 格式化时间字符串（精确到秒）
+      strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", tm_info);
+  
+      // 打印时间
+      mylog("[%s.%03ld] --> ", time_str, tv.tv_usec/1000);
+  
+  }
 
 
 
 int8_t uart_pc_send(uint8_t *buff, uint16_t len)
 {
     int ret = write(g_fd, buff, len);
+    print_time_ms();
+    for (size_t i = 0; i < len; i++)
+    {
+        mylog("%02x ", buff[i]);
+    }
+    mylog("\n");
+    
     if(ret < 0)
     {
         return -1;
@@ -104,26 +130,7 @@ int8_t uart_pc_send(uint8_t *buff, uint16_t len)
 
 
 
-void print_time_ms(void)
-{
 
-    struct timeval tv;
-    struct tm *tm_info;
-    char time_str[64];
-
-    // 获取当前时间（秒 + 微秒）
-    gettimeofday(&tv, NULL);
-
-    // 转换为本地时间（tm 结构体）
-    tm_info = localtime(&tv.tv_sec);
-
-    // 格式化时间字符串（精确到秒）
-    strftime(time_str, sizeof(time_str), "%Y-%m-%d %H:%M:%S", tm_info);
-
-    // 打印时间
-    mylog("[%s.%03ld] --> ", time_str, tv.tv_usec/1000);
-
-}
 
 int8_t uart_pc_recv(uint8_t *buff, uint16_t *len)
 {
@@ -233,7 +240,7 @@ int8_t rtu_pc_write_hold(stModbus_RTU_HoldWriter *writer)
 
 int8_t modbus_dev_pc_slave_init(char *dev_name)
 {
-    g_fd = open(dev_name, O_RDWR|O_NOCTTY);  
+    g_fd = open(dev_name, O_RDWR|O_NOCTTY|O_SYNC);  
     if (g_fd == -1) {
         perror("open serial port");
         return -1;

@@ -135,7 +135,7 @@ int8_t modbus_fun_parse_slave_10(stModbus_RTU_Handler *handler, uint8_t *buff, u
     stModbus_RTU_HoldWriter writer;
     writer.reg_map_id = handler->reg_map_id;
     writer.reg_addr = reg_addr;
-    writer.reg_num = 1;
+    writer.reg_num = write_num;
     for(int i = 0; i < write_num; i++)
     {
         writer.reg_data[i] = buff[7+2*i]<<8|buff[7+2*i+1];
@@ -144,8 +144,8 @@ int8_t modbus_fun_parse_slave_10(stModbus_RTU_Handler *handler, uint8_t *buff, u
     ret = handler->write_hold(&writer);
     if(ret == 0)
     {
-        memcpy(&handler->tx_buff[0], buff, 8);
-        handler->tx_len = 8;
+        memcpy(&handler->tx_buff[0], buff, len);
+        handler->tx_len = len;
     }
 
     return ret;
@@ -189,6 +189,7 @@ void modbus_rtu_slave(stModbus_RTU_Handler *handler)
         break;
     case emModbus_RTU_State_Send:
         int8_t ret = handler->send(handler->tx_buff, handler->tx_len);
+        mylog("bus send\n");
         handler->tx_len = 0;
         handler->state = emModbus_RTU_State_IDLE;
         break;

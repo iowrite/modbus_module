@@ -197,7 +197,7 @@ int8_t rtu_pc_write_hold(stModbus_RTU_HoldWriter *writer)
 
 int8_t modbus_dev_pc_master_init(char *dev_name)
 {
-    g_fd = open(dev_name, O_RDWR|O_NOCTTY);  
+    g_fd = open(dev_name, O_RDWR|O_NOCTTY|O_SYNC);  
     if (g_fd == -1) {
         perror("open serial port");
         return -1;
