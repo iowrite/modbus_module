@@ -234,7 +234,7 @@ int8_t rtu_pc_write_hold(stModbus_RTU_HoldWriter *writer)
         {
             return Modebus_RTU_Erno_REG_VALUE_INVALID;
         }
-        s_pc_hold_reg[writer->reg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN] = writer->reg_data[i];          // 字节序转换在上层完成,这里直接使用
+        s_pc_hold_reg[writer->reg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN + i] = writer->reg_data[i];          // 字节序转换在上层完成,这里直接使用
     }
     return Modebus_RTU_Erno_SUCCESS;
 

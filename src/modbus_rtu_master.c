@@ -66,20 +66,20 @@ int8_t modbus_fun_request_10(stModbus_RTU_Handler *handler, stModbus_RTU_Sender 
     buff[1] = fun_code;
     buff[2] = reg_addr>>8;
     buff[3] = (uint8_t)reg_addr;
-    buff[4] = reg_data[0]>>8;
-    buff[5] = (uint8_t)reg_data[0];
+    buff[4] = reg_num>>8;
+    buff[5] = (uint8_t)reg_num;
     buff[6] = reg_num*2;
-    for(int i = 0; i < reg_num; i++)
+    for(int i = 0; i < reg_num; i++)        // big endian
     {
         buff[i*2+7] = reg_data[i]>>8;
         buff[i*2+8] = (uint8_t)reg_data[i];
     }
-    uint16_t crc = modbus_crc_cal(buff, 6);
+    uint16_t crc = modbus_crc_cal(buff, 7+2*reg_num);
 
-    buff[6] = crc>>8;
-    buff[7] = (uint8_t)crc;
+    buff[7+2*reg_num] = crc>>8;
+    buff[8+2*reg_num] = (uint8_t)crc;
 
-    handler->tx_len = 8;
+    handler->tx_len = 9+reg_num*2;
 
     return 0;
 }

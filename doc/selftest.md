@@ -44,17 +44,16 @@ typedef enum Modebus_RTU_Erno
 
 ## 3. 主机模式测试用例
 
-| id | function code | serve mode | case              | send                    | call function         | receive                    | status function       | return value | result | note     |
-| -- | ------------- | ---------- | ----------------- | ----------------------- | --------------------- | -------------------------- | --------------------- | ------------ | ------ | -------- |
-|    | 03            | master     | 正常读取:单个     | 01 03 00 69 00 01 54 16 | modbus_rtu_read_hold  | 01 03 02 00 05 78 47       | modbus_rtu_opt_status | 0            | v      |          |
-|    |               | master     | 正常读取:多个     | 01 03 00 69 00 02 14 17 | modbus_rtu_read_hold  | 01 03 04 00 05 00 06 6a 30 | modbus_rtu_opt_status | 0            | v      |          |
-|    |               | master     | 无回复            | 01 03 00 69 00 01 54 16 | modbus_rtu_read_hold  | 无                         | modbus_rtu_opt_status | -1           | v      | 超时失败 |
-|    |               | master     | 地址无效/长度过长 | 01 03 00 69 00 0a 15 d1 | modbus_rtu_read_hold  | 01 83 02 c0 f1             | modbus_rtu_opt_status | -1           | v      |          |
-|    | 06            | master     | 正常写入          | 01 06 00 69 00 1e d9 de | modbus_rtu_write_hold | 01 06 00 69 00 1e d9 de    | modbus_rtu_opt_status | 0            | v      |          |
-|    |               | master     | 无回复            | 01 06 00 69 00 1e d9 de | modbus_rtu_write_hold | 无                         | modbus_rtu_opt_status | -1           | v      | 超时失败 |
-|    | 10            | master     | 正常写入一个      |                         |                       |                            |                       |              |        |          |
-|    |               | master     | 正常写入多个      |                         |                       |                            |                       |              |        |          |
-|    |               | master     | 地址无效/长度过长 |                         |                       |                            |                       |              |        |          |
-|    |               | master     | 写入数据无效      |                         |                       |                            |                       |              |        |          |
-|    |               | master     | 无回复            |                         |                       |                            |                       |              |        |          |
-|    |               |            |                   |                         |                       |                            |                       |              |        |          |
+| id | function code | serve mode | case              | send                                                                                   | call function         | receive                                | status function       | return value | result | note     |
+| -- | ------------- | ---------- | ----------------- | -------------------------------------------------------------------------------------- | --------------------- | -------------------------------------- | --------------------- | ------------ | ------ | -------- |
+|    | 03            | master     | 正常读取:单个     | 01 03 00 69 00 01 54 16                                                                | modbus_rtu_read_hold  | 01 03 02 00 05 78 47                   | modbus_rtu_opt_status | 0            | v      |          |
+|    |               | master     | 正常读取:多个     | 01 03 00 69 00 02 14 17                                                                | modbus_rtu_read_hold  | 01 03 04 00 05 00 06 6a 30             | modbus_rtu_opt_status | 0            | v      |          |
+|    |               | master     | 无回复            | 01 03 00 69 00 01 54 16                                                                | modbus_rtu_read_hold  | 无                                     | modbus_rtu_opt_status | -1           | v      | 超时失败 |
+|    |               | master     | 地址无效/长度过长 | 01 03 00 69 00 0a 15 d1                                                                | modbus_rtu_read_hold  | 01 83 02 c0 f1                         | modbus_rtu_opt_status | -1           | v      |          |
+|    | 06            | master     | 正常写入单个      | 01 06 00 69 00 1e d9 de                                                                | modbus_rtu_write_hold | 01 06 00 69 00 1e d9 de                | modbus_rtu_opt_status | 0            | v      |          |
+|    |               | master     | 无回复            | 01 06 00 69 00 1e d9 de                                                                | modbus_rtu_write_hold | 无                                     | modbus_rtu_opt_status | -1           | v      | 超时失败 |
+|    | 10            | master     | 正常写入多个      | 01 10 00 69 00 02 04 00 1e 00 1f 14 23                                                 | modbus_rtu_write_hold | 01 10 00 69 00 02 04 00 1e 00 1f 14 23 | modbus_rtu_opt_status | 0            | v      |          |
+|    |               | master     | 地址无效/长度过长 | 01 10 00 69 00 0a 14 00 1e 00 1f 00 20 00 21 00 22 00 23 00 24 00 25 00 26 00 27 0f 85 | modbus_rtu_write_hold | 01 90 02 cd c1                         | modbus_rtu_opt_status | -1           | v      |          |
+|    |               | master     | 写入数据无效      | 01 10 00 69 00 02 04 04 6a 04 6b 57 ee                                                 | modbus_rtu_write_hold | 01 90 03 0c 01                         | modbus_rtu_opt_status | -1           | v      |          |
+|    |               | master     | 无回复            | 01 10 00 69 00 02 04 00 1e 00 1f 14 23                                                 | modbus_rtu_write_hold | 无                                     | modbus_rtu_opt_status | -1           | v      | 超时     |
+|    |               |            |                   |                                                                                        |                       |                                        |                       |              |        |          |
