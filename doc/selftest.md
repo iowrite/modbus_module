@@ -1,5 +1,7 @@
 # modbus module自测报告
 
+[test environment ](../test/readme.md)
+
 ## 1. 错误码
 
 ```
@@ -11,14 +13,20 @@ typedef enum Modebus_RTU_Erno
     Modebus_RTU_Erno_REG_ADDR_INVALID = 2,              // std error code
     Modebus_RTU_Erno_REG_VALUE_INVALID = 3,             // std error code
     Modebus_RTU_Erno_PERMISSION_DENIED = 12,        //Custom error codes: wirte more than once to a  hold register that can only be written once, or wirte a hold register that can only be read.
-    Modebus_RTU_Erno_FRAME_FORMAT_ERROR = 13,           // 自定义错误码：帧格式错误
-    Modebus_RTU_Erno_MASTER_BUS_BUSY = 14,              // 自定义错误码：主机模式总线忙
+    Modebus_RTU_Erno_FRAME_FORMAT_ERROR = 13,           // 自定义错误码：帧格式错误                 // master use too
+    Modebus_RTU_Erno_MASTER_BUS_BUSY = 14,              // 自定义错误码：主机模式总线忙   
+    Modebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH = 15, // 自定义错误码：主机模式请求地址与当前地址不匹配
+    Modebus_RTU_Erno_MASTER_REQUEST_FUN_NOT_FOUND = 16, // 自定义错误码：未找到主机发送函数
+    Modebus_RTU_Erno_MASTER_PARSE_FUN_NOT_FOUND = 17, // 自定义错误码：未找到主机解析函数
+    Modebus_RTU_Erno_SLAVE_PARSE_FUN_NOT_FOUND = 18, // 自定义错误码：未找到从机解析函数
+
+
     Modebus_RTU_Erno_END,
   
 }emModebus_RTU_Erno;
 ```
 
-## 2. 测试用例
+## 2. 测试用例从机
 
 | id | function code | serve mod | case           | input                                                | output                                               | result | note                                           |
 | -- | :------------ | --------- | -------------- | ---------------------------------------------------- | ---------------------------------------------------- | ------ | ---------------------------------------------- |
@@ -33,3 +41,14 @@ typedef enum Modebus_RTU_Erno
 |    | 0x10          | slave     | 正常写入       | [01][10][00][69][00][02][04][00][7B][00][7C][44][15] | <01><10><00><69><00><02><04><00><7B><00><7C><44><15> | v      |                                                |
 |    |               |           |                |                                                      |                                                      |        |                                                |
 |    |               |           |                |                                                      |                                                      |        |                                                |
+
+## 3. 测试用例主机
+
+| id | function code | serve mode | case              | send                    | call function        | receive                    | status function       | return value | result | note     |
+| -- | ------------- | ---------- | ----------------- | ----------------------- | -------------------- | -------------------------- | --------------------- | ------------ | ------ | -------- |
+|    | 03            | master     | 正常读取:单个     | 01 03 00 69 00 01 54 16 | modbus_rtu_read_hold | 01 03 02 00 05 78 47       | modbus_rtu_opt_status | 0            | v      |          |
+|    |               | master     | 正常读取:多个     | 01 03 00 69 00 02 14 17 | modbus_rtu_read_hold | 01 03 04 00 05 00 06 6a 30 | modbus_rtu_opt_status | 0            | v      |          |
+|    |               | master     | 无回复            | 01 03 00 69 00 01 54 16 | modbus_rtu_read_hold | 无                         | modbus_rtu_opt_status | -1           | v      | 超时失败 |
+|    |               | master     | 地址无效/长度过长 | 01 03 00 69 00 0a 15 d1 | modbus_rtu_read_hold | 01 83 02 c0 f1             | modbus_rtu_opt_status | -1           | v      |          |
+|    | 06            | master     | 正常写入          |                         |                      |                            |                       |              |        |          |
+|    |               | master     | 无回复            |                         |                      |                            |                       |              |        |          |

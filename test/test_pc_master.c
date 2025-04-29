@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
     time_t now_ms = tv.tv_sec*1000 + tv.tv_usec/1000;
     time_t last_call_ms = now_ms;
     bool send = false;
-    uint16_t reg_data;
+    uint16_t reg_data[10];
     while(1) {
         modbus_dev_pc_master_run();
         gettimeofday(&tv, NULL);
@@ -25,14 +25,16 @@ int main(int argc, char *argv[]) {
         if(now_ms -last_call_ms > 1000)
         {
             last_call_ms = now_ms;
-            modbus_rtu_read_hold(emModebus_RTU_Bus_PC, 0x01, 0x0069, 1, &reg_data);
+            // modbus_rtu_read_hold(emModebus_RTU_Bus_PC, 0x01, 0x0069, 1, reg_data);
+            // modbus_rtu_read_hold(emModebus_RTU_Bus_PC, 0x01, 0x0069, 2, reg_data);
+            modbus_rtu_read_hold(emModebus_RTU_Bus_PC, 0x01, 0x0069, 10, reg_data);
             send = true;
         }
         if(send){
             int8_t ret = modbus_rtu_opt_status(emModebus_RTU_Bus_PC);
             if(ret == 0)
             {
-                printf("master poll success: %d %d\n", reg_data>>8, (uint8_t)reg_data);
+                printf("master poll success\n");
                 send = false;
             }else if(ret == -1)
             {
