@@ -27,7 +27,9 @@ int main(int argc, char *argv[]) {
         if(now_ms -last_call_ms > 1000)
         {
             last_call_ms = now_ms;
-            modbus_rtu_read_hold(emModebus_RTU_Bus_PC, 0x01, 0x0069, 1, reg_data);
+            modbus_rtu_read_input(emModebus_RTU_Bus_PC, 0x01, 0x0069, 1, reg_data);
+            // modbus_rtu_read_input(emModebus_RTU_Bus_PC, 0x01, 0x0069, 10, reg_data);
+            // modbus_rtu_read_hold(emModebus_RTU_Bus_PC, 0x01, 0x0069, 1, reg_data);
             // modbus_rtu_read_hold(emModebus_RTU_Bus_PC, 0x01, 0x0069, 2, reg_data);
             // modbus_rtu_read_hold(emModebus_RTU_Bus_PC, 0x01, 0x0069, 10, reg_data);
             // modbus_rtu_write_hold(emModebus_RTU_Bus_PC, 0x01, 0x0069, 1, reg_data_write);

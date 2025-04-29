@@ -29,6 +29,7 @@ int8_t modbus_fun_parse_10_master(stModbus_RTU_Handler *handler, uint8_t *buff, 
  */
 int8_t modbus_rtu_read_hold(emModebus_RTU_Bus bus, uint8_t dev_addr, uint16_t reg_addr, uint16_t reg_num, uint16_t *reg_data);
 
+int8_t modbus_rtu_read_input(emModebus_RTU_Bus bus, uint8_t dev_addr, uint16_t reg_addr, uint16_t reg_num, uint16_t *output);
 
 int8_t modbus_rtu_write_hold(emModebus_RTU_Bus bus, uint8_t dev_addr, uint16_t reg_addr, uint16_t reg_num, uint16_t *reg_data);
 

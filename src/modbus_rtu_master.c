@@ -138,6 +138,45 @@ int8_t modbus_rtu_send(stModbus_RTU_Handler *handler, stModbus_RTU_Sender sender
 }
 
 
+int8_t modbus_rtu_read_input(emModebus_RTU_Bus bus, uint8_t dev_addr, uint16_t reg_addr, uint16_t reg_num, uint16_t *output)
+{
+    if(bus == 0)
+    {
+        return -1;
+    }
+    stModbus_RTU_Sender sender;
+    sender.dev_addr = dev_addr;
+    sender.fun_code = 0x04;
+    sender.reg_addr = reg_addr;
+    sender.reg_num = reg_num;
+
+    stModbus_RTU_Handler *handler = NULL;
+    for(int i = 0; i < MODBUS_INTERFACE_BIND_TABLE_ITEMS; i++)
+    {
+        if(stModbus_Interface_Bind_Table[i].bus == bus)
+        {
+            handler = stModbus_Interface_Bind_Table[i].handler;
+            break;
+        }
+    }
+    if(handler->tx_len)
+    {
+        // send busy
+        return -1;
+    }
+
+    int8_t ret = modbus_rtu_send(handler, sender);
+    if(ret == 0)
+    {
+        handler->master_request_rw_len = reg_num;
+        handler->master_parse_addr = output;
+    }
+    return ret;
+    
+}
+
+
+
 int8_t modbus_rtu_read_hold(emModebus_RTU_Bus bus, uint8_t dev_addr, uint16_t reg_addr, uint16_t reg_num, uint16_t *output)
 {
     if(bus == 0)
