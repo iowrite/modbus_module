@@ -16,7 +16,8 @@ int main(int argc, char *argv[]) {
     time_t now_ms = tv.tv_sec*1000 + tv.tv_usec/1000;
     time_t last_call_ms = now_ms;
     bool send = false;
-    uint16_t reg_data[10];
+    uint16_t reg_data[11];
+    uint16_t reg_data_write[11] = {30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40};
     while(1) {
         modbus_dev_pc_master_run();
         gettimeofday(&tv, NULL);
@@ -27,7 +28,8 @@ int main(int argc, char *argv[]) {
             last_call_ms = now_ms;
             // modbus_rtu_read_hold(emModebus_RTU_Bus_PC, 0x01, 0x0069, 1, reg_data);
             // modbus_rtu_read_hold(emModebus_RTU_Bus_PC, 0x01, 0x0069, 2, reg_data);
-            modbus_rtu_read_hold(emModebus_RTU_Bus_PC, 0x01, 0x0069, 10, reg_data);
+            // modbus_rtu_read_hold(emModebus_RTU_Bus_PC, 0x01, 0x0069, 10, reg_data);
+            modbus_rtu_write_hold(emModebus_RTU_Bus_PC, 0x01, 0x0069, 1, reg_data_write);
             send = true;
         }
         if(send){

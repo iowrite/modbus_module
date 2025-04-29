@@ -26,7 +26,7 @@ typedef enum Modebus_RTU_Erno
 }emModebus_RTU_Erno;
 ```
 
-## 2. 测试用例从机
+## 2. 从机模式测试用例
 
 | id | function code | serve mod | case           | input                                                | output                                               | result | note                                           |
 | -- | :------------ | --------- | -------------- | ---------------------------------------------------- | ---------------------------------------------------- | ------ | ---------------------------------------------- |
@@ -42,13 +42,19 @@ typedef enum Modebus_RTU_Erno
 |    |               |           |                |                                                      |                                                      |        |                                                |
 |    |               |           |                |                                                      |                                                      |        |                                                |
 
-## 3. 测试用例主机
+## 3. 主机模式测试用例
 
-| id | function code | serve mode | case              | send                    | call function        | receive                    | status function       | return value | result | note     |
-| -- | ------------- | ---------- | ----------------- | ----------------------- | -------------------- | -------------------------- | --------------------- | ------------ | ------ | -------- |
-|    | 03            | master     | 正常读取:单个     | 01 03 00 69 00 01 54 16 | modbus_rtu_read_hold | 01 03 02 00 05 78 47       | modbus_rtu_opt_status | 0            | v      |          |
-|    |               | master     | 正常读取:多个     | 01 03 00 69 00 02 14 17 | modbus_rtu_read_hold | 01 03 04 00 05 00 06 6a 30 | modbus_rtu_opt_status | 0            | v      |          |
-|    |               | master     | 无回复            | 01 03 00 69 00 01 54 16 | modbus_rtu_read_hold | 无                         | modbus_rtu_opt_status | -1           | v      | 超时失败 |
-|    |               | master     | 地址无效/长度过长 | 01 03 00 69 00 0a 15 d1 | modbus_rtu_read_hold | 01 83 02 c0 f1             | modbus_rtu_opt_status | -1           | v      |          |
-|    | 06            | master     | 正常写入          |                         |                      |                            |                       |              |        |          |
-|    |               | master     | 无回复            |                         |                      |                            |                       |              |        |          |
+| id | function code | serve mode | case              | send                    | call function         | receive                    | status function       | return value | result | note     |
+| -- | ------------- | ---------- | ----------------- | ----------------------- | --------------------- | -------------------------- | --------------------- | ------------ | ------ | -------- |
+|    | 03            | master     | 正常读取:单个     | 01 03 00 69 00 01 54 16 | modbus_rtu_read_hold  | 01 03 02 00 05 78 47       | modbus_rtu_opt_status | 0            | v      |          |
+|    |               | master     | 正常读取:多个     | 01 03 00 69 00 02 14 17 | modbus_rtu_read_hold  | 01 03 04 00 05 00 06 6a 30 | modbus_rtu_opt_status | 0            | v      |          |
+|    |               | master     | 无回复            | 01 03 00 69 00 01 54 16 | modbus_rtu_read_hold  | 无                         | modbus_rtu_opt_status | -1           | v      | 超时失败 |
+|    |               | master     | 地址无效/长度过长 | 01 03 00 69 00 0a 15 d1 | modbus_rtu_read_hold  | 01 83 02 c0 f1             | modbus_rtu_opt_status | -1           | v      |          |
+|    | 06            | master     | 正常写入          | 01 06 00 69 00 1e d9 de | modbus_rtu_write_hold | 01 06 00 69 00 1e d9 de    | modbus_rtu_opt_status | 0            | v      |          |
+|    |               | master     | 无回复            | 01 06 00 69 00 1e d9 de | modbus_rtu_write_hold | 无                         | modbus_rtu_opt_status | -1           | v      | 超时失败 |
+|    | 10            | master     | 正常写入一个      |                         |                       |                            |                       |              |        |          |
+|    |               | master     | 正常写入多个      |                         |                       |                            |                       |              |        |          |
+|    |               | master     | 地址无效/长度过长 |                         |                       |                            |                       |              |        |          |
+|    |               | master     | 写入数据无效      |                         |                       |                            |                       |              |        |          |
+|    |               | master     | 无回复            |                         |                       |                            |                       |              |        |          |
+|    |               |            |                   |                         |                       |                            |                       |              |        |          |

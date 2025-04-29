@@ -285,7 +285,7 @@ int8_t modbus_fun_parse_06_master(stModbus_RTU_Handler *handler, uint8_t *buff, 
     {
         return Modebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH;
     }
-    if(len != 10)
+    if(len != 8)
     {
         return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
