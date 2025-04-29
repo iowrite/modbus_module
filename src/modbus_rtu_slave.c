@@ -87,6 +87,39 @@ int8_t modbus_fun_parse_slave_03(stModbus_RTU_Handler *handler, uint8_t *buff, u
 }
 
 
+int8_t modbus_fun_parse_slave_04(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)
+{
+    int8_t ret = -1;
+    if(len != 8)
+    {
+        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+    }
+    // pdu parse
+    uint16_t reg_addr = buff[2]<<8|buff[3];     // big endian
+    uint16_t read_len = buff[4]<<8|buff[5];     // big endian
+
+    stModbus_RTU_InputReader reader;
+    reader.reg_map_id = handler->reg_map_id;
+    reader.reg_addr = reg_addr;
+    reader.reg_num = read_len;
+
+    ret = handler->read_input(&reader);
+    if(ret == 0)
+    {
+        handler->tx_buff[0] = handler->dev_addr;
+        handler->tx_buff[1] = 0x04;
+        handler->tx_buff[2] = 2*read_len;
+        memcpy(&handler->tx_buff[3], reader.reg_data_byte, 2*read_len);
+        uint16_t crc_cal = modbus_crc_cal(handler->tx_buff, 3+2*read_len);
+        handler->tx_buff[3+2*read_len] = (uint8_t)(crc_cal>>8);
+        handler->tx_buff[3+2*read_len+1] = (uint8_t)crc_cal;
+        handler->tx_len = 3+2*read_len+2;
+    }
+
+    return ret;
+}
+
+
 
 int8_t modbus_fun_parse_slave_06(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)
 {

@@ -47,6 +47,7 @@ int g_fd;
 stModebus_RTU_Fun_Table rtu_fun_table_pc_slave[] =
 {
     {0x03, NULL, modbus_fun_parse_slave_03, NULL},                // std: read hold 
+    {0x04, NULL, modbus_fun_parse_slave_04, NULL},                // std: read input
     {0x06, NULL, modbus_fun_parse_slave_06, NULL},                // std: wirte single hold
     {0x10, NULL, modbus_fun_parse_slave_10, NULL},                // std: wirte multi hold
 
@@ -183,10 +184,7 @@ int8_t uart_pc_recv(uint8_t *buff, uint16_t *len)
 
 
 
-int8_t rtu_pc_read_input(stModbus_RTU_InputReader *reader)
-{
 
-}
 
 uint16_t s_pc_hold_reg[11] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 
@@ -212,6 +210,30 @@ static int8_t rtu_pc_read_hold(stModbus_RTU_HoldReader *reader)
         reader->reg_data_byte[i+1] = (uint8_t)s_pc_hold_reg[reader->reg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN + i/2];
     }
     return Modebus_RTU_Erno_SUCCESS;
+}
+
+
+int8_t rtu_pc_read_input(stModbus_RTU_InputReader *reader)
+{
+
+    if(reader->reg_addr < RTU_PC_MASTER_HOLD_ADDR_MIN || reader->reg_addr > RTU_PC_MASTER_HOLD_ADDR_MAX)
+    {
+        return Modebus_RTU_Erno_REG_ADDR_INVALID;
+    }
+
+    if(reader->reg_addr + reader->reg_num - 1 > RTU_PC_MASTER_HOLD_ADDR_MAX)
+    {
+        return Modebus_RTU_Erno_REG_ADDR_INVALID;
+    }
+
+    // big endian  
+    for(int i = 0; i < 2*reader->reg_num; i+=2)
+    {
+        reader->reg_data_byte[i] = (uint8_t)(s_pc_hold_reg[reader->reg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN + i/2] >> 8);
+        reader->reg_data_byte[i+1] = (uint8_t)s_pc_hold_reg[reader->reg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN + i/2];
+    }
+    return Modebus_RTU_Erno_SUCCESS;
+
 }
 
 int8_t rtu_pc_write_hold(stModbus_RTU_HoldWriter *writer)

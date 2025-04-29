@@ -6,6 +6,7 @@
 
 void modbus_rtu_slave(stModbus_RTU_Handler *handler);
 int8_t modbus_fun_parse_slave_03(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len);
+int8_t modbus_fun_parse_slave_04(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len);
 int8_t modbus_fun_parse_slave_06(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len);
 int8_t modbus_fun_parse_slave_10(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len);
 

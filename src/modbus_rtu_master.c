@@ -28,6 +28,30 @@ int8_t modbus_fun_request_03(stModbus_RTU_Handler *handler, stModbus_RTU_Sender 
     return 0;
 }
 
+int8_t modbus_fun_request_04(stModbus_RTU_Handler *handler, stModbus_RTU_Sender *sender)
+{
+    uint8_t dev_addr = sender->dev_addr;
+    uint8_t fun_code = sender->fun_code;
+    uint16_t reg_addr = sender->reg_addr;
+    uint16_t reg_num = sender->reg_num;
+    uint8_t *buff = handler->tx_buff;
+
+    buff[0] = dev_addr;
+    buff[1] = fun_code;
+    buff[2] = reg_addr>>8;
+    buff[3] = (uint8_t)reg_addr;
+    buff[4] = reg_num>>8;
+    buff[5] = (uint8_t)reg_num;
+    uint16_t crc = modbus_crc_cal(buff, 6);
+
+    buff[6] = crc>>8;
+    buff[7] = (uint8_t)crc;
+
+    handler->tx_len = 8;
+
+    return 0;
+}
+
 int8_t modbus_fun_request_06(stModbus_RTU_Handler *handler, stModbus_RTU_Sender *sender)
 {
     uint8_t dev_addr = sender->dev_addr;
@@ -264,6 +288,46 @@ int8_t modbus_fun_parse_03_master(stModbus_RTU_Handler *handler, uint8_t *buff, 
 
     return ret;
 }
+
+
+
+int8_t modbus_fun_parse_04_master(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)
+{
+    int8_t ret = 0;
+    uint8_t dev_addr = buff[0];
+    uint8_t f_code = buff[1];
+    uint16_t value_len = buff[2];
+
+
+    if(f_code == 0x84)
+    {
+        if(len != 5)
+        {
+            return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+        }else {
+            return buff[2];             // return slave status
+        }
+    }else if(f_code != 0x04)
+    {
+        return Modebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH;
+    }
+    if(len != 5+value_len)
+    {
+        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+    }
+
+    if(value_len != 2*handler->master_request_rw_len)
+    {
+        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+    }
+
+    for(int i = 0; i < len-5; i+=2){
+        handler->master_parse_addr[i/2] = (buff[4+i]<<8) | buff[3+i];       // big endian to uin16_t
+    }
+        
+    return ret;
+}
+
 
 
 int8_t modbus_fun_parse_06_master(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)

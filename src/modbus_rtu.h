@@ -56,7 +56,10 @@ typedef struct Modbus_RTU_InputReader
     uint8_t reg_map_id;
     uint16_t reg_addr;
     uint8_t reg_num;
-    uint8_t reg_data[300];
+    union{
+        uint16_t reg_data[128];
+        uint8_t reg_data_byte[256];
+    };
 }stModbus_RTU_InputReader;
 
 typedef struct Modbus_RTU_HoldReader
