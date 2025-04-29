@@ -134,4 +134,4 @@ uint32_t modbus_port_get_time_ms();
 
 [自测文档](./doc/selftest.md)
 
-[测试](./test/readme.md)手册
+[测试环境](./test/readme.md)
