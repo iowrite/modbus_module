@@ -98,8 +98,8 @@ typedef struct Modebus_RTU_Fun_Table
 {
     uint8_t ucFcode;
     int8_t (*pRequest_f)(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sender_def *sender);
-    int8_t (*slave_parse)(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len);
-    int8_t (*master_parse)(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len);
+    int8_t (*pSlave_parse_f)(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len);
+    int8_t (*pMaster_parse_f)(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len);
 
 }stModebus_RTU_Fun_Table_def;
 

@@ -23,7 +23,7 @@ int8_t modbus_fun_parse_slave(stModbus_RTU_Handler_def *handler, uint8_t *buff, 
                 if(f_code == handler->fun_table[i].ucFcode)
                 {
                     match =true;
-                    parse = handler->fun_table[i].slave_parse;
+                    parse = handler->fun_table[i].pSlave_parse_f;
                     break;
                 }
             }

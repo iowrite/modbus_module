@@ -451,7 +451,7 @@ int8_t modbus_fun_parse_master(stModbus_RTU_Handler_def *pstHandler, uint8_t *bu
             {
                 if(pstHandler->master_request_code == pstHandler->fun_table[i].ucFcode)
                 {
-                    parse = pstHandler->fun_table[i].master_parse;
+                    parse = pstHandler->fun_table[i].pMaster_parse_f;
                     break;
                 }
             }
