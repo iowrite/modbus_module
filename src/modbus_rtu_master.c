@@ -6,13 +6,13 @@
 
 int8_t modbus_fun_request_03(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender_def *sender)
 {
-    uint8_t dev_addr = sender->dev_addr;
+    uint8_t ucDev_addr = sender->ucDev_addr;
     uint8_t fun_code = sender->fun_code;
     uint16_t usReg_addr = sender->usReg_addr;
     uint16_t ucReg_num = sender->ucReg_num;
     uint8_t *buff = pstHandler->tx_buff;
 
-    buff[0] = dev_addr;
+    buff[0] = ucDev_addr;
     buff[1] = fun_code;
     buff[2] = usReg_addr>>8;
     buff[3] = (uint8_t)usReg_addr;
@@ -30,13 +30,13 @@ int8_t modbus_fun_request_03(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
 
 int8_t modbus_fun_request_04(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender_def *sender)
 {
-    uint8_t dev_addr = sender->dev_addr;
+    uint8_t ucDev_addr = sender->ucDev_addr;
     uint8_t fun_code = sender->fun_code;
     uint16_t usReg_addr = sender->usReg_addr;
     uint16_t ucReg_num = sender->ucReg_num;
     uint8_t *buff = pstHandler->tx_buff;
 
-    buff[0] = dev_addr;
+    buff[0] = ucDev_addr;
     buff[1] = fun_code;
     buff[2] = usReg_addr>>8;
     buff[3] = (uint8_t)usReg_addr;
@@ -54,14 +54,14 @@ int8_t modbus_fun_request_04(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
 
 int8_t modbus_fun_request_06(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender_def *sender)
 {
-    uint8_t dev_addr = sender->dev_addr;
+    uint8_t ucDev_addr = sender->ucDev_addr;
     uint8_t fun_code = sender->fun_code;
     uint16_t usReg_addr = sender->usReg_addr;
     uint16_t ucReg_num = sender->ucReg_num;
     uint16_t *usReg_data = sender->usReg_data;
     uint8_t *buff = pstHandler->tx_buff;
 
-    buff[0] = dev_addr;
+    buff[0] = ucDev_addr;
     buff[1] = fun_code;
     buff[2] = usReg_addr>>8;
     buff[3] = (uint8_t)usReg_addr;
@@ -79,14 +79,14 @@ int8_t modbus_fun_request_06(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
 
 int8_t modbus_fun_request_10(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender_def *sender)
 {
-    uint8_t dev_addr = sender->dev_addr;
+    uint8_t ucDev_addr = sender->ucDev_addr;
     uint8_t fun_code = sender->fun_code;
     uint16_t usReg_addr = sender->usReg_addr;
     uint16_t ucReg_num = sender->ucReg_num;
     uint16_t *usReg_data = sender->usReg_data;
     uint8_t *buff = pstHandler->tx_buff;
 
-    buff[0] = dev_addr;
+    buff[0] = ucDev_addr;
     buff[1] = fun_code;
     buff[2] = usReg_addr>>8;
     buff[3] = (uint8_t)usReg_addr;
@@ -131,21 +131,21 @@ int8_t modbus_rtu_send(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender
     int8_t ret = match_item.request(pstHandler, &sender);
     if(ret == 0)                                                        /// XXX 考虑广播与扩展功能码的情况,可能不需要这么做
     {
-        pstHandler->master_request_addr = sender.dev_addr;
+        pstHandler->master_request_addr = sender.ucDev_addr;
         pstHandler->master_request_code = sender.fun_code;
     }
     return ret;
 }
 
 
-int8_t modbus_rtu_read_input(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t usReg_addr, uint16_t ucReg_num, uint16_t *output)
+int8_t modbus_rtu_read_input(eModebus_RTU_Bus_def bus, uint8_t ucDev_addr, uint16_t usReg_addr, uint16_t ucReg_num, uint16_t *output)
 {
     if(bus == 0)
     {
         return -1;
     }
     stModbus_RTU_Sender_def sender;
-    sender.dev_addr = dev_addr;
+    sender.ucDev_addr = ucDev_addr;
     sender.fun_code = 0x04;
     sender.usReg_addr = usReg_addr;
     sender.ucReg_num = ucReg_num;
@@ -177,14 +177,14 @@ int8_t modbus_rtu_read_input(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_
 
 
 
-int8_t modbus_rtu_read_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t usReg_addr, uint16_t ucReg_num, uint16_t *output)
+int8_t modbus_rtu_read_hold(eModebus_RTU_Bus_def bus, uint8_t ucDev_addr, uint16_t usReg_addr, uint16_t ucReg_num, uint16_t *output)
 {
     if(bus == 0)
     {
         return -1;
     }
     stModbus_RTU_Sender_def sender;
-    sender.dev_addr = dev_addr;
+    sender.ucDev_addr = ucDev_addr;
     sender.fun_code = 0x03;
     sender.usReg_addr = usReg_addr;
     sender.ucReg_num = ucReg_num;
@@ -215,14 +215,14 @@ int8_t modbus_rtu_read_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t
 }
 
 
-int8_t modbus_rtu_write_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t usReg_addr, uint16_t ucReg_num, uint16_t *input)
+int8_t modbus_rtu_write_hold(eModebus_RTU_Bus_def bus, uint8_t ucDev_addr, uint16_t usReg_addr, uint16_t ucReg_num, uint16_t *input)
 {
     if(bus == 0)
     {
         return -1;
     }
     stModbus_RTU_Sender_def sender;
-    sender.dev_addr = dev_addr;
+    sender.ucDev_addr = ucDev_addr;
     sender.usReg_addr = usReg_addr;
     sender.ucReg_num = ucReg_num;
     if(ucReg_num == 1)
@@ -292,7 +292,7 @@ int8_t modbus_rtu_opt_status(eModebus_RTU_Bus_def bus)
 int8_t modbus_fun_parse_03_master(stModbus_RTU_Handler_def *pstHandler, uint8_t *buff, uint16_t len)
 {
     int8_t ret = 0;
-    uint8_t dev_addr = buff[0];
+    uint8_t ucDev_addr = buff[0];
     uint8_t f_code = buff[1];
     uint16_t value_len = buff[2];
 
@@ -333,7 +333,7 @@ int8_t modbus_fun_parse_03_master(stModbus_RTU_Handler_def *pstHandler, uint8_t 
 int8_t modbus_fun_parse_04_master(stModbus_RTU_Handler_def *pstHandler, uint8_t *buff, uint16_t len)
 {
     int8_t ret = 0;
-    uint8_t dev_addr = buff[0];
+    uint8_t ucDev_addr = buff[0];
     uint8_t f_code = buff[1];
     uint16_t value_len = buff[2];
 
@@ -372,7 +372,7 @@ int8_t modbus_fun_parse_04_master(stModbus_RTU_Handler_def *pstHandler, uint8_t 
 int8_t modbus_fun_parse_06_master(stModbus_RTU_Handler_def *pstHandler, uint8_t *buff, uint16_t len)
 {
     int8_t ret = 0;
-    uint8_t dev_addr = buff[0];
+    uint8_t ucDev_addr = buff[0];
     uint8_t f_code = buff[1];
 
 
@@ -404,7 +404,7 @@ int8_t modbus_fun_parse_06_master(stModbus_RTU_Handler_def *pstHandler, uint8_t 
 int8_t modbus_fun_parse_10_master(stModbus_RTU_Handler_def *pstHandler, uint8_t *buff, uint16_t len)
 {
     int8_t ret = 0;
-    uint8_t dev_addr = buff[0];
+    uint8_t ucDev_addr = buff[0];
     uint8_t f_code = buff[1];
     uint16_t value_len = buff[6];
 
@@ -443,8 +443,8 @@ int8_t modbus_fun_parse_master(stModbus_RTU_Handler_def *pstHandler, uint8_t *bu
     if(crc_local == crc_remote)
     {
         // adu and addr parse
-        uint8_t dev_addr = buff[0];
-        if(dev_addr == pstHandler->master_request_addr){                                               /// XXX 考虑广播的情况       
+        uint8_t ucDev_addr = buff[0];
+        if(ucDev_addr == pstHandler->master_request_addr){                                               /// XXX 考虑广播的情况       
             uint8_t f_code = buff[1];
             int8_t (*parse)(stModbus_RTU_Handler_def *pstHandler, uint8_t *buff, uint16_t len) = NULL;
             for(int i = 0; i < pstHandler->fun_table_items; i++)

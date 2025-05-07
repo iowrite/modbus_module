@@ -85,7 +85,7 @@ typedef struct Modbus_RTU_HoldWriter
 
 typedef struct Modbus_RTU_Sender
 {
-    uint8_t dev_addr;
+    uint8_t ucDev_addr;
     uint8_t fun_code;
     uint16_t usReg_addr;
     uint8_t ucReg_num;
@@ -120,7 +120,7 @@ typedef struct Modbus_RTU_Handler
     {
         struct                                          // slave mode use only
         {
-            uint8_t dev_addr;
+            uint8_t ucDev_addr;
             int8_t ucReg_map_id;                                          // reserve for select register map table
             int8_t (*read_input)(stModbus_RTU_InputReader_def *reader);         //　应用层读输入寄存器回调
             int8_t (*read_hold)(stModbus_RTU_HoldReader_def *reader);           //　应用层读保持寄存器回调
@@ -140,7 +140,7 @@ typedef struct Modbus_RTU_Handler
  
 typedef struct Modbus_RTU_Handler_Attribute
 {
-    uint8_t dev_addr;
+    uint8_t ucDev_addr;
     eModebus_RTU_Mode_def mode;
     int8_t (*send)(uint8_t *buff, uint16_t len);                    
     int8_t (*recv)(uint8_t *buff, uint16_t *len);

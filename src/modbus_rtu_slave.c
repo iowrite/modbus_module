@@ -12,8 +12,8 @@ int8_t modbus_fun_parse_slave(stModbus_RTU_Handler_def *handler, uint8_t *buff, 
     if(crc_local == crc_remote)
     {
         // adu and addr parse
-        uint8_t dev_addr = buff[0];
-        if(dev_addr == 0 || dev_addr == handler->dev_addr)
+        uint8_t ucDev_addr = buff[0];
+        if(ucDev_addr == 0 || ucDev_addr == handler->ucDev_addr)
         {
             uint8_t f_code = buff[1];
             bool match = false;
@@ -35,7 +35,7 @@ int8_t modbus_fun_parse_slave(stModbus_RTU_Handler_def *handler, uint8_t *buff, 
             }
             if(ret)
             {
-                handler->tx_buff[0] = handler->dev_addr;
+                handler->tx_buff[0] = handler->ucDev_addr;
                 handler->tx_buff[1] = 0x80 | f_code;
                 handler->tx_buff[2] = ret;
                 uint16_t crc_cal = modbus_crc_cal(handler->tx_buff, 3);
@@ -73,7 +73,7 @@ int8_t modbus_fun_parse_slave_03(stModbus_RTU_Handler_def *handler, uint8_t *buf
     ret = handler->read_hold(&reader);
     if(ret == 0)
     {
-        handler->tx_buff[0] = handler->dev_addr;
+        handler->tx_buff[0] = handler->ucDev_addr;
         handler->tx_buff[1] = 0x03;
         handler->tx_buff[2] = 2*read_len;
         memcpy(&handler->tx_buff[3], reader.ucReg_data_byte, 2*read_len);
@@ -106,7 +106,7 @@ int8_t modbus_fun_parse_slave_04(stModbus_RTU_Handler_def *handler, uint8_t *buf
     ret = handler->read_input(&reader);
     if(ret == 0)
     {
-        handler->tx_buff[0] = handler->dev_addr;
+        handler->tx_buff[0] = handler->ucDev_addr;
         handler->tx_buff[1] = 0x04;
         handler->tx_buff[2] = 2*read_len;
         memcpy(&handler->tx_buff[3], reader.ucReg_data_byte, 2*read_len);

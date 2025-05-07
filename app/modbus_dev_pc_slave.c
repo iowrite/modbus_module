@@ -56,7 +56,7 @@ stModebus_RTU_Fun_Table_def stRTU_fun_table_pc_slave[] =
 
 stModbus_RTU_Handler_def stModbus_RTU_Handler_PC_slave ;
 stModbus_RTU_Handler_Attr rtu_pc_attr_slave = {
-    .dev_addr = 1,
+    .ucDev_addr = 1,
     .mode = eModebus_RTU_Mode_Slave,
     .ucReg_map_id = 0,
     .send = uart_pc_send,

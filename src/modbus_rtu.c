@@ -224,7 +224,7 @@ int8_t modbus_rtu_init(stModbus_RTU_Handler_def *pstHandler, eModebus_RTU_Bus_de
             pstHandler->Master_Wait_Recv_Limt = attr->master_recv_wait_limt;
         }
     }else if(pstHandler->mode == eModebus_RTU_Mode_Slave){
-        pstHandler->dev_addr = attr->dev_addr;
+        pstHandler->ucDev_addr = attr->ucDev_addr;
         pstHandler->ucReg_map_id = attr->ucReg_map_id;
         pstHandler->read_input = attr->read_input;
         pstHandler->read_hold = attr->read_hold;
@@ -274,7 +274,7 @@ int8_t modbus_rtu_set_recv(eModebus_RTU_Bus_def bus, int8_t (*recv)(uint8_t *, u
     pstHandler->recv = recv;
 }
 
-int8_t modbus_rtu_set_dev_addr(eModebus_RTU_Bus_def bus, int8_t dev_addr)
+int8_t modbus_rtu_set_dev_addr(eModebus_RTU_Bus_def bus, int8_t ucDev_addr)
 {
     if(bus == 0)
     {
@@ -289,7 +289,7 @@ int8_t modbus_rtu_set_dev_addr(eModebus_RTU_Bus_def bus, int8_t dev_addr)
             break;
         }
     }
-    pstHandler->dev_addr = dev_addr;
+    pstHandler->ucDev_addr = ucDev_addr;
 }
 
 
