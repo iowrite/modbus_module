@@ -75,7 +75,7 @@ stModbus_Interface_Bind stModbus_Interface_Bind_Table[10];
 
 void modbus_rtu_run(stModbus_RTU_Handler_def *pstHandler)
 {
-    pstHandler->last_call_tick = modbus_port_get_time_ms();
+    pstHandler->uiLast_call_tick = modbus_port_get_time_ms();
 
     if(pstHandler->eMode == eModebus_RTU_Mode_Master)
     {

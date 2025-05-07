@@ -111,7 +111,7 @@ typedef struct Modbus_RTU_Handler
     uint16_t usTx_len;
     uint8_t ucRx_buff[300];
     uint16_t ucRx_len;
-    uint32_t last_call_tick;
+    uint32_t uiLast_call_tick;
     stModebus_RTU_Fun_Table_def *fun_table;                    // callback function table
     uint8_t fun_table_items;
     int8_t (*send)(uint8_t *buff, uint16_t len);                   // 驱动层读接口 
