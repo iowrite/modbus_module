@@ -120,15 +120,15 @@ int8_t modbus_rtu_send(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender
         {
             match = true;
             match_item.ucFcode = pstHandler->fun_table[i].ucFcode;
-            match_item.request = pstHandler->fun_table[i].request;
+            match_item.pRequest_f = pstHandler->fun_table[i].pRequest_f;
             break;
         }
     }
-    if(!match || match_item.request == NULL)
+    if(!match || match_item.pRequest_f == NULL)
     {
         return -1;
     }
-    int8_t ret = match_item.request(pstHandler, &sender);
+    int8_t ret = match_item.pRequest_f(pstHandler, &sender);
     if(ret == 0)                                                        /// XXX 考虑广播与扩展功能码的情况,可能不需要这么做
     {
         pstHandler->master_request_addr = sender.ucDev_addr;

@@ -97,7 +97,7 @@ typedef struct Modbus_RTU_Handler stModbus_RTU_Handler_def;                     
 typedef struct Modebus_RTU_Fun_Table
 {
     uint8_t ucFcode;
-    int8_t (*request)(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sender_def *sender);
+    int8_t (*pRequest_f)(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sender_def *sender);
     int8_t (*slave_parse)(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len);
     int8_t (*master_parse)(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len);
 
@@ -130,9 +130,9 @@ typedef struct Modbus_RTU_Handler
             uint16_t *master_parse_addr;                             // master parse address(master mode use only)
             uint32_t Master_Wait_Count;                              // master wait recv time count(master mode use only)
             uint32_t Master_Wait_Recv_Limt;                         // master wait recv limit(master mode use only)
-            uint8_t master_request_addr;                               // master request code(master mode use only)
-            uint8_t master_request_code;                               // master request code(master mode use only)
-            uint8_t master_request_rw_len;                             // master request read/write len(master mode use only)
+            uint8_t master_request_addr;                               // master pRequest_f code(master mode use only)
+            uint8_t master_request_code;                               // master pRequest_f code(master mode use only)
+            uint8_t master_request_rw_len;                             // master pRequest_f read/write len(master mode use only)
         };
     };
 }stModbus_RTU_Handler_def;
