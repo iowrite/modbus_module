@@ -113,7 +113,7 @@ typedef struct Modbus_RTU_Handler
     uint16_t ucRx_len;
     uint32_t uiLast_call_tick;
     stModebus_RTU_Fun_Table_def *pstFun_table;                    // callback function table
-    uint8_t fun_table_items;
+    uint8_t ucFun_table_items;
     int8_t (*send)(uint8_t *buff, uint16_t len);                   // 驱动层读接口 
     int8_t (*recv)(uint8_t *buff, uint16_t *len);                   //　驱动层写接口
     union 
@@ -149,7 +149,7 @@ typedef struct Modbus_RTU_Handler_Attribute
     int8_t (*read_hold)(stModbus_RTU_HoldReader_def *reader);
     int8_t (*write_hold)(stModbus_RTU_HoldWriter_def *writer);
     stModebus_RTU_Fun_Table_def *pstFun_table;                    // callback function table
-    uint8_t fun_table_items;
+    uint8_t ucFun_table_items;
     uint16_t master_recv_wait_limt;
 }stModbus_RTU_Handler_Attr;
 

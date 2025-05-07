@@ -211,7 +211,7 @@ int8_t modbus_rtu_init(stModbus_RTU_Handler_def *pstHandler, eModebus_RTU_Bus_de
     pstHandler->eState = eModbus_RTU_State_Init;
     pstHandler->eLast_state = pstHandler->eState;
     pstHandler->pstFun_table = attr->pstFun_table;
-    pstHandler->fun_table_items = attr->fun_table_items;
+    pstHandler->ucFun_table_items = attr->ucFun_table_items;
     pstHandler->send = attr->send;
     pstHandler->recv = attr->recv;
 

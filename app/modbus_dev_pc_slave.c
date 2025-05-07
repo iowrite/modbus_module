@@ -65,7 +65,7 @@ stModbus_RTU_Handler_Attr rtu_pc_attr_slave = {
     .read_hold = rtu_pc_read_hold,
     .write_hold = rtu_pc_write_hold,
     .pstFun_table = stRTU_fun_table_pc_slave,
-    .fun_table_items = RTU_FUN_TABLE_ITEMS,
+    .ucFun_table_items = RTU_FUN_TABLE_ITEMS,
 };
 
 

@@ -114,7 +114,7 @@ int8_t modbus_rtu_send(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender
 {
     stModebus_RTU_Fun_Table_def match_item = {0};
     bool match = false;
-    for(int i = 0; i < pstHandler->fun_table_items; i++)
+    for(int i = 0; i < pstHandler->ucFun_table_items; i++)
     {
         if(pstHandler->pstFun_table[i].ucFcode == sender.ucFun_code)
         {
@@ -447,7 +447,7 @@ int8_t modbus_fun_parse_master(stModbus_RTU_Handler_def *pstHandler, uint8_t *bu
         if(ucDev_addr == pstHandler->master_request_addr){                                               /// XXX 考虑广播的情况       
             uint8_t f_code = buff[1];
             int8_t (*parse)(stModbus_RTU_Handler_def *pstHandler, uint8_t *buff, uint16_t len) = NULL;
-            for(int i = 0; i < pstHandler->fun_table_items; i++)
+            for(int i = 0; i < pstHandler->ucFun_table_items; i++)
             {
                 if(pstHandler->master_request_code == pstHandler->pstFun_table[i].ucFcode)
                 {

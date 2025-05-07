@@ -18,7 +18,7 @@ int8_t modbus_fun_parse_slave(stModbus_RTU_Handler_def *handler, uint8_t *buff, 
             uint8_t f_code = buff[1];
             bool match = false;
             int8_t (*parse)(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len) = NULL;
-            for(int i = 0; i < handler->fun_table_items; i++)
+            for(int i = 0; i < handler->ucFun_table_items; i++)
             {
                 if(f_code == handler->pstFun_table[i].ucFcode)
                 {
