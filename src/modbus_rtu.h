@@ -83,7 +83,7 @@ typedef struct Modbus_RTU_HoldWriter
         uint8_t reg_data_byte[256];
     };
 
-}stModbus_RTU_HoldWriter;
+}stModbus_RTU_HoldWriter_def;
 
 typedef struct Modbus_RTU_Sender
 {
@@ -126,7 +126,7 @@ typedef struct Modbus_RTU_Handler
             int8_t reg_map_id;                                          // reserve for select register map table
             int8_t (*read_input)(stModbus_RTU_InputReader *reader);         //　应用层读输入寄存器回调
             int8_t (*read_hold)(stModbus_RTU_HoldReader *reader);           //　应用层读保持寄存器回调
-            int8_t (*write_hold)(stModbus_RTU_HoldWriter *writer);          //　应用层写保持寄存器回调
+            int8_t (*write_hold)(stModbus_RTU_HoldWriter_def *writer);          //　应用层写保持寄存器回调
         };
         struct{                                                // master mode use only
             uint16_t *master_parse_addr;                             // master parse address(master mode use only)
@@ -149,7 +149,7 @@ typedef struct Modbus_RTU_Handler_Attribute
     int8_t reg_map_id;                                          // reserve for select register map table
     int8_t (*read_input)(stModbus_RTU_InputReader *reader);
     int8_t (*read_hold)(stModbus_RTU_HoldReader *reader);
-    int8_t (*write_hold)(stModbus_RTU_HoldWriter *writer);
+    int8_t (*write_hold)(stModbus_RTU_HoldWriter_def *writer);
     stModebus_RTU_Fun_Table_def *fun_table;                    // callback function table
     uint8_t fun_table_items;
     uint16_t master_recv_wait_limt;

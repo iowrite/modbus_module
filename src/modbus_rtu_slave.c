@@ -132,7 +132,7 @@ int8_t modbus_fun_parse_slave_06(stModbus_RTU_Handler_def *handler, uint8_t *buf
     uint16_t reg_addr = buff[2]<<8|buff[3];         // big endian
     uint16_t write_value = buff[4]<<8|buff[5];       // big endian
 
-    stModbus_RTU_HoldWriter writer;
+    stModbus_RTU_HoldWriter_def writer;
     writer.reg_map_id = handler->reg_map_id;
     writer.reg_addr = reg_addr;
     writer.reg_num = 1;
@@ -165,7 +165,7 @@ int8_t modbus_fun_parse_slave_10(stModbus_RTU_Handler_def *handler, uint8_t *buf
     {
         return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
-    stModbus_RTU_HoldWriter writer;
+    stModbus_RTU_HoldWriter_def writer;
     writer.reg_map_id = handler->reg_map_id;
     writer.reg_addr = reg_addr;
     writer.reg_num = write_num;
