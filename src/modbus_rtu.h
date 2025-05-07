@@ -50,7 +50,7 @@ typedef enum Modebus_RTU_Mode
     emModebus_RTU_Mode_Slave,
     emModebus_RTU_Mode_Master,
     emModebus_RTU_Mode_NUM
-}emModebus_RTU_Mode;
+}eModebus_RTU_Mode_def;
 typedef struct Modbus_RTU_InputReader
 {
     uint8_t reg_map_id;
@@ -108,7 +108,7 @@ typedef struct Modebus_RTU_Fun_Table
 typedef struct Modbus_RTU_Handler
 {
     stModbus_RTU_State state, last_state;               // send/receive switch judge
-    emModebus_RTU_Mode mode, last_mode;                 // slave/master switch judge
+    eModebus_RTU_Mode_def mode, last_mode;                 // slave/master switch judge
     uint8_t tx_buff[300];
     uint16_t tx_len;
     uint8_t rx_buff[300];
@@ -143,7 +143,7 @@ typedef struct Modbus_RTU_Handler
 typedef struct Modbus_RTU_Handler_Attribute
 {
     uint8_t dev_addr;
-    emModebus_RTU_Mode mode;
+    eModebus_RTU_Mode_def mode;
     int8_t (*send)(uint8_t *buff, uint16_t len);                    
     int8_t (*recv)(uint8_t *buff, uint16_t *len);
     int8_t reg_map_id;                                          // reserve for select register map table

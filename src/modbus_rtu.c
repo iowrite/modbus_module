@@ -89,7 +89,7 @@ void modbus_rtu_run(stModbus_RTU_Handler_def *pstHandler)
 
 
 
-int8_t modbus_rtu_set_mode(stModbus_RTU_Handler_def *pstHandler, emModebus_RTU_Mode mode)
+int8_t modbus_rtu_set_mode(stModbus_RTU_Handler_def *pstHandler, eModebus_RTU_Mode_def mode)
 {
     pstHandler->mode = mode;
 }
