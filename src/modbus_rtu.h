@@ -55,7 +55,7 @@ typedef struct Modbus_RTU_InputReader
     uint8_t ucReg_num;
     uint16_t usReg_addr;
     union{
-        uint16_t reg_data[128];
+        uint16_t usReg_data[128];
         uint8_t reg_data_byte[256];
     };
 }stModbus_RTU_InputReader_def;
@@ -66,7 +66,7 @@ typedef struct Modbus_RTU_HoldReader
     uint16_t usReg_addr;
     uint8_t ucReg_num;
     union{
-        uint16_t reg_data[128];
+        uint16_t usReg_data[128];
         uint8_t reg_data_byte[256];
     };
 }stModbus_RTU_HoldReader_def;
@@ -77,7 +77,7 @@ typedef struct Modbus_RTU_HoldWriter
     uint16_t usReg_addr;
     uint8_t ucReg_num;
     union{
-        uint16_t reg_data[128];
+        uint16_t usReg_data[128];
         uint8_t reg_data_byte[256];
     };
 
@@ -89,7 +89,7 @@ typedef struct Modbus_RTU_Sender
     uint8_t fun_code;
     uint16_t usReg_addr;
     uint8_t ucReg_num;
-    uint16_t reg_data[128];
+    uint16_t usReg_data[128];
 }stModbus_RTU_Sender_def;
 
 

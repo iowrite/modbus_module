@@ -16,7 +16,7 @@ int main(int argc, char *argv[]) {
     time_t now_ms = tv.tv_sec*1000 + tv.tv_usec/1000;
     time_t last_call_ms = now_ms;
     bool send = false;
-    uint16_t reg_data[11];
+    uint16_t usReg_data[11];
     uint16_t reg_data_write[11] = {30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 40};
     uint16_t reg_data_write_invalid[11] = {1130, 1131, 1132, 1133, 1134, 1135, 1136, 1137, 1138, 1139, 1140};
     while(1) {
@@ -27,11 +27,11 @@ int main(int argc, char *argv[]) {
         if(now_ms -last_call_ms > 1000)
         {
             last_call_ms = now_ms;
-            modbus_rtu_read_input(eModebus_RTU_Bus_PC, 0x01, 0x0069, 1, reg_data);
-            // modbus_rtu_read_input(eModebus_RTU_Bus_PC, 0x01, 0x0069, 10, reg_data);
-            // modbus_rtu_read_hold(eModebus_RTU_Bus_PC, 0x01, 0x0069, 1, reg_data);
-            // modbus_rtu_read_hold(eModebus_RTU_Bus_PC, 0x01, 0x0069, 2, reg_data);
-            // modbus_rtu_read_hold(eModebus_RTU_Bus_PC, 0x01, 0x0069, 10, reg_data);
+            modbus_rtu_read_input(eModebus_RTU_Bus_PC, 0x01, 0x0069, 1, usReg_data);
+            // modbus_rtu_read_input(eModebus_RTU_Bus_PC, 0x01, 0x0069, 10, usReg_data);
+            // modbus_rtu_read_hold(eModebus_RTU_Bus_PC, 0x01, 0x0069, 1, usReg_data);
+            // modbus_rtu_read_hold(eModebus_RTU_Bus_PC, 0x01, 0x0069, 2, usReg_data);
+            // modbus_rtu_read_hold(eModebus_RTU_Bus_PC, 0x01, 0x0069, 10, usReg_data);
             // modbus_rtu_write_hold(eModebus_RTU_Bus_PC, 0x01, 0x0069, 1, reg_data_write);
             // modbus_rtu_write_hold(eModebus_RTU_Bus_PC, 0x01, 0x0069, 2, reg_data_write);
             // modbus_rtu_write_hold(eModebus_RTU_Bus_PC, 0x01, 0x0069, 10, reg_data_write);

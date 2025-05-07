@@ -252,11 +252,11 @@ int8_t rtu_pc_write_hold(stModbus_RTU_HoldWriter_def *writer)
     
     for(int i = 0; i < writer->ucReg_num; i++)
     {
-        if(writer->reg_data[i] > 1000)                                                              // 模拟写入数据检查
+        if(writer->usReg_data[i] > 1000)                                                              // 模拟写入数据检查
         {
             return eModebus_RTU_Erno_REG_VALUE_INVALID;
         }
-        s_pc_hold_reg[writer->usReg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN + i] = writer->reg_data[i];          // 字节序转换在上层完成,这里直接使用
+        s_pc_hold_reg[writer->usReg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN + i] = writer->usReg_data[i];          // 字节序转换在上层完成,这里直接使用
     }
     return eModebus_RTU_Erno_SUCCESS;
 

@@ -58,15 +58,15 @@ int8_t modbus_fun_request_06(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
     uint8_t fun_code = sender->fun_code;
     uint16_t usReg_addr = sender->usReg_addr;
     uint16_t ucReg_num = sender->ucReg_num;
-    uint16_t *reg_data = sender->reg_data;
+    uint16_t *usReg_data = sender->usReg_data;
     uint8_t *buff = pstHandler->tx_buff;
 
     buff[0] = dev_addr;
     buff[1] = fun_code;
     buff[2] = usReg_addr>>8;
     buff[3] = (uint8_t)usReg_addr;
-    buff[4] = reg_data[0]>>8;
-    buff[5] = (uint8_t)reg_data[0];
+    buff[4] = usReg_data[0]>>8;
+    buff[5] = (uint8_t)usReg_data[0];
     uint16_t crc = modbus_crc_cal(buff, 6);
 
     buff[6] = crc>>8;
@@ -83,7 +83,7 @@ int8_t modbus_fun_request_10(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
     uint8_t fun_code = sender->fun_code;
     uint16_t usReg_addr = sender->usReg_addr;
     uint16_t ucReg_num = sender->ucReg_num;
-    uint16_t *reg_data = sender->reg_data;
+    uint16_t *usReg_data = sender->usReg_data;
     uint8_t *buff = pstHandler->tx_buff;
 
     buff[0] = dev_addr;
@@ -95,8 +95,8 @@ int8_t modbus_fun_request_10(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
     buff[6] = ucReg_num*2;
     for(int i = 0; i < ucReg_num; i++)        // big endian
     {
-        buff[i*2+7] = reg_data[i]>>8;
-        buff[i*2+8] = (uint8_t)reg_data[i];
+        buff[i*2+7] = usReg_data[i]>>8;
+        buff[i*2+8] = (uint8_t)usReg_data[i];
     }
     uint16_t crc = modbus_crc_cal(buff, 7+2*ucReg_num);
 
@@ -228,10 +228,10 @@ int8_t modbus_rtu_write_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_
     if(ucReg_num == 1)
     {
         sender.fun_code = 0x06;
-        memcpy(sender.reg_data, input, 2);
+        memcpy(sender.usReg_data, input, 2);
     }else{
         sender.fun_code = 0x10;
-        memcpy(sender.reg_data, input, ucReg_num*2);
+        memcpy(sender.usReg_data, input, ucReg_num*2);
     }
     
 
