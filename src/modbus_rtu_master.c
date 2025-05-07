@@ -112,7 +112,7 @@ int8_t modbus_fun_request_10(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sen
 
 int8_t modbus_rtu_send(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sender sender)
 {
-    stModebus_RTU_Fun_Table match_item = {0};
+    stModebus_RTU_Fun_Table_def match_item = {0};
     bool match = false;
     for(int i = 0; i < handler->fun_table_items; i++)
     {
