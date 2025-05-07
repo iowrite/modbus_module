@@ -116,10 +116,10 @@ int8_t modbus_rtu_send(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender
     bool match = false;
     for(int i = 0; i < pstHandler->fun_table_items; i++)
     {
-        if(pstHandler->fun_table[i].fcode == sender.ucFun_code)
+        if(pstHandler->fun_table[i].ucFcode == sender.ucFun_code)
         {
             match = true;
-            match_item.fcode = pstHandler->fun_table[i].fcode;
+            match_item.ucFcode = pstHandler->fun_table[i].ucFcode;
             match_item.request = pstHandler->fun_table[i].request;
             break;
         }
@@ -449,7 +449,7 @@ int8_t modbus_fun_parse_master(stModbus_RTU_Handler_def *pstHandler, uint8_t *bu
             int8_t (*parse)(stModbus_RTU_Handler_def *pstHandler, uint8_t *buff, uint16_t len) = NULL;
             for(int i = 0; i < pstHandler->fun_table_items; i++)
             {
-                if(pstHandler->master_request_code == pstHandler->fun_table[i].fcode)
+                if(pstHandler->master_request_code == pstHandler->fun_table[i].ucFcode)
                 {
                     parse = pstHandler->fun_table[i].master_parse;
                     break;
