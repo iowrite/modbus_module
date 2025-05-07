@@ -8,14 +8,14 @@ int8_t modbus_fun_request_03(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
 {
     uint8_t dev_addr = sender->dev_addr;
     uint8_t fun_code = sender->fun_code;
-    uint16_t reg_addr = sender->reg_addr;
+    uint16_t usReg_addr = sender->usReg_addr;
     uint16_t reg_num = sender->reg_num;
     uint8_t *buff = pstHandler->tx_buff;
 
     buff[0] = dev_addr;
     buff[1] = fun_code;
-    buff[2] = reg_addr>>8;
-    buff[3] = (uint8_t)reg_addr;
+    buff[2] = usReg_addr>>8;
+    buff[3] = (uint8_t)usReg_addr;
     buff[4] = reg_num>>8;
     buff[5] = (uint8_t)reg_num;
     uint16_t crc = modbus_crc_cal(buff, 6);
@@ -32,14 +32,14 @@ int8_t modbus_fun_request_04(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
 {
     uint8_t dev_addr = sender->dev_addr;
     uint8_t fun_code = sender->fun_code;
-    uint16_t reg_addr = sender->reg_addr;
+    uint16_t usReg_addr = sender->usReg_addr;
     uint16_t reg_num = sender->reg_num;
     uint8_t *buff = pstHandler->tx_buff;
 
     buff[0] = dev_addr;
     buff[1] = fun_code;
-    buff[2] = reg_addr>>8;
-    buff[3] = (uint8_t)reg_addr;
+    buff[2] = usReg_addr>>8;
+    buff[3] = (uint8_t)usReg_addr;
     buff[4] = reg_num>>8;
     buff[5] = (uint8_t)reg_num;
     uint16_t crc = modbus_crc_cal(buff, 6);
@@ -56,15 +56,15 @@ int8_t modbus_fun_request_06(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
 {
     uint8_t dev_addr = sender->dev_addr;
     uint8_t fun_code = sender->fun_code;
-    uint16_t reg_addr = sender->reg_addr;
+    uint16_t usReg_addr = sender->usReg_addr;
     uint16_t reg_num = sender->reg_num;
     uint16_t *reg_data = sender->reg_data;
     uint8_t *buff = pstHandler->tx_buff;
 
     buff[0] = dev_addr;
     buff[1] = fun_code;
-    buff[2] = reg_addr>>8;
-    buff[3] = (uint8_t)reg_addr;
+    buff[2] = usReg_addr>>8;
+    buff[3] = (uint8_t)usReg_addr;
     buff[4] = reg_data[0]>>8;
     buff[5] = (uint8_t)reg_data[0];
     uint16_t crc = modbus_crc_cal(buff, 6);
@@ -81,15 +81,15 @@ int8_t modbus_fun_request_10(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
 {
     uint8_t dev_addr = sender->dev_addr;
     uint8_t fun_code = sender->fun_code;
-    uint16_t reg_addr = sender->reg_addr;
+    uint16_t usReg_addr = sender->usReg_addr;
     uint16_t reg_num = sender->reg_num;
     uint16_t *reg_data = sender->reg_data;
     uint8_t *buff = pstHandler->tx_buff;
 
     buff[0] = dev_addr;
     buff[1] = fun_code;
-    buff[2] = reg_addr>>8;
-    buff[3] = (uint8_t)reg_addr;
+    buff[2] = usReg_addr>>8;
+    buff[3] = (uint8_t)usReg_addr;
     buff[4] = reg_num>>8;
     buff[5] = (uint8_t)reg_num;
     buff[6] = reg_num*2;
@@ -138,7 +138,7 @@ int8_t modbus_rtu_send(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender
 }
 
 
-int8_t modbus_rtu_read_input(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t reg_addr, uint16_t reg_num, uint16_t *output)
+int8_t modbus_rtu_read_input(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t usReg_addr, uint16_t reg_num, uint16_t *output)
 {
     if(bus == 0)
     {
@@ -147,7 +147,7 @@ int8_t modbus_rtu_read_input(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_
     stModbus_RTU_Sender_def sender;
     sender.dev_addr = dev_addr;
     sender.fun_code = 0x04;
-    sender.reg_addr = reg_addr;
+    sender.usReg_addr = usReg_addr;
     sender.reg_num = reg_num;
 
     stModbus_RTU_Handler_def *pstHandler = NULL;
@@ -177,7 +177,7 @@ int8_t modbus_rtu_read_input(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_
 
 
 
-int8_t modbus_rtu_read_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t reg_addr, uint16_t reg_num, uint16_t *output)
+int8_t modbus_rtu_read_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t usReg_addr, uint16_t reg_num, uint16_t *output)
 {
     if(bus == 0)
     {
@@ -186,7 +186,7 @@ int8_t modbus_rtu_read_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t
     stModbus_RTU_Sender_def sender;
     sender.dev_addr = dev_addr;
     sender.fun_code = 0x03;
-    sender.reg_addr = reg_addr;
+    sender.usReg_addr = usReg_addr;
     sender.reg_num = reg_num;
 
     stModbus_RTU_Handler_def *pstHandler = NULL;
@@ -215,7 +215,7 @@ int8_t modbus_rtu_read_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t
 }
 
 
-int8_t modbus_rtu_write_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t reg_addr, uint16_t reg_num, uint16_t *input)
+int8_t modbus_rtu_write_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t usReg_addr, uint16_t reg_num, uint16_t *input)
 {
     if(bus == 0)
     {
@@ -223,7 +223,7 @@ int8_t modbus_rtu_write_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_
     }
     stModbus_RTU_Sender_def sender;
     sender.dev_addr = dev_addr;
-    sender.reg_addr = reg_addr;
+    sender.usReg_addr = usReg_addr;
     sender.reg_num = reg_num;
     if(reg_num == 1)
     {

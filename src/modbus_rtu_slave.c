@@ -62,12 +62,12 @@ int8_t modbus_fun_parse_slave_03(stModbus_RTU_Handler_def *handler, uint8_t *buf
         return eModebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
     // pdu parse
-    uint16_t reg_addr = buff[2]<<8|buff[3];     // big endian
+    uint16_t usReg_addr = buff[2]<<8|buff[3];     // big endian
     uint16_t read_len = buff[4]<<8|buff[5];     // big endian
 
     stModbus_RTU_HoldReader_def reader;
     reader.ucReg_map_id = handler->ucReg_map_id;
-    reader.reg_addr = reg_addr;
+    reader.usReg_addr = usReg_addr;
     reader.reg_num = read_len;
 
     ret = handler->read_hold(&reader);
@@ -95,12 +95,12 @@ int8_t modbus_fun_parse_slave_04(stModbus_RTU_Handler_def *handler, uint8_t *buf
         return eModebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
     // pdu parse
-    uint16_t reg_addr = buff[2]<<8|buff[3];     // big endian
+    uint16_t usReg_addr = buff[2]<<8|buff[3];     // big endian
     uint16_t read_len = buff[4]<<8|buff[5];     // big endian
 
     stModbus_RTU_InputReader_def reader;
     reader.ucReg_map_id = handler->ucReg_map_id;
-    reader.reg_addr = reg_addr;
+    reader.usReg_addr = usReg_addr;
     reader.reg_num = read_len;
 
     ret = handler->read_input(&reader);
@@ -129,12 +129,12 @@ int8_t modbus_fun_parse_slave_06(stModbus_RTU_Handler_def *handler, uint8_t *buf
         return eModebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
     // pdu parse
-    uint16_t reg_addr = buff[2]<<8|buff[3];         // big endian
+    uint16_t usReg_addr = buff[2]<<8|buff[3];         // big endian
     uint16_t write_value = buff[4]<<8|buff[5];       // big endian
 
     stModbus_RTU_HoldWriter_def writer;
     writer.ucReg_map_id = handler->ucReg_map_id;
-    writer.reg_addr = reg_addr;
+    writer.usReg_addr = usReg_addr;
     writer.reg_num = 1;
     writer.reg_data[0] = write_value;
 
@@ -153,7 +153,7 @@ int8_t modbus_fun_parse_slave_10(stModbus_RTU_Handler_def *handler, uint8_t *buf
     int8_t ret = -1;
     
     // pdu parse
-    uint16_t reg_addr = buff[2]<<8|buff[3];         // big endian
+    uint16_t usReg_addr = buff[2]<<8|buff[3];         // big endian
     uint16_t write_num = buff[4]<<8|buff[5];       // big endian
     uint16_t write_len = buff[6];
 
@@ -167,7 +167,7 @@ int8_t modbus_fun_parse_slave_10(stModbus_RTU_Handler_def *handler, uint8_t *buf
     }
     stModbus_RTU_HoldWriter_def writer;
     writer.ucReg_map_id = handler->ucReg_map_id;
-    writer.reg_addr = reg_addr;
+    writer.usReg_addr = usReg_addr;
     writer.reg_num = write_num;
     for(int i = 0; i < write_num; i++)
     {

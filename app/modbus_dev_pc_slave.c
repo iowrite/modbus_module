@@ -193,12 +193,12 @@ uint16_t s_pc_hold_reg[11] = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10};
 #define RTU_PC_MASTER_HOLD_ADDR_MAX 110
 static int8_t rtu_pc_read_hold(stModbus_RTU_HoldReader_def *reader)
 {
-    if(reader->reg_addr < RTU_PC_MASTER_HOLD_ADDR_MIN || reader->reg_addr > RTU_PC_MASTER_HOLD_ADDR_MAX)
+    if(reader->usReg_addr < RTU_PC_MASTER_HOLD_ADDR_MIN || reader->usReg_addr > RTU_PC_MASTER_HOLD_ADDR_MAX)
     {
         return eModebus_RTU_Erno_REG_ADDR_INVALID;
     }
 
-    if(reader->reg_addr + reader->reg_num - 1 > RTU_PC_MASTER_HOLD_ADDR_MAX)
+    if(reader->usReg_addr + reader->reg_num - 1 > RTU_PC_MASTER_HOLD_ADDR_MAX)
     {
         return eModebus_RTU_Erno_REG_ADDR_INVALID;
     }
@@ -206,8 +206,8 @@ static int8_t rtu_pc_read_hold(stModbus_RTU_HoldReader_def *reader)
     // big endian  
     for(int i = 0; i < 2*reader->reg_num; i+=2)
     {
-        reader->reg_data_byte[i] = (uint8_t)(s_pc_hold_reg[reader->reg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN + i/2] >> 8);
-        reader->reg_data_byte[i+1] = (uint8_t)s_pc_hold_reg[reader->reg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN + i/2];
+        reader->reg_data_byte[i] = (uint8_t)(s_pc_hold_reg[reader->usReg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN + i/2] >> 8);
+        reader->reg_data_byte[i+1] = (uint8_t)s_pc_hold_reg[reader->usReg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN + i/2];
     }
     return eModebus_RTU_Erno_SUCCESS;
 }
@@ -216,12 +216,12 @@ static int8_t rtu_pc_read_hold(stModbus_RTU_HoldReader_def *reader)
 int8_t rtu_pc_read_input(stModbus_RTU_InputReader_def *reader)
 {
 
-    if(reader->reg_addr < RTU_PC_MASTER_HOLD_ADDR_MIN || reader->reg_addr > RTU_PC_MASTER_HOLD_ADDR_MAX)
+    if(reader->usReg_addr < RTU_PC_MASTER_HOLD_ADDR_MIN || reader->usReg_addr > RTU_PC_MASTER_HOLD_ADDR_MAX)
     {
         return eModebus_RTU_Erno_REG_ADDR_INVALID;
     }
 
-    if(reader->reg_addr + reader->reg_num - 1 > RTU_PC_MASTER_HOLD_ADDR_MAX)
+    if(reader->usReg_addr + reader->reg_num - 1 > RTU_PC_MASTER_HOLD_ADDR_MAX)
     {
         return eModebus_RTU_Erno_REG_ADDR_INVALID;
     }
@@ -229,8 +229,8 @@ int8_t rtu_pc_read_input(stModbus_RTU_InputReader_def *reader)
     // big endian  
     for(int i = 0; i < 2*reader->reg_num; i+=2)
     {
-        reader->reg_data_byte[i] = (uint8_t)(s_pc_hold_reg[reader->reg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN + i/2] >> 8);
-        reader->reg_data_byte[i+1] = (uint8_t)s_pc_hold_reg[reader->reg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN + i/2];
+        reader->reg_data_byte[i] = (uint8_t)(s_pc_hold_reg[reader->usReg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN + i/2] >> 8);
+        reader->reg_data_byte[i+1] = (uint8_t)s_pc_hold_reg[reader->usReg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN + i/2];
     }
     return eModebus_RTU_Erno_SUCCESS;
 
@@ -239,12 +239,12 @@ int8_t rtu_pc_read_input(stModbus_RTU_InputReader_def *reader)
 int8_t rtu_pc_write_hold(stModbus_RTU_HoldWriter_def *writer)
 {
 
-    if(writer->reg_addr < RTU_PC_MASTER_HOLD_ADDR_MIN || writer->reg_addr > RTU_PC_MASTER_HOLD_ADDR_MAX)
+    if(writer->usReg_addr < RTU_PC_MASTER_HOLD_ADDR_MIN || writer->usReg_addr > RTU_PC_MASTER_HOLD_ADDR_MAX)
     {
         return eModebus_RTU_Erno_REG_ADDR_INVALID;
     }
 
-    if(writer->reg_addr + writer->reg_num - 1 > RTU_PC_MASTER_HOLD_ADDR_MAX)
+    if(writer->usReg_addr + writer->reg_num - 1 > RTU_PC_MASTER_HOLD_ADDR_MAX)
     {
         return eModebus_RTU_Erno_REG_ADDR_INVALID;
     }
@@ -256,7 +256,7 @@ int8_t rtu_pc_write_hold(stModbus_RTU_HoldWriter_def *writer)
         {
             return eModebus_RTU_Erno_REG_VALUE_INVALID;
         }
-        s_pc_hold_reg[writer->reg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN + i] = writer->reg_data[i];          // 字节序转换在上层完成,这里直接使用
+        s_pc_hold_reg[writer->usReg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN + i] = writer->reg_data[i];          // 字节序转换在上层完成,这里直接使用
     }
     return eModebus_RTU_Erno_SUCCESS;
 
