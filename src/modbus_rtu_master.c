@@ -161,7 +161,7 @@ int8_t modbus_rtu_read_input(eModebus_RTU_Bus_def bus, uint8_t ucDev_addr, uint1
     }
     if(pstHandler->usTx_len)
     {
-        // send busy
+        // pSend_f busy
         return -1;
     }
 
@@ -200,7 +200,7 @@ int8_t modbus_rtu_read_hold(eModebus_RTU_Bus_def bus, uint8_t ucDev_addr, uint16
     }
     if(pstHandler->usTx_len)
     {
-        // send busy
+        // pSend_f busy
         return -1;
     }
 
@@ -246,7 +246,7 @@ int8_t modbus_rtu_write_hold(eModebus_RTU_Bus_def bus, uint8_t ucDev_addr, uint1
     }
     if(pstHandler->usTx_len)
     {
-        // send busy
+        // pSend_f busy
         return -1;
     }
 
@@ -501,7 +501,7 @@ void modbus_rtu_master(stModbus_RTU_Handler_def *pstHandler)
             pstHandler->eState = eModbus_RTU_State_IDLE;
             break;
         }
-        if(pstHandler->recv(pstHandler->ucRx_buff, &pstHandler->ucRx_len))
+        if(pstHandler->pRecv_f(pstHandler->ucRx_buff, &pstHandler->ucRx_len))
         {
             int8_t ret = modbus_fun_parse_master(pstHandler, pstHandler->ucRx_buff, pstHandler->ucRx_len);                   /// XXX 考虑广播的情况
             if(ret == 0)                                                                // success
@@ -523,8 +523,8 @@ void modbus_rtu_master(stModbus_RTU_Handler_def *pstHandler)
         }
         break;
     case eModbus_RTU_State_Send:
-        pstHandler->send(pstHandler->ucTx_buff, pstHandler->usTx_len);
-        mylog("bus send\n");
+        pstHandler->pSend_f(pstHandler->ucTx_buff, pstHandler->usTx_len);
+        mylog("bus pSend_f\n");
         pstHandler->Master_Wait_Count = modbus_port_get_time_ms();
         pstHandler->eLast_state = eModbus_RTU_State_Send;
         pstHandler->eState = eModbus_RTU_State_Receive;

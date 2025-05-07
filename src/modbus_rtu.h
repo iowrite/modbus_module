@@ -105,7 +105,7 @@ typedef struct Modebus_RTU_Fun_Table
 
 typedef struct Modbus_RTU_Handler
 {
-    eModbus_RTU_State_def eState, eLast_state;               // send/receive switch judge
+    eModbus_RTU_State_def eState, eLast_state;               // pSend_f/receive switch judge
     eModebus_RTU_Mode_def eMode, eLast_mode;                 // slave/master switch judge
     uint8_t ucTx_buff[300];
     uint16_t usTx_len;
@@ -114,8 +114,8 @@ typedef struct Modbus_RTU_Handler
     uint32_t uiLast_call_tick;
     stModebus_RTU_Fun_Table_def *pstFun_table;                    // callback function table
     uint8_t ucFun_table_items;
-    int8_t (*send)(uint8_t *buff, uint16_t len);                   // 驱动层读接口 
-    int8_t (*recv)(uint8_t *buff, uint16_t *len);                   //　驱动层写接口
+    int8_t (*pSend_f)(uint8_t *buff, uint16_t len);                   // 驱动层读接口 
+    int8_t (*pRecv_f)(uint8_t *buff, uint16_t *len);                   //　驱动层写接口
     union 
     {
         struct                                          // slave eMode use only
@@ -128,8 +128,8 @@ typedef struct Modbus_RTU_Handler
         };
         struct{                                                // master eMode use only
             uint16_t *master_parse_addr;                             // master parse address(master eMode use only)
-            uint32_t Master_Wait_Count;                              // master wait recv time count(master eMode use only)
-            uint32_t Master_Wait_Recv_Limt;                         // master wait recv limit(master eMode use only)
+            uint32_t Master_Wait_Count;                              // master wait pRecv_f time count(master eMode use only)
+            uint32_t Master_Wait_Recv_Limt;                         // master wait pRecv_f limit(master eMode use only)
             uint8_t master_request_addr;                               // master pRequest_f code(master eMode use only)
             uint8_t master_request_code;                               // master pRequest_f code(master eMode use only)
             uint8_t master_request_rw_len;                             // master pRequest_f read/write len(master eMode use only)
@@ -142,8 +142,8 @@ typedef struct Modbus_RTU_Handler_Attribute
 {
     uint8_t ucDev_addr;
     eModebus_RTU_Mode_def eMode;
-    int8_t (*send)(uint8_t *buff, uint16_t len);                    
-    int8_t (*recv)(uint8_t *buff, uint16_t *len);
+    int8_t (*pSend_f)(uint8_t *buff, uint16_t len);                    
+    int8_t (*pRecv_f)(uint8_t *buff, uint16_t *len);
     int8_t ucReg_map_id;                                          // reserve for select register map table
     int8_t (*read_input)(stModbus_RTU_InputReader_def *reader);
     int8_t (*read_hold)(stModbus_RTU_HoldReader_def *reader);
@@ -172,8 +172,8 @@ extern stModbus_Interface_Bind stModbus_Interface_Bind_Table[10];
 uint16_t modbus_crc_cal(uint8_t *buff, uint32_t len);
 
 int8_t modbus_rtu_send(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sender_def sender);
-int8_t modbus_rtu_set_send(eModebus_RTU_Bus_def bus, int8_t (*send)(uint8_t *, uint16_t));
-int8_t modbus_rtu_set_recv(eModebus_RTU_Bus_def bus, int8_t (*recv)(uint8_t *, uint16_t *));
+int8_t modbus_rtu_set_send(eModebus_RTU_Bus_def bus, int8_t (*pSend_f)(uint8_t *, uint16_t));
+int8_t modbus_rtu_set_recv(eModebus_RTU_Bus_def bus, int8_t (*pRecv_f)(uint8_t *, uint16_t *));
 
 
 

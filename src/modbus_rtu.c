@@ -212,8 +212,8 @@ int8_t modbus_rtu_init(stModbus_RTU_Handler_def *pstHandler, eModebus_RTU_Bus_de
     pstHandler->eLast_state = pstHandler->eState;
     pstHandler->pstFun_table = attr->pstFun_table;
     pstHandler->ucFun_table_items = attr->ucFun_table_items;
-    pstHandler->send = attr->send;
-    pstHandler->recv = attr->recv;
+    pstHandler->pSend_f = attr->pSend_f;
+    pstHandler->pRecv_f = attr->pRecv_f;
 
     if(pstHandler->eMode == eModebus_RTU_Mode_Master)
     {
@@ -238,7 +238,7 @@ int8_t modbus_rtu_init(stModbus_RTU_Handler_def *pstHandler, eModebus_RTU_Bus_de
 
 
 
-int8_t modbus_rtu_set_send(eModebus_RTU_Bus_def bus, int8_t (*send)(uint8_t *, uint16_t))
+int8_t modbus_rtu_set_send(eModebus_RTU_Bus_def bus, int8_t (*pSend_f)(uint8_t *, uint16_t))
 {
     if(bus == 0)
     {
@@ -253,10 +253,10 @@ int8_t modbus_rtu_set_send(eModebus_RTU_Bus_def bus, int8_t (*send)(uint8_t *, u
             break;
         }
     }
-    pstHandler->send = send;
+    pstHandler->pSend_f = pSend_f;
 }
 
-int8_t modbus_rtu_set_recv(eModebus_RTU_Bus_def bus, int8_t (*recv)(uint8_t *, uint16_t *))
+int8_t modbus_rtu_set_recv(eModebus_RTU_Bus_def bus, int8_t (*pRecv_f)(uint8_t *, uint16_t *))
 {
     if(bus == 0)
     {
@@ -271,7 +271,7 @@ int8_t modbus_rtu_set_recv(eModebus_RTU_Bus_def bus, int8_t (*recv)(uint8_t *, u
             break;
         }
     }
-    pstHandler->recv = recv;
+    pstHandler->pRecv_f = pRecv_f;
 }
 
 int8_t modbus_rtu_set_dev_addr(eModebus_RTU_Bus_def bus, int8_t ucDev_addr)
