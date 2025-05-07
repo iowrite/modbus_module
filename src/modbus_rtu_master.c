@@ -273,15 +273,15 @@ int8_t modbus_rtu_opt_status(eModebus_RTU_Bus_def bus)
             break;
         }
     }
-    if(pstHandler->mode == eModebus_RTU_Mode_Slave)
+    if(pstHandler->eMode == eModebus_RTU_Mode_Slave)
     {
         return -1;
     }
-    if(pstHandler->last_state == eModbus_RTU_State_Send && pstHandler->state == eModbus_RTU_State_IDLE)
+    if(pstHandler->eLast_state == eModbus_RTU_State_Send && pstHandler->eState == eModbus_RTU_State_IDLE)
     {
         return -1;
     }
-    if(pstHandler->last_state == eModbus_RTU_State_Receive && pstHandler->state == eModbus_RTU_State_IDLE)
+    if(pstHandler->eLast_state == eModbus_RTU_State_Receive && pstHandler->eState == eModbus_RTU_State_IDLE)
     {
         return 0;
     }
@@ -473,23 +473,23 @@ int8_t modbus_fun_parse_master(stModbus_RTU_Handler_def *pstHandler, uint8_t *bu
 
 void modbus_rtu_master(stModbus_RTU_Handler_def *pstHandler)
 {   
-    if(pstHandler->mode != pstHandler->last_mode)
+    if(pstHandler->eMode != pstHandler->eLast_mode)
     {
-        pstHandler->state = eModbus_RTU_State_Init;
-        pstHandler->last_mode = pstHandler->mode;
+        pstHandler->eState = eModbus_RTU_State_Init;
+        pstHandler->eLast_mode = pstHandler->eMode;
     }
-    switch (pstHandler->state)
+    switch (pstHandler->eState)
     {
     case eModbus_RTU_State_Init:
         mylog("bus init\n");
-        pstHandler->last_state = eModbus_RTU_State_Init;
-        pstHandler->state = eModbus_RTU_State_IDLE;
+        pstHandler->eLast_state = eModbus_RTU_State_Init;
+        pstHandler->eState = eModbus_RTU_State_IDLE;
         break;
     case eModbus_RTU_State_IDLE:
         if(pstHandler->tx_len != 0)
         {
-            pstHandler->last_mode = eModbus_RTU_State_IDLE;
-            pstHandler->state = eModbus_RTU_State_Send;
+            pstHandler->eLast_mode = eModbus_RTU_State_IDLE;
+            pstHandler->eState = eModbus_RTU_State_Send;
         }
         break;
     case eModbus_RTU_State_Receive:
@@ -498,7 +498,7 @@ void modbus_rtu_master(stModbus_RTU_Handler_def *pstHandler)
         {
             mylog("bus receive timeout\n");
             pstHandler->tx_len = 0;
-            pstHandler->state = eModbus_RTU_State_IDLE;
+            pstHandler->eState = eModbus_RTU_State_IDLE;
             break;
         }
         if(pstHandler->recv(pstHandler->rx_buff, &pstHandler->rx_len))
@@ -506,15 +506,15 @@ void modbus_rtu_master(stModbus_RTU_Handler_def *pstHandler)
             int8_t ret = modbus_fun_parse_master(pstHandler, pstHandler->rx_buff, pstHandler->rx_len);                   /// XXX 考虑广播的情况
             if(ret == 0)                                                                // success
             {
-                pstHandler->last_state = eModbus_RTU_State_Receive;
-                pstHandler->state = eModbus_RTU_State_IDLE;
+                pstHandler->eLast_state = eModbus_RTU_State_Receive;
+                pstHandler->eState = eModbus_RTU_State_IDLE;
                 pstHandler->tx_len = 0;
                 break;
             }else if(ret == eModebus_RTU_Erno_FRAME_FORMAT_ERROR ||                      // fail
                      ret == eModebus_RTU_Erno_FUN_CODE_NOT_FOUND || 
                      ret == eModebus_RTU_Erno_REG_ADDR_INVALID   ||
                      ret == eModebus_RTU_Erno_REG_VALUE_INVALID    ){
-                        pstHandler->state = eModbus_RTU_State_IDLE;
+                        pstHandler->eState = eModbus_RTU_State_IDLE;
                         pstHandler->tx_len = 0;
                         break; 
             }else if(ret == eModebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH){
@@ -526,8 +526,8 @@ void modbus_rtu_master(stModbus_RTU_Handler_def *pstHandler)
         pstHandler->send(pstHandler->tx_buff, pstHandler->tx_len);
         mylog("bus send\n");
         pstHandler->Master_Wait_Count = modbus_port_get_time_ms();
-        pstHandler->last_state = eModbus_RTU_State_Send;
-        pstHandler->state = eModbus_RTU_State_Receive;
+        pstHandler->eLast_state = eModbus_RTU_State_Send;
+        pstHandler->eState = eModbus_RTU_State_Receive;
         break;
     default:
         break;

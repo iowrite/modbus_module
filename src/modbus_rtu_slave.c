@@ -191,22 +191,22 @@ int8_t modbus_fun_parse_slave_10(stModbus_RTU_Handler_def *handler, uint8_t *buf
 void modbus_rtu_slave(stModbus_RTU_Handler_def *handler)
 {
 
-    if(handler->mode != handler->last_mode)
+    if(handler->eMode != handler->eLast_mode)
     {
-        handler->state = eModbus_RTU_State_Init;
-        handler->last_mode = handler->mode;
+        handler->eState = eModbus_RTU_State_Init;
+        handler->eLast_mode = handler->eMode;
     }
-    switch (handler->state)
+    switch (handler->eState)
     {
     case eModbus_RTU_State_Init:
         mylog("bus init\n");
-        handler->state = eModbus_RTU_State_IDLE;
+        handler->eState = eModbus_RTU_State_IDLE;
         break;
     case eModbus_RTU_State_IDLE:
         if(handler->recv(handler->rx_buff, &handler->rx_len))
         {
             mylog("bus recv\n");
-            handler->state = eModbus_RTU_State_Receive;
+            handler->eState = eModbus_RTU_State_Receive;
         }
         break;
     case eModbus_RTU_State_Receive:
@@ -214,9 +214,9 @@ void modbus_rtu_slave(stModbus_RTU_Handler_def *handler)
         int8_t ret = modbus_fun_parse_slave(handler, handler->rx_buff, handler->rx_len);
         if(handler->tx_len > 0)
         {
-            handler->state = eModbus_RTU_State_Send;
+            handler->eState = eModbus_RTU_State_Send;
         }else{
-            handler->state = eModbus_RTU_State_IDLE;
+            handler->eState = eModbus_RTU_State_IDLE;
         }
     }
         break;
@@ -224,7 +224,7 @@ void modbus_rtu_slave(stModbus_RTU_Handler_def *handler)
         int8_t ret = handler->send(handler->tx_buff, handler->tx_len);
         mylog("bus send\n");
         handler->tx_len = 0;
-        handler->state = eModbus_RTU_State_IDLE;
+        handler->eState = eModbus_RTU_State_IDLE;
         break;
     default:
         break;

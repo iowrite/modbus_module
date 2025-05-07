@@ -57,7 +57,7 @@ stModebus_RTU_Fun_Table_def stRTU_fun_table_pc_master[] =
 
 stModbus_RTU_Handler_def stModbus_RTU_Handler_PC_master ;
 stModbus_RTU_Handler_Attr rtu_pc_attr_master = {
-    .mode = eModebus_RTU_Mode_Master,
+    .eMode = eModebus_RTU_Mode_Master,
     .send = uart_pc_send,
     .recv = uart_pc_recv,
     .fun_table = stRTU_fun_table_pc_master,

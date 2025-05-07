@@ -77,10 +77,10 @@ void modbus_rtu_run(stModbus_RTU_Handler_def *pstHandler)
 {
     pstHandler->last_call_tick = modbus_port_get_time_ms();
 
-    if(pstHandler->mode == eModebus_RTU_Mode_Master)
+    if(pstHandler->eMode == eModebus_RTU_Mode_Master)
     {
         modbus_rtu_master(pstHandler);
-    }else if(pstHandler->mode == eModebus_RTU_Mode_Slave){
+    }else if(pstHandler->eMode == eModebus_RTU_Mode_Slave){
         modbus_rtu_slave(pstHandler);
     }
 
@@ -89,9 +89,9 @@ void modbus_rtu_run(stModbus_RTU_Handler_def *pstHandler)
 
 
 
-int8_t modbus_rtu_set_mode(stModbus_RTU_Handler_def *pstHandler, eModebus_RTU_Mode_def mode)
+int8_t modbus_rtu_set_mode(stModbus_RTU_Handler_def *pstHandler, eModebus_RTU_Mode_def eMode)
 {
-    pstHandler->mode = mode;
+    pstHandler->eMode = eMode;
 }
 
 
@@ -206,16 +206,16 @@ int8_t modbus_rtu_init(stModbus_RTU_Handler_def *pstHandler, eModebus_RTU_Bus_de
             break;
         }
     }
-    pstHandler->mode = attr->mode;
-    pstHandler->last_mode = pstHandler->mode;
-    pstHandler->state = eModbus_RTU_State_Init;
-    pstHandler->last_state = pstHandler->state;
+    pstHandler->eMode = attr->eMode;
+    pstHandler->eLast_mode = pstHandler->eMode;
+    pstHandler->eState = eModbus_RTU_State_Init;
+    pstHandler->eLast_state = pstHandler->eState;
     pstHandler->fun_table = attr->fun_table;
     pstHandler->fun_table_items = attr->fun_table_items;
     pstHandler->send = attr->send;
     pstHandler->recv = attr->recv;
 
-    if(pstHandler->mode == eModebus_RTU_Mode_Master)
+    if(pstHandler->eMode == eModebus_RTU_Mode_Master)
     {
         if(attr->master_recv_wait_limt == 0)
         {
@@ -223,7 +223,7 @@ int8_t modbus_rtu_init(stModbus_RTU_Handler_def *pstHandler, eModebus_RTU_Bus_de
         }else{
             pstHandler->Master_Wait_Recv_Limt = attr->master_recv_wait_limt;
         }
-    }else if(pstHandler->mode == eModebus_RTU_Mode_Slave){
+    }else if(pstHandler->eMode == eModebus_RTU_Mode_Slave){
         pstHandler->ucDev_addr = attr->ucDev_addr;
         pstHandler->ucReg_map_id = attr->ucReg_map_id;
         pstHandler->read_input = attr->read_input;
