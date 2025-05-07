@@ -138,9 +138,9 @@ int8_t modbus_rtu_send(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender
 }
 
 
-int8_t modbus_rtu_read_input(eModebus_RTU_Bus_def bus, uint8_t ucDev_addr, uint16_t usReg_addr, uint16_t ucReg_num, uint16_t *output)
+int8_t modbus_rtu_read_input(eModebus_RTU_Bus_def eBus, uint8_t ucDev_addr, uint16_t usReg_addr, uint16_t ucReg_num, uint16_t *output)
 {
-    if(bus == 0)
+    if(eBus == 0)
     {
         return -1;
     }
@@ -153,7 +153,7 @@ int8_t modbus_rtu_read_input(eModebus_RTU_Bus_def bus, uint8_t ucDev_addr, uint1
     stModbus_RTU_Handler_def *pstHandler = NULL;
     for(int i = 0; i < MODBUS_INTERFACE_BIND_TABLE_ITEMS; i++)
     {
-        if(stModbus_Interface_Bind_Table[i].bus == bus)
+        if(stModbus_Interface_Bind_Table[i].eBus == eBus)
         {
             pstHandler = stModbus_Interface_Bind_Table[i].pstHandler;
             break;
@@ -177,9 +177,9 @@ int8_t modbus_rtu_read_input(eModebus_RTU_Bus_def bus, uint8_t ucDev_addr, uint1
 
 
 
-int8_t modbus_rtu_read_hold(eModebus_RTU_Bus_def bus, uint8_t ucDev_addr, uint16_t usReg_addr, uint16_t ucReg_num, uint16_t *output)
+int8_t modbus_rtu_read_hold(eModebus_RTU_Bus_def eBus, uint8_t ucDev_addr, uint16_t usReg_addr, uint16_t ucReg_num, uint16_t *output)
 {
-    if(bus == 0)
+    if(eBus == 0)
     {
         return -1;
     }
@@ -192,7 +192,7 @@ int8_t modbus_rtu_read_hold(eModebus_RTU_Bus_def bus, uint8_t ucDev_addr, uint16
     stModbus_RTU_Handler_def *pstHandler = NULL;
     for(int i = 0; i < MODBUS_INTERFACE_BIND_TABLE_ITEMS; i++)
     {
-        if(stModbus_Interface_Bind_Table[i].bus == bus)
+        if(stModbus_Interface_Bind_Table[i].eBus == eBus)
         {
             pstHandler = stModbus_Interface_Bind_Table[i].pstHandler;
             break;
@@ -215,9 +215,9 @@ int8_t modbus_rtu_read_hold(eModebus_RTU_Bus_def bus, uint8_t ucDev_addr, uint16
 }
 
 
-int8_t modbus_rtu_write_hold(eModebus_RTU_Bus_def bus, uint8_t ucDev_addr, uint16_t usReg_addr, uint16_t ucReg_num, uint16_t *input)
+int8_t modbus_rtu_write_hold(eModebus_RTU_Bus_def eBus, uint8_t ucDev_addr, uint16_t usReg_addr, uint16_t ucReg_num, uint16_t *input)
 {
-    if(bus == 0)
+    if(eBus == 0)
     {
         return -1;
     }
@@ -238,7 +238,7 @@ int8_t modbus_rtu_write_hold(eModebus_RTU_Bus_def bus, uint8_t ucDev_addr, uint1
     stModbus_RTU_Handler_def *pstHandler = NULL;
     for(int i = 0; i < MODBUS_INTERFACE_BIND_TABLE_ITEMS; i++)
     {
-        if(stModbus_Interface_Bind_Table[i].bus == bus)
+        if(stModbus_Interface_Bind_Table[i].eBus == eBus)
         {
             pstHandler = stModbus_Interface_Bind_Table[i].pstHandler;
             break;
@@ -258,16 +258,16 @@ int8_t modbus_rtu_write_hold(eModebus_RTU_Bus_def bus, uint8_t ucDev_addr, uint1
     return ret;
     
 }
-int8_t modbus_rtu_opt_status(eModebus_RTU_Bus_def bus)
+int8_t modbus_rtu_opt_status(eModebus_RTU_Bus_def eBus)
 {
-    if(bus == 0)
+    if(eBus == 0)
     {
         return -1;
     }
     stModbus_RTU_Handler_def *pstHandler = NULL;
     for(int i = 0; i < MODBUS_INTERFACE_BIND_TABLE_ITEMS; i++)
     {
-        if(stModbus_Interface_Bind_Table[i].bus == bus)
+        if(stModbus_Interface_Bind_Table[i].eBus == eBus)
         {
             pstHandler = stModbus_Interface_Bind_Table[i].pstHandler;
             break;
@@ -481,7 +481,7 @@ void modbus_rtu_master(stModbus_RTU_Handler_def *pstHandler)
     switch (pstHandler->eState)
     {
     case eModbus_RTU_State_Init:
-        mylog("bus init\n");
+        mylog("eBus init\n");
         pstHandler->eLast_state = eModbus_RTU_State_Init;
         pstHandler->eState = eModbus_RTU_State_IDLE;
         break;
@@ -496,7 +496,7 @@ void modbus_rtu_master(stModbus_RTU_Handler_def *pstHandler)
         uint32_t now = modbus_port_get_time_ms();
         if(now - pstHandler->uiMaster_Wait_Count > pstHandler->uiMaster_Wait_Recv_Limt)
         {
-            mylog("bus receive timeout\n");
+            mylog("eBus receive timeout\n");
             pstHandler->usTx_len = 0;
             pstHandler->eState = eModbus_RTU_State_IDLE;
             break;
@@ -524,7 +524,7 @@ void modbus_rtu_master(stModbus_RTU_Handler_def *pstHandler)
         break;
     case eModbus_RTU_State_Send:
         pstHandler->pSend_f(pstHandler->ucTx_buff, pstHandler->usTx_len);
-        mylog("bus pSend_f\n");
+        mylog("eBus pSend_f\n");
         pstHandler->uiMaster_Wait_Count = modbus_port_get_time_ms();
         pstHandler->eLast_state = eModbus_RTU_State_Send;
         pstHandler->eState = eModbus_RTU_State_Receive;

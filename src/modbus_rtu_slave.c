@@ -199,13 +199,13 @@ void modbus_rtu_slave(stModbus_RTU_Handler_def *handler)
     switch (handler->eState)
     {
     case eModbus_RTU_State_Init:
-        mylog("bus init\n");
+        mylog("eBus init\n");
         handler->eState = eModbus_RTU_State_IDLE;
         break;
     case eModbus_RTU_State_IDLE:
         if(handler->pRecv_f(handler->ucRx_buff, &handler->ucRx_len))
         {
-            mylog("bus pRecv_f\n");
+            mylog("eBus pRecv_f\n");
             handler->eState = eModbus_RTU_State_Receive;
         }
         break;
@@ -222,7 +222,7 @@ void modbus_rtu_slave(stModbus_RTU_Handler_def *handler)
         break;
     case eModbus_RTU_State_Send:
         int8_t ret = handler->pSend_f(handler->ucTx_buff, handler->usTx_len);
-        mylog("bus pSend_f\n");
+        mylog("eBus pSend_f\n");
         handler->usTx_len = 0;
         handler->eState = eModbus_RTU_State_IDLE;
         break;

@@ -156,36 +156,36 @@ typedef struct Modbus_RTU_Handler_Attribute
 
 typedef struct Modbus_Interface_Bind
 {
-    eModebus_RTU_Bus_def bus;
+    eModebus_RTU_Bus_def eBus;
     stModbus_RTU_Handler_def *pstHandler;
 
-}stModbus_Interface_Bind;
+}stModbus_Interface_Bind_def;
 
 
 
 
-extern stModbus_Interface_Bind stModbus_Interface_Bind_Table[10];
-#define MODBUS_INTERFACE_BIND_TABLE_ITEMS (sizeof(stModbus_Interface_Bind_Table)/sizeof(stModbus_Interface_Bind))
+extern stModbus_Interface_Bind_def stModbus_Interface_Bind_Table[10];
+#define MODBUS_INTERFACE_BIND_TABLE_ITEMS (sizeof(stModbus_Interface_Bind_Table)/sizeof(stModbus_Interface_Bind_def))
 
 
 /* Exported functions prototypes ----------------------------------------------------------------*/
 uint16_t modbus_crc_cal(uint8_t *buff, uint32_t len);
 
 int8_t modbus_rtu_send(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sender_def sender);
-int8_t modbus_rtu_set_send(eModebus_RTU_Bus_def bus, int8_t (*pSend_f)(uint8_t *, uint16_t));
-int8_t modbus_rtu_set_recv(eModebus_RTU_Bus_def bus, int8_t (*pRecv_f)(uint8_t *, uint16_t *));
+int8_t modbus_rtu_set_send(eModebus_RTU_Bus_def eBus, int8_t (*pSend_f)(uint8_t *, uint16_t));
+int8_t modbus_rtu_set_recv(eModebus_RTU_Bus_def eBus, int8_t (*pRecv_f)(uint8_t *, uint16_t *));
 
 
 
 /**
  * @brief  modbus rtu init
  * @param  handler: modbus rtu handler
- * @param  bus: modbus rtu bus
+ * @param  eBus: modbus rtu eBus
  * @param  attr: modbus rtu handler attr
  * 
  * @return 0: success, -1: fail
  */
-int8_t modbus_rtu_init(stModbus_RTU_Handler_def *handler, eModebus_RTU_Bus_def bus, stModbus_RTU_Handler_Attr *attr);
+int8_t modbus_rtu_init(stModbus_RTU_Handler_def *handler, eModebus_RTU_Bus_def eBus, stModbus_RTU_Handler_Attr *attr);
 
 /**
  * @brief  modbus rtu run

@@ -39,7 +39,7 @@
 int8_t modbus_fun_request_03(stModbus_RTU_Handler_def *pstModbus_RTU_Handler, stModbus_RTU_Sender_def *sender);
 /* Private variable -----------------------------------------------------------------------------*/
 
-stModbus_Interface_Bind stModbus_Interface_Bind_Table[10];
+stModbus_Interface_Bind_def stModbus_Interface_Bind_Table[10];
 
 
 
@@ -191,17 +191,17 @@ uint16_t modbus_crc_cal(uint8_t *pData, uint32_t Size)
 
 
 
-int8_t modbus_rtu_init(stModbus_RTU_Handler_def *pstHandler, eModebus_RTU_Bus_def bus, stModbus_RTU_Handler_Attr *attr)
+int8_t modbus_rtu_init(stModbus_RTU_Handler_def *pstHandler, eModebus_RTU_Bus_def eBus, stModbus_RTU_Handler_Attr *attr)
 {
-    if(bus == 0)
+    if(eBus == 0)
     {
         return -1;
     }
     for(int i = 0; i < MODBUS_INTERFACE_BIND_TABLE_ITEMS; i++)
     {
-        if(stModbus_Interface_Bind_Table[i].bus == 0)
+        if(stModbus_Interface_Bind_Table[i].eBus == 0)
         {
-            stModbus_Interface_Bind_Table[i].bus = bus;
+            stModbus_Interface_Bind_Table[i].eBus = eBus;
             stModbus_Interface_Bind_Table[i].pstHandler = pstHandler;
             break;
         }
@@ -238,16 +238,16 @@ int8_t modbus_rtu_init(stModbus_RTU_Handler_def *pstHandler, eModebus_RTU_Bus_de
 
 
 
-int8_t modbus_rtu_set_send(eModebus_RTU_Bus_def bus, int8_t (*pSend_f)(uint8_t *, uint16_t))
+int8_t modbus_rtu_set_send(eModebus_RTU_Bus_def eBus, int8_t (*pSend_f)(uint8_t *, uint16_t))
 {
-    if(bus == 0)
+    if(eBus == 0)
     {
         return -1;
     }
     stModbus_RTU_Handler_def *pstHandler = NULL;
     for(int i = 0; i < MODBUS_INTERFACE_BIND_TABLE_ITEMS; i++)
     {
-        if(stModbus_Interface_Bind_Table[i].bus == bus)
+        if(stModbus_Interface_Bind_Table[i].eBus == eBus)
         {
             pstHandler = stModbus_Interface_Bind_Table[i].pstHandler;
             break;
@@ -256,16 +256,16 @@ int8_t modbus_rtu_set_send(eModebus_RTU_Bus_def bus, int8_t (*pSend_f)(uint8_t *
     pstHandler->pSend_f = pSend_f;
 }
 
-int8_t modbus_rtu_set_recv(eModebus_RTU_Bus_def bus, int8_t (*pRecv_f)(uint8_t *, uint16_t *))
+int8_t modbus_rtu_set_recv(eModebus_RTU_Bus_def eBus, int8_t (*pRecv_f)(uint8_t *, uint16_t *))
 {
-    if(bus == 0)
+    if(eBus == 0)
     {
         return -1;
     }
     stModbus_RTU_Handler_def *pstHandler = NULL;
     for(int i = 0; i < MODBUS_INTERFACE_BIND_TABLE_ITEMS; i++)
     {
-        if(stModbus_Interface_Bind_Table[i].bus == bus)
+        if(stModbus_Interface_Bind_Table[i].eBus == eBus)
         {
             pstHandler = stModbus_Interface_Bind_Table[i].pstHandler;
             break;
@@ -274,16 +274,16 @@ int8_t modbus_rtu_set_recv(eModebus_RTU_Bus_def bus, int8_t (*pRecv_f)(uint8_t *
     pstHandler->pRecv_f = pRecv_f;
 }
 
-int8_t modbus_rtu_set_dev_addr(eModebus_RTU_Bus_def bus, int8_t ucDev_addr)
+int8_t modbus_rtu_set_dev_addr(eModebus_RTU_Bus_def eBus, int8_t ucDev_addr)
 {
-    if(bus == 0)
+    if(eBus == 0)
     {
         return -1;
     }
     stModbus_RTU_Handler_def *pstHandler = NULL;
     for(int i = 0; i < MODBUS_INTERFACE_BIND_TABLE_ITEMS; i++)
     {
-        if(stModbus_Interface_Bind_Table[i].bus == bus)
+        if(stModbus_Interface_Bind_Table[i].eBus == eBus)
         {
             pstHandler = stModbus_Interface_Bind_Table[i].pstHandler;
             break;
