@@ -66,7 +66,7 @@ int8_t modbus_fun_parse_slave_03(stModbus_RTU_Handler_def *handler, uint8_t *buf
     uint16_t read_len = buff[4]<<8|buff[5];     // big endian
 
     stModbus_RTU_HoldReader_def reader;
-    reader.reg_map_id = handler->reg_map_id;
+    reader.ucReg_map_id = handler->ucReg_map_id;
     reader.reg_addr = reg_addr;
     reader.reg_num = read_len;
 
@@ -99,7 +99,7 @@ int8_t modbus_fun_parse_slave_04(stModbus_RTU_Handler_def *handler, uint8_t *buf
     uint16_t read_len = buff[4]<<8|buff[5];     // big endian
 
     stModbus_RTU_InputReader_def reader;
-    reader.reg_map_id = handler->reg_map_id;
+    reader.ucReg_map_id = handler->ucReg_map_id;
     reader.reg_addr = reg_addr;
     reader.reg_num = read_len;
 
@@ -133,7 +133,7 @@ int8_t modbus_fun_parse_slave_06(stModbus_RTU_Handler_def *handler, uint8_t *buf
     uint16_t write_value = buff[4]<<8|buff[5];       // big endian
 
     stModbus_RTU_HoldWriter_def writer;
-    writer.reg_map_id = handler->reg_map_id;
+    writer.ucReg_map_id = handler->ucReg_map_id;
     writer.reg_addr = reg_addr;
     writer.reg_num = 1;
     writer.reg_data[0] = write_value;
@@ -166,7 +166,7 @@ int8_t modbus_fun_parse_slave_10(stModbus_RTU_Handler_def *handler, uint8_t *buf
         return eModebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
     stModbus_RTU_HoldWriter_def writer;
-    writer.reg_map_id = handler->reg_map_id;
+    writer.ucReg_map_id = handler->ucReg_map_id;
     writer.reg_addr = reg_addr;
     writer.reg_num = write_num;
     for(int i = 0; i < write_num; i++)

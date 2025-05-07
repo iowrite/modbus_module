@@ -58,7 +58,7 @@ stModbus_RTU_Handler_def stModbus_RTU_Handler_PC_slave ;
 stModbus_RTU_Handler_Attr rtu_pc_attr_slave = {
     .dev_addr = 1,
     .mode = eModebus_RTU_Mode_Slave,
-    .reg_map_id = 0,
+    .ucReg_map_id = 0,
     .send = uart_pc_send,
     .recv = uart_pc_recv,
     .read_input = rtu_pc_read_input,

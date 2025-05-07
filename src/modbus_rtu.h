@@ -29,10 +29,7 @@ typedef enum Modebus_RTU_Erno
     eModebus_RTU_Erno_MASTER_REQUEST_FUN_NOT_FOUND = 16, // 自定义错误码：未找到主机发送函数
     eModebus_RTU_Erno_MASTER_PARSE_FUN_NOT_FOUND = 17, // 自定义错误码：未找到主机解析函数
     eModebus_RTU_Erno_SLAVE_PARSE_FUN_NOT_FOUND = 18, // 自定义错误码：未找到从机解析函数
-
-
     eModebus_RTU_Erno_END,
-    
 }eModebus_RTU_Erno_def;
 
 typedef enum eModbus_RTU_State_def
@@ -54,7 +51,7 @@ typedef enum Modebus_RTU_Mode
 
 typedef struct Modbus_RTU_InputReader
 {
-    uint8_t reg_map_id;
+    uint8_t ucReg_map_id;
     uint16_t reg_addr;
     uint8_t reg_num;
     union{
@@ -65,7 +62,7 @@ typedef struct Modbus_RTU_InputReader
 
 typedef struct Modbus_RTU_HoldReader
 {
-    uint8_t reg_map_id;
+    uint8_t ucReg_map_id;
     uint16_t reg_addr;
     uint8_t reg_num;
     union{
@@ -76,7 +73,7 @@ typedef struct Modbus_RTU_HoldReader
 
 typedef struct Modbus_RTU_HoldWriter
 {
-    uint8_t reg_map_id;
+    uint8_t ucReg_map_id;
     uint16_t reg_addr;
     uint8_t reg_num;
     union{
@@ -124,7 +121,7 @@ typedef struct Modbus_RTU_Handler
         struct                                          // slave mode use only
         {
             uint8_t dev_addr;
-            int8_t reg_map_id;                                          // reserve for select register map table
+            int8_t ucReg_map_id;                                          // reserve for select register map table
             int8_t (*read_input)(stModbus_RTU_InputReader_def *reader);         //　应用层读输入寄存器回调
             int8_t (*read_hold)(stModbus_RTU_HoldReader_def *reader);           //　应用层读保持寄存器回调
             int8_t (*write_hold)(stModbus_RTU_HoldWriter_def *writer);          //　应用层写保持寄存器回调
@@ -147,7 +144,7 @@ typedef struct Modbus_RTU_Handler_Attribute
     eModebus_RTU_Mode_def mode;
     int8_t (*send)(uint8_t *buff, uint16_t len);                    
     int8_t (*recv)(uint8_t *buff, uint16_t *len);
-    int8_t reg_map_id;                                          // reserve for select register map table
+    int8_t ucReg_map_id;                                          // reserve for select register map table
     int8_t (*read_input)(stModbus_RTU_InputReader_def *reader);
     int8_t (*read_hold)(stModbus_RTU_HoldReader_def *reader);
     int8_t (*write_hold)(stModbus_RTU_HoldWriter_def *writer);

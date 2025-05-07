@@ -225,7 +225,7 @@ int8_t modbus_rtu_init(stModbus_RTU_Handler_def *pstHandler, eModebus_RTU_Bus_de
         }
     }else if(pstHandler->mode == eModebus_RTU_Mode_Slave){
         pstHandler->dev_addr = attr->dev_addr;
-        pstHandler->reg_map_id = attr->reg_map_id;
+        pstHandler->ucReg_map_id = attr->ucReg_map_id;
         pstHandler->read_input = attr->read_input;
         pstHandler->read_hold = attr->read_hold;
         pstHandler->write_hold = attr->write_hold;
