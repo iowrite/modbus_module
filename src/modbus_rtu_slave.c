@@ -98,7 +98,7 @@ int8_t modbus_fun_parse_slave_04(stModbus_RTU_Handler_def *handler, uint8_t *buf
     uint16_t reg_addr = buff[2]<<8|buff[3];     // big endian
     uint16_t read_len = buff[4]<<8|buff[5];     // big endian
 
-    stModbus_RTU_InputReader reader;
+    stModbus_RTU_InputReader_def reader;
     reader.reg_map_id = handler->reg_map_id;
     reader.reg_addr = reg_addr;
     reader.reg_num = read_len;
