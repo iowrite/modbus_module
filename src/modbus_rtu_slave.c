@@ -76,7 +76,7 @@ int8_t modbus_fun_parse_slave_03(stModbus_RTU_Handler_def *handler, uint8_t *buf
         handler->tx_buff[0] = handler->dev_addr;
         handler->tx_buff[1] = 0x03;
         handler->tx_buff[2] = 2*read_len;
-        memcpy(&handler->tx_buff[3], reader.reg_data_byte, 2*read_len);
+        memcpy(&handler->tx_buff[3], reader.ucReg_data_byte, 2*read_len);
         uint16_t crc_cal = modbus_crc_cal(handler->tx_buff, 3+2*read_len);
         handler->tx_buff[3+2*read_len] = (uint8_t)(crc_cal>>8);
         handler->tx_buff[3+2*read_len+1] = (uint8_t)crc_cal;
@@ -109,7 +109,7 @@ int8_t modbus_fun_parse_slave_04(stModbus_RTU_Handler_def *handler, uint8_t *buf
         handler->tx_buff[0] = handler->dev_addr;
         handler->tx_buff[1] = 0x04;
         handler->tx_buff[2] = 2*read_len;
-        memcpy(&handler->tx_buff[3], reader.reg_data_byte, 2*read_len);
+        memcpy(&handler->tx_buff[3], reader.ucReg_data_byte, 2*read_len);
         uint16_t crc_cal = modbus_crc_cal(handler->tx_buff, 3+2*read_len);
         handler->tx_buff[3+2*read_len] = (uint8_t)(crc_cal>>8);
         handler->tx_buff[3+2*read_len+1] = (uint8_t)crc_cal;
