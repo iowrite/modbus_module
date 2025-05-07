@@ -95,13 +95,13 @@ typedef struct Modbus_RTU_Sender
 }stModbus_RTU_Sender;
 
 
-typedef struct Modbus_RTU_Handler stModbus_RTU_Handler;                         // 前向声明 stModbus_RTU_Handler 与 Modbus_RTU_Handler 交叉声明
+typedef struct Modbus_RTU_Handler stModbus_RTU_Handler_def;                         // 前向声明 stModbus_RTU_Handler 与 Modbus_RTU_Handler 交叉声明
 typedef struct Modebus_RTU_Fun_Table
 {
     uint8_t fcode;
-    int8_t (*request)(stModbus_RTU_Handler *handler, stModbus_RTU_Sender *sender);
-    int8_t (*slave_parse)(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len);
-    int8_t (*master_parse)(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len);
+    int8_t (*request)(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sender *sender);
+    int8_t (*slave_parse)(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len);
+    int8_t (*master_parse)(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len);
 
 }stModebus_RTU_Fun_Table;
 
@@ -137,7 +137,7 @@ typedef struct Modbus_RTU_Handler
             uint8_t master_request_rw_len;                             // master request read/write len(master mode use only)
         };
     };
-}stModbus_RTU_Handler;
+}stModbus_RTU_Handler_def;
 
  
 typedef struct Modbus_RTU_Handler_Attribute
@@ -159,7 +159,7 @@ typedef struct Modbus_RTU_Handler_Attribute
 typedef struct Modbus_Interface_Bind
 {
     eModebus_RTU_Bus_def bus;
-    stModbus_RTU_Handler *handler;
+    stModbus_RTU_Handler_def *handler;
 
 }stModbus_Interface_Bind;
 
@@ -173,7 +173,7 @@ extern stModbus_Interface_Bind stModbus_Interface_Bind_Table[10];
 /* Exported functions prototypes ----------------------------------------------------------------*/
 uint16_t modbus_crc_cal(uint8_t *buff, uint32_t len);
 
-int8_t modbus_rtu_send(stModbus_RTU_Handler *handler, stModbus_RTU_Sender sender);
+int8_t modbus_rtu_send(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sender sender);
 int8_t modbus_rtu_set_send(eModebus_RTU_Bus_def bus, int8_t (*send)(uint8_t *, uint16_t));
 int8_t modbus_rtu_set_recv(eModebus_RTU_Bus_def bus, int8_t (*recv)(uint8_t *, uint16_t *));
 
@@ -187,13 +187,13 @@ int8_t modbus_rtu_set_recv(eModebus_RTU_Bus_def bus, int8_t (*recv)(uint8_t *, u
  * 
  * @return 0: success, -1: fail
  */
-int8_t modbus_rtu_init(stModbus_RTU_Handler *handler, eModebus_RTU_Bus_def bus, stModbus_RTU_Handler_Attr *attr);
+int8_t modbus_rtu_init(stModbus_RTU_Handler_def *handler, eModebus_RTU_Bus_def bus, stModbus_RTU_Handler_Attr *attr);
 
 /**
  * @brief  modbus rtu run
  * @param  handler: modbus rtu handler
  */
-void modbus_rtu_run(stModbus_RTU_Handler *handler);
+void modbus_rtu_run(stModbus_RTU_Handler_def *handler);
 
 #ifdef __cplusplus
 }

@@ -4,10 +4,10 @@
 #ifndef _MODBUS_RTU_SLAVE_H_
 #define _MODBUS_RTU_SLAVE_H_
 
-void modbus_rtu_slave(stModbus_RTU_Handler *handler);
-int8_t modbus_fun_parse_slave_03(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len);
-int8_t modbus_fun_parse_slave_04(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len);
-int8_t modbus_fun_parse_slave_06(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len);
-int8_t modbus_fun_parse_slave_10(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len);
+void modbus_rtu_slave(stModbus_RTU_Handler_def *handler);
+int8_t modbus_fun_parse_slave_03(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len);
+int8_t modbus_fun_parse_slave_04(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len);
+int8_t modbus_fun_parse_slave_06(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len);
+int8_t modbus_fun_parse_slave_10(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len);
 
 #endif

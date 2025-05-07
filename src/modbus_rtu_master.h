@@ -3,19 +3,19 @@
 
 #ifndef _MODBUS_RTU_MASTER_H_
 #define _MODBUS_RTU_MASTER_H_
-void modbus_rtu_master(stModbus_RTU_Handler *handler);
+void modbus_rtu_master(stModbus_RTU_Handler_def *handler);
 
-int8_t modbus_fun_request_03(stModbus_RTU_Handler *handler, stModbus_RTU_Sender *sender);
-int8_t modbus_fun_parse_03_master(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len);
+int8_t modbus_fun_request_03(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sender *sender);
+int8_t modbus_fun_parse_03_master(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len);
 
-int8_t modbus_fun_request_04(stModbus_RTU_Handler *handler, stModbus_RTU_Sender *sender);
-int8_t modbus_fun_parse_04_master(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len);
+int8_t modbus_fun_request_04(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sender *sender);
+int8_t modbus_fun_parse_04_master(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len);
 
-int8_t modbus_fun_request_06(stModbus_RTU_Handler *handler, stModbus_RTU_Sender *sender);
-int8_t modbus_fun_parse_06_master(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len);
+int8_t modbus_fun_request_06(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sender *sender);
+int8_t modbus_fun_parse_06_master(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len);
 
-int8_t modbus_fun_request_10(stModbus_RTU_Handler *handler, stModbus_RTU_Sender *sender);
-int8_t modbus_fun_parse_10_master(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len);
+int8_t modbus_fun_request_10(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sender *sender);
+int8_t modbus_fun_parse_10_master(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len);
 
 /**
  * @brief 读取寄存器

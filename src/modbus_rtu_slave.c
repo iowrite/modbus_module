@@ -4,7 +4,7 @@
 #include "./modbus_config.h"
 #include "./modbus_rtu.h"
 
-int8_t modbus_fun_parse_slave(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)
+int8_t modbus_fun_parse_slave(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len)
 {
     int8_t ret = 0;
     uint16_t crc_local = modbus_crc_cal(buff, len-2);
@@ -17,7 +17,7 @@ int8_t modbus_fun_parse_slave(stModbus_RTU_Handler *handler, uint8_t *buff, uint
         {
             uint8_t f_code = buff[1];
             bool match = false;
-            int8_t (*parse)(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len) = NULL;
+            int8_t (*parse)(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len) = NULL;
             for(int i = 0; i < handler->fun_table_items; i++)
             {
                 if(f_code == handler->fun_table[i].fcode)
@@ -54,7 +54,7 @@ int8_t modbus_fun_parse_slave(stModbus_RTU_Handler *handler, uint8_t *buff, uint
 
 
 
-int8_t modbus_fun_parse_slave_03(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)
+int8_t modbus_fun_parse_slave_03(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len)
 {
     int8_t ret = -1;
     if(len != 8)
@@ -87,7 +87,7 @@ int8_t modbus_fun_parse_slave_03(stModbus_RTU_Handler *handler, uint8_t *buff, u
 }
 
 
-int8_t modbus_fun_parse_slave_04(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)
+int8_t modbus_fun_parse_slave_04(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len)
 {
     int8_t ret = -1;
     if(len != 8)
@@ -121,7 +121,7 @@ int8_t modbus_fun_parse_slave_04(stModbus_RTU_Handler *handler, uint8_t *buff, u
 
 
 
-int8_t modbus_fun_parse_slave_06(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)
+int8_t modbus_fun_parse_slave_06(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len)
 {
     int8_t ret = -1;
     if(len != 8)
@@ -148,7 +148,7 @@ int8_t modbus_fun_parse_slave_06(stModbus_RTU_Handler *handler, uint8_t *buff, u
     return ret;
 }
 
-int8_t modbus_fun_parse_slave_10(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)
+int8_t modbus_fun_parse_slave_10(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len)
 {
     int8_t ret = -1;
     
@@ -188,7 +188,7 @@ int8_t modbus_fun_parse_slave_10(stModbus_RTU_Handler *handler, uint8_t *buff, u
 
 
 
-void modbus_rtu_slave(stModbus_RTU_Handler *handler)
+void modbus_rtu_slave(stModbus_RTU_Handler_def *handler)
 {
 
     if(handler->mode != handler->last_mode)

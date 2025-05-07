@@ -36,7 +36,7 @@
 
 
 
-int8_t modbus_fun_request_03(stModbus_RTU_Handler *pstModbus_RTU_Handler, stModbus_RTU_Sender *sender);
+int8_t modbus_fun_request_03(stModbus_RTU_Handler_def *pstModbus_RTU_Handler, stModbus_RTU_Sender *sender);
 /* Private variable -----------------------------------------------------------------------------*/
 
 stModbus_Interface_Bind stModbus_Interface_Bind_Table[10];
@@ -73,7 +73,7 @@ stModbus_Interface_Bind stModbus_Interface_Bind_Table[10];
 
 
 
-void modbus_rtu_run(stModbus_RTU_Handler *handler)
+void modbus_rtu_run(stModbus_RTU_Handler_def *handler)
 {
     handler->last_call_tick = modbus_port_get_time_ms();
 
@@ -89,7 +89,7 @@ void modbus_rtu_run(stModbus_RTU_Handler *handler)
 
 
 
-int8_t modbus_rtu_set_mode(stModbus_RTU_Handler *handler, emModebus_RTU_Mode mode)
+int8_t modbus_rtu_set_mode(stModbus_RTU_Handler_def *handler, emModebus_RTU_Mode mode)
 {
     handler->mode = mode;
 }
@@ -191,7 +191,7 @@ uint16_t modbus_crc_cal(uint8_t *pData, uint32_t Size)
 
 
 
-int8_t modbus_rtu_init(stModbus_RTU_Handler *handler, eModebus_RTU_Bus_def bus, stModbus_RTU_Handler_Attr *attr)
+int8_t modbus_rtu_init(stModbus_RTU_Handler_def *handler, eModebus_RTU_Bus_def bus, stModbus_RTU_Handler_Attr *attr)
 {
     if(bus == 0)
     {
@@ -244,7 +244,7 @@ int8_t modbus_rtu_set_send(eModebus_RTU_Bus_def bus, int8_t (*send)(uint8_t *, u
     {
         return -1;
     }
-    stModbus_RTU_Handler *handler = NULL;
+    stModbus_RTU_Handler_def *handler = NULL;
     for(int i = 0; i < MODBUS_INTERFACE_BIND_TABLE_ITEMS; i++)
     {
         if(stModbus_Interface_Bind_Table[i].bus == bus)
@@ -262,7 +262,7 @@ int8_t modbus_rtu_set_recv(eModebus_RTU_Bus_def bus, int8_t (*recv)(uint8_t *, u
     {
         return -1;
     }
-    stModbus_RTU_Handler *handler = NULL;
+    stModbus_RTU_Handler_def *handler = NULL;
     for(int i = 0; i < MODBUS_INTERFACE_BIND_TABLE_ITEMS; i++)
     {
         if(stModbus_Interface_Bind_Table[i].bus == bus)
@@ -280,7 +280,7 @@ int8_t modbus_rtu_set_dev_addr(eModebus_RTU_Bus_def bus, int8_t dev_addr)
     {
         return -1;
     }
-    stModbus_RTU_Handler *handler = NULL;
+    stModbus_RTU_Handler_def *handler = NULL;
     for(int i = 0; i < MODBUS_INTERFACE_BIND_TABLE_ITEMS; i++)
     {
         if(stModbus_Interface_Bind_Table[i].bus == bus)

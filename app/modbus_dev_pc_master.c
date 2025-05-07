@@ -55,7 +55,7 @@ stModebus_RTU_Fun_Table rtu_fun_table_pc_master[] =
 };
 #define RTU_FUN_TABLE_ITEMS (sizeof(rtu_fun_table_pc_master) / sizeof(stModebus_RTU_Fun_Table))
 
-stModbus_RTU_Handler stModbus_RTU_Handler_PC_master ;
+stModbus_RTU_Handler_def stModbus_RTU_Handler_PC_master ;
 stModbus_RTU_Handler_Attr rtu_pc_attr_master = {
     .mode = emModebus_RTU_Mode_Master,
     .send = uart_pc_send,

@@ -54,7 +54,7 @@ stModebus_RTU_Fun_Table rtu_fun_table_pc_slave[] =
 };
 #define RTU_FUN_TABLE_ITEMS (sizeof(rtu_fun_table_pc_slave) / sizeof(stModebus_RTU_Fun_Table))
 
-stModbus_RTU_Handler stModbus_RTU_Handler_PC_slave ;
+stModbus_RTU_Handler_def stModbus_RTU_Handler_PC_slave ;
 stModbus_RTU_Handler_Attr rtu_pc_attr_slave = {
     .dev_addr = 1,
     .mode = emModebus_RTU_Mode_Slave,
