@@ -52,8 +52,8 @@ typedef enum Modebus_RTU_Mode
 typedef struct Modbus_RTU_InputReader
 {
     uint8_t ucReg_map_id;
+    uint8_t ucReg_num;
     uint16_t usReg_addr;
-    uint8_t reg_num;
     union{
         uint16_t reg_data[128];
         uint8_t reg_data_byte[256];
@@ -64,7 +64,7 @@ typedef struct Modbus_RTU_HoldReader
 {
     uint8_t ucReg_map_id;
     uint16_t usReg_addr;
-    uint8_t reg_num;
+    uint8_t ucReg_num;
     union{
         uint16_t reg_data[128];
         uint8_t reg_data_byte[256];
@@ -75,7 +75,7 @@ typedef struct Modbus_RTU_HoldWriter
 {
     uint8_t ucReg_map_id;
     uint16_t usReg_addr;
-    uint8_t reg_num;
+    uint8_t ucReg_num;
     union{
         uint16_t reg_data[128];
         uint8_t reg_data_byte[256];
@@ -88,7 +88,7 @@ typedef struct Modbus_RTU_Sender
     uint8_t dev_addr;
     uint8_t fun_code;
     uint16_t usReg_addr;
-    uint8_t reg_num;
+    uint8_t ucReg_num;
     uint16_t reg_data[128];
 }stModbus_RTU_Sender_def;
 

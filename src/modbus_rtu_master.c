@@ -9,15 +9,15 @@ int8_t modbus_fun_request_03(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
     uint8_t dev_addr = sender->dev_addr;
     uint8_t fun_code = sender->fun_code;
     uint16_t usReg_addr = sender->usReg_addr;
-    uint16_t reg_num = sender->reg_num;
+    uint16_t ucReg_num = sender->ucReg_num;
     uint8_t *buff = pstHandler->tx_buff;
 
     buff[0] = dev_addr;
     buff[1] = fun_code;
     buff[2] = usReg_addr>>8;
     buff[3] = (uint8_t)usReg_addr;
-    buff[4] = reg_num>>8;
-    buff[5] = (uint8_t)reg_num;
+    buff[4] = ucReg_num>>8;
+    buff[5] = (uint8_t)ucReg_num;
     uint16_t crc = modbus_crc_cal(buff, 6);
 
     buff[6] = crc>>8;
@@ -33,15 +33,15 @@ int8_t modbus_fun_request_04(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
     uint8_t dev_addr = sender->dev_addr;
     uint8_t fun_code = sender->fun_code;
     uint16_t usReg_addr = sender->usReg_addr;
-    uint16_t reg_num = sender->reg_num;
+    uint16_t ucReg_num = sender->ucReg_num;
     uint8_t *buff = pstHandler->tx_buff;
 
     buff[0] = dev_addr;
     buff[1] = fun_code;
     buff[2] = usReg_addr>>8;
     buff[3] = (uint8_t)usReg_addr;
-    buff[4] = reg_num>>8;
-    buff[5] = (uint8_t)reg_num;
+    buff[4] = ucReg_num>>8;
+    buff[5] = (uint8_t)ucReg_num;
     uint16_t crc = modbus_crc_cal(buff, 6);
 
     buff[6] = crc>>8;
@@ -57,7 +57,7 @@ int8_t modbus_fun_request_06(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
     uint8_t dev_addr = sender->dev_addr;
     uint8_t fun_code = sender->fun_code;
     uint16_t usReg_addr = sender->usReg_addr;
-    uint16_t reg_num = sender->reg_num;
+    uint16_t ucReg_num = sender->ucReg_num;
     uint16_t *reg_data = sender->reg_data;
     uint8_t *buff = pstHandler->tx_buff;
 
@@ -82,7 +82,7 @@ int8_t modbus_fun_request_10(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
     uint8_t dev_addr = sender->dev_addr;
     uint8_t fun_code = sender->fun_code;
     uint16_t usReg_addr = sender->usReg_addr;
-    uint16_t reg_num = sender->reg_num;
+    uint16_t ucReg_num = sender->ucReg_num;
     uint16_t *reg_data = sender->reg_data;
     uint8_t *buff = pstHandler->tx_buff;
 
@@ -90,20 +90,20 @@ int8_t modbus_fun_request_10(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
     buff[1] = fun_code;
     buff[2] = usReg_addr>>8;
     buff[3] = (uint8_t)usReg_addr;
-    buff[4] = reg_num>>8;
-    buff[5] = (uint8_t)reg_num;
-    buff[6] = reg_num*2;
-    for(int i = 0; i < reg_num; i++)        // big endian
+    buff[4] = ucReg_num>>8;
+    buff[5] = (uint8_t)ucReg_num;
+    buff[6] = ucReg_num*2;
+    for(int i = 0; i < ucReg_num; i++)        // big endian
     {
         buff[i*2+7] = reg_data[i]>>8;
         buff[i*2+8] = (uint8_t)reg_data[i];
     }
-    uint16_t crc = modbus_crc_cal(buff, 7+2*reg_num);
+    uint16_t crc = modbus_crc_cal(buff, 7+2*ucReg_num);
 
-    buff[7+2*reg_num] = crc>>8;
-    buff[8+2*reg_num] = (uint8_t)crc;
+    buff[7+2*ucReg_num] = crc>>8;
+    buff[8+2*ucReg_num] = (uint8_t)crc;
 
-    pstHandler->tx_len = 9+reg_num*2;
+    pstHandler->tx_len = 9+ucReg_num*2;
 
     return 0;
 }
@@ -138,7 +138,7 @@ int8_t modbus_rtu_send(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender
 }
 
 
-int8_t modbus_rtu_read_input(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t usReg_addr, uint16_t reg_num, uint16_t *output)
+int8_t modbus_rtu_read_input(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t usReg_addr, uint16_t ucReg_num, uint16_t *output)
 {
     if(bus == 0)
     {
@@ -148,7 +148,7 @@ int8_t modbus_rtu_read_input(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_
     sender.dev_addr = dev_addr;
     sender.fun_code = 0x04;
     sender.usReg_addr = usReg_addr;
-    sender.reg_num = reg_num;
+    sender.ucReg_num = ucReg_num;
 
     stModbus_RTU_Handler_def *pstHandler = NULL;
     for(int i = 0; i < MODBUS_INTERFACE_BIND_TABLE_ITEMS; i++)
@@ -168,7 +168,7 @@ int8_t modbus_rtu_read_input(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_
     int8_t ret = modbus_rtu_send(pstHandler, sender);
     if(ret == 0)
     {
-        pstHandler->master_request_rw_len = reg_num;
+        pstHandler->master_request_rw_len = ucReg_num;
         pstHandler->master_parse_addr = output;
     }
     return ret;
@@ -177,7 +177,7 @@ int8_t modbus_rtu_read_input(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_
 
 
 
-int8_t modbus_rtu_read_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t usReg_addr, uint16_t reg_num, uint16_t *output)
+int8_t modbus_rtu_read_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t usReg_addr, uint16_t ucReg_num, uint16_t *output)
 {
     if(bus == 0)
     {
@@ -187,7 +187,7 @@ int8_t modbus_rtu_read_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t
     sender.dev_addr = dev_addr;
     sender.fun_code = 0x03;
     sender.usReg_addr = usReg_addr;
-    sender.reg_num = reg_num;
+    sender.ucReg_num = ucReg_num;
 
     stModbus_RTU_Handler_def *pstHandler = NULL;
     for(int i = 0; i < MODBUS_INTERFACE_BIND_TABLE_ITEMS; i++)
@@ -207,7 +207,7 @@ int8_t modbus_rtu_read_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t
     int8_t ret = modbus_rtu_send(pstHandler, sender);
     if(ret == 0)
     {
-        pstHandler->master_request_rw_len = reg_num;
+        pstHandler->master_request_rw_len = ucReg_num;
         pstHandler->master_parse_addr = output;
     }
     return ret;
@@ -215,7 +215,7 @@ int8_t modbus_rtu_read_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t
 }
 
 
-int8_t modbus_rtu_write_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t usReg_addr, uint16_t reg_num, uint16_t *input)
+int8_t modbus_rtu_write_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t usReg_addr, uint16_t ucReg_num, uint16_t *input)
 {
     if(bus == 0)
     {
@@ -224,14 +224,14 @@ int8_t modbus_rtu_write_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_
     stModbus_RTU_Sender_def sender;
     sender.dev_addr = dev_addr;
     sender.usReg_addr = usReg_addr;
-    sender.reg_num = reg_num;
-    if(reg_num == 1)
+    sender.ucReg_num = ucReg_num;
+    if(ucReg_num == 1)
     {
         sender.fun_code = 0x06;
         memcpy(sender.reg_data, input, 2);
     }else{
         sender.fun_code = 0x10;
-        memcpy(sender.reg_data, input, reg_num*2);
+        memcpy(sender.reg_data, input, ucReg_num*2);
     }
     
 

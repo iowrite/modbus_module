@@ -198,13 +198,13 @@ static int8_t rtu_pc_read_hold(stModbus_RTU_HoldReader_def *reader)
         return eModebus_RTU_Erno_REG_ADDR_INVALID;
     }
 
-    if(reader->usReg_addr + reader->reg_num - 1 > RTU_PC_MASTER_HOLD_ADDR_MAX)
+    if(reader->usReg_addr + reader->ucReg_num - 1 > RTU_PC_MASTER_HOLD_ADDR_MAX)
     {
         return eModebus_RTU_Erno_REG_ADDR_INVALID;
     }
 
     // big endian  
-    for(int i = 0; i < 2*reader->reg_num; i+=2)
+    for(int i = 0; i < 2*reader->ucReg_num; i+=2)
     {
         reader->reg_data_byte[i] = (uint8_t)(s_pc_hold_reg[reader->usReg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN + i/2] >> 8);
         reader->reg_data_byte[i+1] = (uint8_t)s_pc_hold_reg[reader->usReg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN + i/2];
@@ -221,13 +221,13 @@ int8_t rtu_pc_read_input(stModbus_RTU_InputReader_def *reader)
         return eModebus_RTU_Erno_REG_ADDR_INVALID;
     }
 
-    if(reader->usReg_addr + reader->reg_num - 1 > RTU_PC_MASTER_HOLD_ADDR_MAX)
+    if(reader->usReg_addr + reader->ucReg_num - 1 > RTU_PC_MASTER_HOLD_ADDR_MAX)
     {
         return eModebus_RTU_Erno_REG_ADDR_INVALID;
     }
 
     // big endian  
-    for(int i = 0; i < 2*reader->reg_num; i+=2)
+    for(int i = 0; i < 2*reader->ucReg_num; i+=2)
     {
         reader->reg_data_byte[i] = (uint8_t)(s_pc_hold_reg[reader->usReg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN + i/2] >> 8);
         reader->reg_data_byte[i+1] = (uint8_t)s_pc_hold_reg[reader->usReg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN + i/2];
@@ -244,13 +244,13 @@ int8_t rtu_pc_write_hold(stModbus_RTU_HoldWriter_def *writer)
         return eModebus_RTU_Erno_REG_ADDR_INVALID;
     }
 
-    if(writer->usReg_addr + writer->reg_num - 1 > RTU_PC_MASTER_HOLD_ADDR_MAX)
+    if(writer->usReg_addr + writer->ucReg_num - 1 > RTU_PC_MASTER_HOLD_ADDR_MAX)
     {
         return eModebus_RTU_Erno_REG_ADDR_INVALID;
     }
 
     
-    for(int i = 0; i < writer->reg_num; i++)
+    for(int i = 0; i < writer->ucReg_num; i++)
     {
         if(writer->reg_data[i] > 1000)                                                              // 模拟写入数据检查
         {
