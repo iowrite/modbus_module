@@ -36,7 +36,7 @@
 
 
 
-int8_t modbus_fun_request_03(stModbus_RTU_Handler_def *pstModbus_RTU_Handler, stModbus_RTU_Sender *sender);
+int8_t modbus_fun_request_03(stModbus_RTU_Handler_def *pstModbus_RTU_Handler, stModbus_RTU_Sender_def *sender);
 /* Private variable -----------------------------------------------------------------------------*/
 
 stModbus_Interface_Bind stModbus_Interface_Bind_Table[10];

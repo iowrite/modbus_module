@@ -92,14 +92,14 @@ typedef struct Modbus_RTU_Sender
     uint16_t reg_addr;
     uint8_t reg_num;
     uint16_t reg_data[128];
-}stModbus_RTU_Sender;
+}stModbus_RTU_Sender_def;
 
 
 typedef struct Modbus_RTU_Handler stModbus_RTU_Handler_def;                         // 前向声明 stModbus_RTU_Handler 与 Modbus_RTU_Handler 交叉声明
 typedef struct Modebus_RTU_Fun_Table
 {
     uint8_t fcode;
-    int8_t (*request)(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sender *sender);
+    int8_t (*request)(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sender_def *sender);
     int8_t (*slave_parse)(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len);
     int8_t (*master_parse)(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len);
 
@@ -173,7 +173,7 @@ extern stModbus_Interface_Bind stModbus_Interface_Bind_Table[10];
 /* Exported functions prototypes ----------------------------------------------------------------*/
 uint16_t modbus_crc_cal(uint8_t *buff, uint32_t len);
 
-int8_t modbus_rtu_send(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sender sender);
+int8_t modbus_rtu_send(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sender_def sender);
 int8_t modbus_rtu_set_send(eModebus_RTU_Bus_def bus, int8_t (*send)(uint8_t *, uint16_t));
 int8_t modbus_rtu_set_recv(eModebus_RTU_Bus_def bus, int8_t (*recv)(uint8_t *, uint16_t *));
 

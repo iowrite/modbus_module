@@ -4,7 +4,7 @@
 #include "./modbus_config.h"
 #include "./modbus_rtu.h"
 
-int8_t modbus_fun_request_03(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender *sender)
+int8_t modbus_fun_request_03(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender_def *sender)
 {
     uint8_t dev_addr = sender->dev_addr;
     uint8_t fun_code = sender->fun_code;
@@ -28,7 +28,7 @@ int8_t modbus_fun_request_03(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
     return 0;
 }
 
-int8_t modbus_fun_request_04(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender *sender)
+int8_t modbus_fun_request_04(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender_def *sender)
 {
     uint8_t dev_addr = sender->dev_addr;
     uint8_t fun_code = sender->fun_code;
@@ -52,7 +52,7 @@ int8_t modbus_fun_request_04(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
     return 0;
 }
 
-int8_t modbus_fun_request_06(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender *sender)
+int8_t modbus_fun_request_06(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender_def *sender)
 {
     uint8_t dev_addr = sender->dev_addr;
     uint8_t fun_code = sender->fun_code;
@@ -77,7 +77,7 @@ int8_t modbus_fun_request_06(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
     return 0;
 }
 
-int8_t modbus_fun_request_10(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender *sender)
+int8_t modbus_fun_request_10(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender_def *sender)
 {
     uint8_t dev_addr = sender->dev_addr;
     uint8_t fun_code = sender->fun_code;
@@ -110,7 +110,7 @@ int8_t modbus_fun_request_10(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
 
 
 
-int8_t modbus_rtu_send(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender sender)
+int8_t modbus_rtu_send(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender_def sender)
 {
     stModebus_RTU_Fun_Table_def match_item = {0};
     bool match = false;
@@ -144,7 +144,7 @@ int8_t modbus_rtu_read_input(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_
     {
         return -1;
     }
-    stModbus_RTU_Sender sender;
+    stModbus_RTU_Sender_def sender;
     sender.dev_addr = dev_addr;
     sender.fun_code = 0x04;
     sender.reg_addr = reg_addr;
@@ -183,7 +183,7 @@ int8_t modbus_rtu_read_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t
     {
         return -1;
     }
-    stModbus_RTU_Sender sender;
+    stModbus_RTU_Sender_def sender;
     sender.dev_addr = dev_addr;
     sender.fun_code = 0x03;
     sender.reg_addr = reg_addr;
@@ -221,7 +221,7 @@ int8_t modbus_rtu_write_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_
     {
         return -1;
     }
-    stModbus_RTU_Sender sender;
+    stModbus_RTU_Sender_def sender;
     sender.dev_addr = dev_addr;
     sender.reg_addr = reg_addr;
     sender.reg_num = reg_num;
