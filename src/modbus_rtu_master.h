@@ -27,11 +27,11 @@ int8_t modbus_fun_parse_10_master(stModbus_RTU_Handler *handler, uint8_t *buff, 
  * 
  * @return 0 成功，-1 失败
  */
-int8_t modbus_rtu_read_hold(emModebus_RTU_Bus bus, uint8_t dev_addr, uint16_t reg_addr, uint16_t reg_num, uint16_t *reg_data);
+int8_t modbus_rtu_read_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t reg_addr, uint16_t reg_num, uint16_t *reg_data);
 
-int8_t modbus_rtu_read_input(emModebus_RTU_Bus bus, uint8_t dev_addr, uint16_t reg_addr, uint16_t reg_num, uint16_t *output);
+int8_t modbus_rtu_read_input(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t reg_addr, uint16_t reg_num, uint16_t *output);
 
-int8_t modbus_rtu_write_hold(emModebus_RTU_Bus bus, uint8_t dev_addr, uint16_t reg_addr, uint16_t reg_num, uint16_t *reg_data);
+int8_t modbus_rtu_write_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t reg_addr, uint16_t reg_num, uint16_t *reg_data);
 
 /**
  * @brief 读取上次操作完成状态
@@ -39,5 +39,5 @@ int8_t modbus_rtu_write_hold(emModebus_RTU_Bus bus, uint8_t dev_addr, uint16_t r
  * 
  * @return 0 完成，1 未完成　-１失败
  */
-int8_t modbus_rtu_opt_status(emModebus_RTU_Bus bus);
+int8_t modbus_rtu_opt_status(eModebus_RTU_Bus_def bus);
 #endif

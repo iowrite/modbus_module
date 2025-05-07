@@ -158,7 +158,7 @@ typedef struct Modbus_RTU_Handler_Attribute
 
 typedef struct Modbus_Interface_Bind
 {
-    emModebus_RTU_Bus bus;
+    eModebus_RTU_Bus_def bus;
     stModbus_RTU_Handler *handler;
 
 }stModbus_Interface_Bind;
@@ -174,8 +174,8 @@ extern stModbus_Interface_Bind stModbus_Interface_Bind_Table[10];
 uint16_t modbus_crc_cal(uint8_t *buff, uint32_t len);
 
 int8_t modbus_rtu_send(stModbus_RTU_Handler *handler, stModbus_RTU_Sender sender);
-int8_t modbus_rtu_set_send(emModebus_RTU_Bus bus, int8_t (*send)(uint8_t *, uint16_t));
-int8_t modbus_rtu_set_recv(emModebus_RTU_Bus bus, int8_t (*recv)(uint8_t *, uint16_t *));
+int8_t modbus_rtu_set_send(eModebus_RTU_Bus_def bus, int8_t (*send)(uint8_t *, uint16_t));
+int8_t modbus_rtu_set_recv(eModebus_RTU_Bus_def bus, int8_t (*recv)(uint8_t *, uint16_t *));
 
 
 
@@ -187,7 +187,7 @@ int8_t modbus_rtu_set_recv(emModebus_RTU_Bus bus, int8_t (*recv)(uint8_t *, uint
  * 
  * @return 0: success, -1: fail
  */
-int8_t modbus_rtu_init(stModbus_RTU_Handler *handler, emModebus_RTU_Bus bus, stModbus_RTU_Handler_Attr *attr);
+int8_t modbus_rtu_init(stModbus_RTU_Handler *handler, eModebus_RTU_Bus_def bus, stModbus_RTU_Handler_Attr *attr);
 
 /**
  * @brief  modbus rtu run

@@ -269,7 +269,7 @@ int8_t modbus_dev_pc_slave_init(char *dev_name)
         perror("open serial port");
         return -1;
     }
-    modbus_rtu_init(&stModbus_RTU_Handler_PC_slave,  emModebus_RTU_Bus_PC, &rtu_pc_attr_slave);
+    modbus_rtu_init(&stModbus_RTU_Handler_PC_slave,  eModebus_RTU_Bus_PC, &rtu_pc_attr_slave);
 }
 
 int8_t modbus_dev_pc_slave_run()

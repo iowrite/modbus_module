@@ -191,7 +191,7 @@ uint16_t modbus_crc_cal(uint8_t *pData, uint32_t Size)
 
 
 
-int8_t modbus_rtu_init(stModbus_RTU_Handler *handler, emModebus_RTU_Bus bus, stModbus_RTU_Handler_Attr *attr)
+int8_t modbus_rtu_init(stModbus_RTU_Handler *handler, eModebus_RTU_Bus_def bus, stModbus_RTU_Handler_Attr *attr)
 {
     if(bus == 0)
     {
@@ -238,7 +238,7 @@ int8_t modbus_rtu_init(stModbus_RTU_Handler *handler, emModebus_RTU_Bus bus, stM
 
 
 
-int8_t modbus_rtu_set_send(emModebus_RTU_Bus bus, int8_t (*send)(uint8_t *, uint16_t))
+int8_t modbus_rtu_set_send(eModebus_RTU_Bus_def bus, int8_t (*send)(uint8_t *, uint16_t))
 {
     if(bus == 0)
     {
@@ -256,7 +256,7 @@ int8_t modbus_rtu_set_send(emModebus_RTU_Bus bus, int8_t (*send)(uint8_t *, uint
     handler->send = send;
 }
 
-int8_t modbus_rtu_set_recv(emModebus_RTU_Bus bus, int8_t (*recv)(uint8_t *, uint16_t *))
+int8_t modbus_rtu_set_recv(eModebus_RTU_Bus_def bus, int8_t (*recv)(uint8_t *, uint16_t *))
 {
     if(bus == 0)
     {
@@ -274,7 +274,7 @@ int8_t modbus_rtu_set_recv(emModebus_RTU_Bus bus, int8_t (*recv)(uint8_t *, uint
     handler->recv = recv;
 }
 
-int8_t modbus_rtu_set_dev_addr(emModebus_RTU_Bus bus, int8_t dev_addr)
+int8_t modbus_rtu_set_dev_addr(eModebus_RTU_Bus_def bus, int8_t dev_addr)
 {
     if(bus == 0)
     {

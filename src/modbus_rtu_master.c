@@ -138,7 +138,7 @@ int8_t modbus_rtu_send(stModbus_RTU_Handler *handler, stModbus_RTU_Sender sender
 }
 
 
-int8_t modbus_rtu_read_input(emModebus_RTU_Bus bus, uint8_t dev_addr, uint16_t reg_addr, uint16_t reg_num, uint16_t *output)
+int8_t modbus_rtu_read_input(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t reg_addr, uint16_t reg_num, uint16_t *output)
 {
     if(bus == 0)
     {
@@ -177,7 +177,7 @@ int8_t modbus_rtu_read_input(emModebus_RTU_Bus bus, uint8_t dev_addr, uint16_t r
 
 
 
-int8_t modbus_rtu_read_hold(emModebus_RTU_Bus bus, uint8_t dev_addr, uint16_t reg_addr, uint16_t reg_num, uint16_t *output)
+int8_t modbus_rtu_read_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t reg_addr, uint16_t reg_num, uint16_t *output)
 {
     if(bus == 0)
     {
@@ -215,7 +215,7 @@ int8_t modbus_rtu_read_hold(emModebus_RTU_Bus bus, uint8_t dev_addr, uint16_t re
 }
 
 
-int8_t modbus_rtu_write_hold(emModebus_RTU_Bus bus, uint8_t dev_addr, uint16_t reg_addr, uint16_t reg_num, uint16_t *input)
+int8_t modbus_rtu_write_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t reg_addr, uint16_t reg_num, uint16_t *input)
 {
     if(bus == 0)
     {
@@ -258,7 +258,7 @@ int8_t modbus_rtu_write_hold(emModebus_RTU_Bus bus, uint8_t dev_addr, uint16_t r
     return ret;
     
 }
-int8_t modbus_rtu_opt_status(emModebus_RTU_Bus bus)
+int8_t modbus_rtu_opt_status(eModebus_RTU_Bus_def bus)
 {
     if(bus == 0)
     {

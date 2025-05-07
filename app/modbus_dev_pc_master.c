@@ -205,7 +205,7 @@ int8_t modbus_dev_pc_master_init(char *dev_name)
         perror("open serial port");
         return -1;
     }
-    modbus_rtu_init(&stModbus_RTU_Handler_PC_master,  emModebus_RTU_Bus_PC, &rtu_pc_attr_master);
+    modbus_rtu_init(&stModbus_RTU_Handler_PC_master,  eModebus_RTU_Bus_PC, &rtu_pc_attr_master);
 }
 
 int8_t modbus_dev_pc_master_run()

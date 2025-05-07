@@ -1,6 +1,5 @@
 #include <stdint.h>
 
-
 #ifndef __MODBUS_PORT_H__
 #define __MODBUS_PORT_H__
 
@@ -11,43 +10,32 @@ extern "C"
 
 /* Includes -------------------------------------------------------------------------------------*/
 
-//#include "system_hoy.h"
 /* Exported defines -----------------------------------------------------------------------------*/
 
 /* Exported typedef -----------------------------------------------------------------------------*/
+
 typedef enum Modebus_RTU_Bus
 {
-    emModebus_RTU_Bus_Start,
-    emModebus_RTU_Bus_PC = 1,
+    eModebus_RTU_Bus_Start,
+    eModebus_RTU_Bus_PC = 1,
 
-    emModebus_RTU_Bus_End,
+    eModebus_RTU_Bus_End,
 
-}emModebus_RTU_Bus;
+}eModebus_RTU_Bus_def;
 
 
 
-typedef enum
+typedef enum Gateway_Host_Protocol_Res
 {
     RES_FAILED              = 0,
     RES_SUCCESS             = 1,
     RES_PASSTHROUGH         = 2
     
-}GATEWAY_HOST_PROTOCOL_RES_T;
+}eGateway_Host_Protocol_Res_def;
 
 /*Function code definition*/
 
-
-
-
-
-
-
-
-
-
-
 /* Exported functions prototypes ----------------------------------------------------------------*/
-
 
 uint32_t modbus_port_get_time_ms();
 
@@ -56,5 +44,5 @@ uint32_t modbus_port_get_time_ms();
 }
 #endif
 
-#endif /* __C_TEMPLATE_H__ */
+#endif
 /******************************************* END OF FILE *****************************************/

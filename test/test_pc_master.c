@@ -27,19 +27,19 @@ int main(int argc, char *argv[]) {
         if(now_ms -last_call_ms > 1000)
         {
             last_call_ms = now_ms;
-            modbus_rtu_read_input(emModebus_RTU_Bus_PC, 0x01, 0x0069, 1, reg_data);
-            // modbus_rtu_read_input(emModebus_RTU_Bus_PC, 0x01, 0x0069, 10, reg_data);
-            // modbus_rtu_read_hold(emModebus_RTU_Bus_PC, 0x01, 0x0069, 1, reg_data);
-            // modbus_rtu_read_hold(emModebus_RTU_Bus_PC, 0x01, 0x0069, 2, reg_data);
-            // modbus_rtu_read_hold(emModebus_RTU_Bus_PC, 0x01, 0x0069, 10, reg_data);
-            // modbus_rtu_write_hold(emModebus_RTU_Bus_PC, 0x01, 0x0069, 1, reg_data_write);
-            // modbus_rtu_write_hold(emModebus_RTU_Bus_PC, 0x01, 0x0069, 2, reg_data_write);
-            // modbus_rtu_write_hold(emModebus_RTU_Bus_PC, 0x01, 0x0069, 10, reg_data_write);
-            // modbus_rtu_write_hold(emModebus_RTU_Bus_PC, 0x01, 0x0069, 2, reg_data_write_invalid);
+            modbus_rtu_read_input(eModebus_RTU_Bus_PC, 0x01, 0x0069, 1, reg_data);
+            // modbus_rtu_read_input(eModebus_RTU_Bus_PC, 0x01, 0x0069, 10, reg_data);
+            // modbus_rtu_read_hold(eModebus_RTU_Bus_PC, 0x01, 0x0069, 1, reg_data);
+            // modbus_rtu_read_hold(eModebus_RTU_Bus_PC, 0x01, 0x0069, 2, reg_data);
+            // modbus_rtu_read_hold(eModebus_RTU_Bus_PC, 0x01, 0x0069, 10, reg_data);
+            // modbus_rtu_write_hold(eModebus_RTU_Bus_PC, 0x01, 0x0069, 1, reg_data_write);
+            // modbus_rtu_write_hold(eModebus_RTU_Bus_PC, 0x01, 0x0069, 2, reg_data_write);
+            // modbus_rtu_write_hold(eModebus_RTU_Bus_PC, 0x01, 0x0069, 10, reg_data_write);
+            // modbus_rtu_write_hold(eModebus_RTU_Bus_PC, 0x01, 0x0069, 2, reg_data_write_invalid);
             send = true;
         }
         if(send){
-            int8_t ret = modbus_rtu_opt_status(emModebus_RTU_Bus_PC);
+            int8_t ret = modbus_rtu_opt_status(eModebus_RTU_Bus_PC);
             if(ret == 0)
             {
                 printf("master poll success\n");
