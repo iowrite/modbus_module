@@ -17,23 +17,23 @@ extern "C"
 /* Exported typedef -----------------------------------------------------------------------------*/
 typedef enum Modebus_RTU_Erno
 {
-    Modebus_RTU_Erno_START = -1,
-    Modebus_RTU_Erno_SUCCESS = 0,
-    Modebus_RTU_Erno_FUN_CODE_NOT_FOUND = 1,            // std error code
-    Modebus_RTU_Erno_REG_ADDR_INVALID = 2,              // std error code
-    Modebus_RTU_Erno_REG_VALUE_INVALID = 3,             // std error code
-    Modebus_RTU_Erno_PERMISSION_DENIED = 12,        //Custom error codes: wirte more than once to a  hold register that can only be written once, or wirte a hold register that can only be read.
-    Modebus_RTU_Erno_FRAME_FORMAT_ERROR = 13,           // 自定义错误码：帧格式错误                 // master use too
-    Modebus_RTU_Erno_MASTER_BUS_BUSY = 14,              // 自定义错误码：主机模式总线忙         
-    Modebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH = 15, // 自定义错误码：主机模式请求地址与当前地址不匹配
-    Modebus_RTU_Erno_MASTER_REQUEST_FUN_NOT_FOUND = 16, // 自定义错误码：未找到主机发送函数
-    Modebus_RTU_Erno_MASTER_PARSE_FUN_NOT_FOUND = 17, // 自定义错误码：未找到主机解析函数
-    Modebus_RTU_Erno_SLAVE_PARSE_FUN_NOT_FOUND = 18, // 自定义错误码：未找到从机解析函数
+    eModebus_RTU_Erno_START = -1,
+    eModebus_RTU_Erno_SUCCESS = 0,
+    eModebus_RTU_Erno_FUN_CODE_NOT_FOUND = 1,            // std error code
+    eModebus_RTU_Erno_REG_ADDR_INVALID = 2,              // std error code
+    eModebus_RTU_Erno_REG_VALUE_INVALID = 3,             // std error code
+    eModebus_RTU_Erno_PERMISSION_DENIED = 12,        //Custom error codes: wirte more than once to a  hold register that can only be written once, or wirte a hold register that can only be read.
+    eModebus_RTU_Erno_FRAME_FORMAT_ERROR = 13,           // 自定义错误码：帧格式错误                 // master use too
+    eModebus_RTU_Erno_MASTER_BUS_BUSY = 14,              // 自定义错误码：主机模式总线忙         
+    eModebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH = 15, // 自定义错误码：主机模式请求地址与当前地址不匹配
+    eModebus_RTU_Erno_MASTER_REQUEST_FUN_NOT_FOUND = 16, // 自定义错误码：未找到主机发送函数
+    eModebus_RTU_Erno_MASTER_PARSE_FUN_NOT_FOUND = 17, // 自定义错误码：未找到主机解析函数
+    eModebus_RTU_Erno_SLAVE_PARSE_FUN_NOT_FOUND = 18, // 自定义错误码：未找到从机解析函数
 
 
-    Modebus_RTU_Erno_END,
+    eModebus_RTU_Erno_END,
     
-}emModebus_RTU_Erno;
+}eModebus_RTU_Erno_def;
 
 typedef enum eModbus_RTU_State_def
 {

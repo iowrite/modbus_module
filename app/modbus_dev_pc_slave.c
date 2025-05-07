@@ -195,12 +195,12 @@ static int8_t rtu_pc_read_hold(stModbus_RTU_HoldReader_def *reader)
 {
     if(reader->reg_addr < RTU_PC_MASTER_HOLD_ADDR_MIN || reader->reg_addr > RTU_PC_MASTER_HOLD_ADDR_MAX)
     {
-        return Modebus_RTU_Erno_REG_ADDR_INVALID;
+        return eModebus_RTU_Erno_REG_ADDR_INVALID;
     }
 
     if(reader->reg_addr + reader->reg_num - 1 > RTU_PC_MASTER_HOLD_ADDR_MAX)
     {
-        return Modebus_RTU_Erno_REG_ADDR_INVALID;
+        return eModebus_RTU_Erno_REG_ADDR_INVALID;
     }
 
     // big endian  
@@ -209,7 +209,7 @@ static int8_t rtu_pc_read_hold(stModbus_RTU_HoldReader_def *reader)
         reader->reg_data_byte[i] = (uint8_t)(s_pc_hold_reg[reader->reg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN + i/2] >> 8);
         reader->reg_data_byte[i+1] = (uint8_t)s_pc_hold_reg[reader->reg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN + i/2];
     }
-    return Modebus_RTU_Erno_SUCCESS;
+    return eModebus_RTU_Erno_SUCCESS;
 }
 
 
@@ -218,12 +218,12 @@ int8_t rtu_pc_read_input(stModbus_RTU_InputReader_def *reader)
 
     if(reader->reg_addr < RTU_PC_MASTER_HOLD_ADDR_MIN || reader->reg_addr > RTU_PC_MASTER_HOLD_ADDR_MAX)
     {
-        return Modebus_RTU_Erno_REG_ADDR_INVALID;
+        return eModebus_RTU_Erno_REG_ADDR_INVALID;
     }
 
     if(reader->reg_addr + reader->reg_num - 1 > RTU_PC_MASTER_HOLD_ADDR_MAX)
     {
-        return Modebus_RTU_Erno_REG_ADDR_INVALID;
+        return eModebus_RTU_Erno_REG_ADDR_INVALID;
     }
 
     // big endian  
@@ -232,7 +232,7 @@ int8_t rtu_pc_read_input(stModbus_RTU_InputReader_def *reader)
         reader->reg_data_byte[i] = (uint8_t)(s_pc_hold_reg[reader->reg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN + i/2] >> 8);
         reader->reg_data_byte[i+1] = (uint8_t)s_pc_hold_reg[reader->reg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN + i/2];
     }
-    return Modebus_RTU_Erno_SUCCESS;
+    return eModebus_RTU_Erno_SUCCESS;
 
 }
 
@@ -241,12 +241,12 @@ int8_t rtu_pc_write_hold(stModbus_RTU_HoldWriter_def *writer)
 
     if(writer->reg_addr < RTU_PC_MASTER_HOLD_ADDR_MIN || writer->reg_addr > RTU_PC_MASTER_HOLD_ADDR_MAX)
     {
-        return Modebus_RTU_Erno_REG_ADDR_INVALID;
+        return eModebus_RTU_Erno_REG_ADDR_INVALID;
     }
 
     if(writer->reg_addr + writer->reg_num - 1 > RTU_PC_MASTER_HOLD_ADDR_MAX)
     {
-        return Modebus_RTU_Erno_REG_ADDR_INVALID;
+        return eModebus_RTU_Erno_REG_ADDR_INVALID;
     }
 
     
@@ -254,11 +254,11 @@ int8_t rtu_pc_write_hold(stModbus_RTU_HoldWriter_def *writer)
     {
         if(writer->reg_data[i] > 1000)                                                              // 模拟写入数据检查
         {
-            return Modebus_RTU_Erno_REG_VALUE_INVALID;
+            return eModebus_RTU_Erno_REG_VALUE_INVALID;
         }
         s_pc_hold_reg[writer->reg_addr-RTU_PC_MASTER_HOLD_ADDR_MIN + i] = writer->reg_data[i];          // 字节序转换在上层完成,这里直接使用
     }
-    return Modebus_RTU_Erno_SUCCESS;
+    return eModebus_RTU_Erno_SUCCESS;
 
 }
 

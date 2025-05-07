@@ -31,7 +31,7 @@ int8_t modbus_fun_parse_slave(stModbus_RTU_Handler_def *handler, uint8_t *buff, 
             {
                 ret = parse(handler, buff, len);
             }else{
-                ret = Modebus_RTU_Erno_FUN_CODE_NOT_FOUND;
+                ret = eModebus_RTU_Erno_FUN_CODE_NOT_FOUND;
             }
             if(ret)
             {
@@ -59,7 +59,7 @@ int8_t modbus_fun_parse_slave_03(stModbus_RTU_Handler_def *handler, uint8_t *buf
     int8_t ret = -1;
     if(len != 8)
     {
-        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+        return eModebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
     // pdu parse
     uint16_t reg_addr = buff[2]<<8|buff[3];     // big endian
@@ -92,7 +92,7 @@ int8_t modbus_fun_parse_slave_04(stModbus_RTU_Handler_def *handler, uint8_t *buf
     int8_t ret = -1;
     if(len != 8)
     {
-        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+        return eModebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
     // pdu parse
     uint16_t reg_addr = buff[2]<<8|buff[3];     // big endian
@@ -126,7 +126,7 @@ int8_t modbus_fun_parse_slave_06(stModbus_RTU_Handler_def *handler, uint8_t *buf
     int8_t ret = -1;
     if(len != 8)
     {
-        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+        return eModebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
     // pdu parse
     uint16_t reg_addr = buff[2]<<8|buff[3];         // big endian
@@ -159,11 +159,11 @@ int8_t modbus_fun_parse_slave_10(stModbus_RTU_Handler_def *handler, uint8_t *buf
 
     if(write_len != write_num*2)
     {
-        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+        return eModebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
     if(len != 9+write_len)
     {
-        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+        return eModebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
     stModbus_RTU_HoldWriter_def writer;
     writer.reg_map_id = handler->reg_map_id;

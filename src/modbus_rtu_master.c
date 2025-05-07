@@ -301,22 +301,22 @@ int8_t modbus_fun_parse_03_master(stModbus_RTU_Handler_def *pstHandler, uint8_t 
     {
         if(len != 5)
         {
-            return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+            return eModebus_RTU_Erno_FRAME_FORMAT_ERROR;
         }else {
             return buff[2];             // return slave status
         }
     }else if(f_code != 0x03)
     {
-        return Modebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH;
+        return eModebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH;
     }
     if(len != 5+value_len)
     {
-        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+        return eModebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
 
     if(value_len != 2*pstHandler->master_request_rw_len)
     {
-        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+        return eModebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
 
     for(int i = 0; i < len-5; i+=2){
@@ -342,22 +342,22 @@ int8_t modbus_fun_parse_04_master(stModbus_RTU_Handler_def *pstHandler, uint8_t 
     {
         if(len != 5)
         {
-            return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+            return eModebus_RTU_Erno_FRAME_FORMAT_ERROR;
         }else {
             return buff[2];             // return slave status
         }
     }else if(f_code != 0x04)
     {
-        return Modebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH;
+        return eModebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH;
     }
     if(len != 5+value_len)
     {
-        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+        return eModebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
 
     if(value_len != 2*pstHandler->master_request_rw_len)
     {
-        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+        return eModebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
 
     for(int i = 0; i < len-5; i+=2){
@@ -380,22 +380,22 @@ int8_t modbus_fun_parse_06_master(stModbus_RTU_Handler_def *pstHandler, uint8_t 
     {
         if(len != 5)
         {
-            return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+            return eModebus_RTU_Erno_FRAME_FORMAT_ERROR;
         }else {
             return buff[2];             // return slave status
         }
     }else if(f_code != 0x06)
     {
-        return Modebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH;
+        return eModebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH;
     }
     if(len != 8)
     {
-        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+        return eModebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
 
     if(memcmp(buff, pstHandler->tx_buff, 10))
     {
-        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+        return eModebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
         
     return ret;
@@ -412,22 +412,22 @@ int8_t modbus_fun_parse_10_master(stModbus_RTU_Handler_def *pstHandler, uint8_t 
     {
         if(len != 5)
         {
-            return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+            return eModebus_RTU_Erno_FRAME_FORMAT_ERROR;
         }else {
             return buff[2];             // return slave status
         }
     }else if(f_code != 0x10)
     {
-        return Modebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH;
+        return eModebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH;
     }
     if(len != 9+value_len)
     {
-        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+        return eModebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
 
     if(memcmp(buff, pstHandler->tx_buff, len))
     {
-        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+        return eModebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
         
     return ret;
@@ -457,12 +457,12 @@ int8_t modbus_fun_parse_master(stModbus_RTU_Handler_def *pstHandler, uint8_t *bu
             }
             if(parse == NULL)
             {
-                ret = Modebus_RTU_Erno_MASTER_PARSE_FUN_NOT_FOUND;
+                ret = eModebus_RTU_Erno_MASTER_PARSE_FUN_NOT_FOUND;
             }else{
                 ret = parse(pstHandler, buff, len);
             }
         }else{
-            ret = Modebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH;
+            ret = eModebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH;
         }
     }
 
@@ -510,14 +510,14 @@ void modbus_rtu_master(stModbus_RTU_Handler_def *pstHandler)
                 pstHandler->state = eModbus_RTU_State_IDLE;
                 pstHandler->tx_len = 0;
                 break;
-            }else if(ret == Modebus_RTU_Erno_FRAME_FORMAT_ERROR ||                      // fail
-                     ret == Modebus_RTU_Erno_FUN_CODE_NOT_FOUND || 
-                     ret == Modebus_RTU_Erno_REG_ADDR_INVALID   ||
-                     ret == Modebus_RTU_Erno_REG_VALUE_INVALID    ){
+            }else if(ret == eModebus_RTU_Erno_FRAME_FORMAT_ERROR ||                      // fail
+                     ret == eModebus_RTU_Erno_FUN_CODE_NOT_FOUND || 
+                     ret == eModebus_RTU_Erno_REG_ADDR_INVALID   ||
+                     ret == eModebus_RTU_Erno_REG_VALUE_INVALID    ){
                         pstHandler->state = eModbus_RTU_State_IDLE;
                         pstHandler->tx_len = 0;
                         break; 
-            }else if(ret == Modebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH){
+            }else if(ret == eModebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH){
                 break;                                                          // parse next frame(may be fail with time out if no next frame)
             }
         }
