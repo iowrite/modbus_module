@@ -107,10 +107,10 @@ typedef struct Modbus_RTU_Handler
 {
     eModbus_RTU_State_def eState, eLast_state;               // send/receive switch judge
     eModebus_RTU_Mode_def eMode, eLast_mode;                 // slave/master switch judge
-    uint8_t tx_buff[300];
-    uint16_t tx_len;
-    uint8_t rx_buff[300];
-    uint16_t rx_len;
+    uint8_t ucTx_buff[300];
+    uint16_t usTx_len;
+    uint8_t ucRx_buff[300];
+    uint16_t ucRx_len;
     uint32_t last_call_tick;
     stModebus_RTU_Fun_Table_def *fun_table;                    // callback function table
     uint8_t fun_table_items;

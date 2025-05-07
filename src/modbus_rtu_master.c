@@ -10,7 +10,7 @@ int8_t modbus_fun_request_03(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
     uint8_t ucFun_code = sender->ucFun_code;
     uint16_t usReg_addr = sender->usReg_addr;
     uint16_t ucReg_num = sender->ucReg_num;
-    uint8_t *buff = pstHandler->tx_buff;
+    uint8_t *buff = pstHandler->ucTx_buff;
 
     buff[0] = ucDev_addr;
     buff[1] = ucFun_code;
@@ -23,7 +23,7 @@ int8_t modbus_fun_request_03(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
     buff[6] = crc>>8;
     buff[7] = (uint8_t)crc;
 
-    pstHandler->tx_len = 8;
+    pstHandler->usTx_len = 8;
 
     return 0;
 }
@@ -34,7 +34,7 @@ int8_t modbus_fun_request_04(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
     uint8_t ucFun_code = sender->ucFun_code;
     uint16_t usReg_addr = sender->usReg_addr;
     uint16_t ucReg_num = sender->ucReg_num;
-    uint8_t *buff = pstHandler->tx_buff;
+    uint8_t *buff = pstHandler->ucTx_buff;
 
     buff[0] = ucDev_addr;
     buff[1] = ucFun_code;
@@ -47,7 +47,7 @@ int8_t modbus_fun_request_04(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
     buff[6] = crc>>8;
     buff[7] = (uint8_t)crc;
 
-    pstHandler->tx_len = 8;
+    pstHandler->usTx_len = 8;
 
     return 0;
 }
@@ -59,7 +59,7 @@ int8_t modbus_fun_request_06(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
     uint16_t usReg_addr = sender->usReg_addr;
     uint16_t ucReg_num = sender->ucReg_num;
     uint16_t *usReg_data = sender->usReg_data;
-    uint8_t *buff = pstHandler->tx_buff;
+    uint8_t *buff = pstHandler->ucTx_buff;
 
     buff[0] = ucDev_addr;
     buff[1] = ucFun_code;
@@ -72,7 +72,7 @@ int8_t modbus_fun_request_06(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
     buff[6] = crc>>8;
     buff[7] = (uint8_t)crc;
 
-    pstHandler->tx_len = 8;
+    pstHandler->usTx_len = 8;
 
     return 0;
 }
@@ -84,7 +84,7 @@ int8_t modbus_fun_request_10(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
     uint16_t usReg_addr = sender->usReg_addr;
     uint16_t ucReg_num = sender->ucReg_num;
     uint16_t *usReg_data = sender->usReg_data;
-    uint8_t *buff = pstHandler->tx_buff;
+    uint8_t *buff = pstHandler->ucTx_buff;
 
     buff[0] = ucDev_addr;
     buff[1] = ucFun_code;
@@ -103,7 +103,7 @@ int8_t modbus_fun_request_10(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
     buff[7+2*ucReg_num] = crc>>8;
     buff[8+2*ucReg_num] = (uint8_t)crc;
 
-    pstHandler->tx_len = 9+ucReg_num*2;
+    pstHandler->usTx_len = 9+ucReg_num*2;
 
     return 0;
 }
@@ -159,7 +159,7 @@ int8_t modbus_rtu_read_input(eModebus_RTU_Bus_def bus, uint8_t ucDev_addr, uint1
             break;
         }
     }
-    if(pstHandler->tx_len)
+    if(pstHandler->usTx_len)
     {
         // send busy
         return -1;
@@ -198,7 +198,7 @@ int8_t modbus_rtu_read_hold(eModebus_RTU_Bus_def bus, uint8_t ucDev_addr, uint16
             break;
         }
     }
-    if(pstHandler->tx_len)
+    if(pstHandler->usTx_len)
     {
         // send busy
         return -1;
@@ -244,7 +244,7 @@ int8_t modbus_rtu_write_hold(eModebus_RTU_Bus_def bus, uint8_t ucDev_addr, uint1
             break;
         }
     }
-    if(pstHandler->tx_len)
+    if(pstHandler->usTx_len)
     {
         // send busy
         return -1;
@@ -393,7 +393,7 @@ int8_t modbus_fun_parse_06_master(stModbus_RTU_Handler_def *pstHandler, uint8_t 
         return eModebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
 
-    if(memcmp(buff, pstHandler->tx_buff, 10))
+    if(memcmp(buff, pstHandler->ucTx_buff, 10))
     {
         return eModebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
@@ -425,7 +425,7 @@ int8_t modbus_fun_parse_10_master(stModbus_RTU_Handler_def *pstHandler, uint8_t 
         return eModebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
 
-    if(memcmp(buff, pstHandler->tx_buff, len))
+    if(memcmp(buff, pstHandler->ucTx_buff, len))
     {
         return eModebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
@@ -486,7 +486,7 @@ void modbus_rtu_master(stModbus_RTU_Handler_def *pstHandler)
         pstHandler->eState = eModbus_RTU_State_IDLE;
         break;
     case eModbus_RTU_State_IDLE:
-        if(pstHandler->tx_len != 0)
+        if(pstHandler->usTx_len != 0)
         {
             pstHandler->eLast_mode = eModbus_RTU_State_IDLE;
             pstHandler->eState = eModbus_RTU_State_Send;
@@ -497,25 +497,25 @@ void modbus_rtu_master(stModbus_RTU_Handler_def *pstHandler)
         if(now - pstHandler->Master_Wait_Count > pstHandler->Master_Wait_Recv_Limt)
         {
             mylog("bus receive timeout\n");
-            pstHandler->tx_len = 0;
+            pstHandler->usTx_len = 0;
             pstHandler->eState = eModbus_RTU_State_IDLE;
             break;
         }
-        if(pstHandler->recv(pstHandler->rx_buff, &pstHandler->rx_len))
+        if(pstHandler->recv(pstHandler->ucRx_buff, &pstHandler->ucRx_len))
         {
-            int8_t ret = modbus_fun_parse_master(pstHandler, pstHandler->rx_buff, pstHandler->rx_len);                   /// XXX 考虑广播的情况
+            int8_t ret = modbus_fun_parse_master(pstHandler, pstHandler->ucRx_buff, pstHandler->ucRx_len);                   /// XXX 考虑广播的情况
             if(ret == 0)                                                                // success
             {
                 pstHandler->eLast_state = eModbus_RTU_State_Receive;
                 pstHandler->eState = eModbus_RTU_State_IDLE;
-                pstHandler->tx_len = 0;
+                pstHandler->usTx_len = 0;
                 break;
             }else if(ret == eModebus_RTU_Erno_FRAME_FORMAT_ERROR ||                      // fail
                      ret == eModebus_RTU_Erno_FUN_CODE_NOT_FOUND || 
                      ret == eModebus_RTU_Erno_REG_ADDR_INVALID   ||
                      ret == eModebus_RTU_Erno_REG_VALUE_INVALID    ){
                         pstHandler->eState = eModbus_RTU_State_IDLE;
-                        pstHandler->tx_len = 0;
+                        pstHandler->usTx_len = 0;
                         break; 
             }else if(ret == eModebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH){
                 break;                                                          // parse next frame(may be fail with time out if no next frame)
@@ -523,7 +523,7 @@ void modbus_rtu_master(stModbus_RTU_Handler_def *pstHandler)
         }
         break;
     case eModbus_RTU_State_Send:
-        pstHandler->send(pstHandler->tx_buff, pstHandler->tx_len);
+        pstHandler->send(pstHandler->ucTx_buff, pstHandler->usTx_len);
         mylog("bus send\n");
         pstHandler->Master_Wait_Count = modbus_port_get_time_ms();
         pstHandler->eLast_state = eModbus_RTU_State_Send;

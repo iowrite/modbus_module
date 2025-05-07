@@ -35,13 +35,13 @@ int8_t modbus_fun_parse_slave(stModbus_RTU_Handler_def *handler, uint8_t *buff, 
             }
             if(ret)
             {
-                handler->tx_buff[0] = handler->ucDev_addr;
-                handler->tx_buff[1] = 0x80 | f_code;
-                handler->tx_buff[2] = ret;
-                uint16_t crc_cal = modbus_crc_cal(handler->tx_buff, 3);
-                handler->tx_buff[3] = (uint8_t)(crc_cal>>8);
-                handler->tx_buff[4] = (uint8_t)crc_cal;
-                handler->tx_len = 5;
+                handler->ucTx_buff[0] = handler->ucDev_addr;
+                handler->ucTx_buff[1] = 0x80 | f_code;
+                handler->ucTx_buff[2] = ret;
+                uint16_t crc_cal = modbus_crc_cal(handler->ucTx_buff, 3);
+                handler->ucTx_buff[3] = (uint8_t)(crc_cal>>8);
+                handler->ucTx_buff[4] = (uint8_t)crc_cal;
+                handler->usTx_len = 5;
             }
         }
     }
@@ -73,14 +73,14 @@ int8_t modbus_fun_parse_slave_03(stModbus_RTU_Handler_def *handler, uint8_t *buf
     ret = handler->read_hold(&reader);
     if(ret == 0)
     {
-        handler->tx_buff[0] = handler->ucDev_addr;
-        handler->tx_buff[1] = 0x03;
-        handler->tx_buff[2] = 2*read_len;
-        memcpy(&handler->tx_buff[3], reader.ucReg_data_byte, 2*read_len);
-        uint16_t crc_cal = modbus_crc_cal(handler->tx_buff, 3+2*read_len);
-        handler->tx_buff[3+2*read_len] = (uint8_t)(crc_cal>>8);
-        handler->tx_buff[3+2*read_len+1] = (uint8_t)crc_cal;
-        handler->tx_len = 3+2*read_len+2;
+        handler->ucTx_buff[0] = handler->ucDev_addr;
+        handler->ucTx_buff[1] = 0x03;
+        handler->ucTx_buff[2] = 2*read_len;
+        memcpy(&handler->ucTx_buff[3], reader.ucReg_data_byte, 2*read_len);
+        uint16_t crc_cal = modbus_crc_cal(handler->ucTx_buff, 3+2*read_len);
+        handler->ucTx_buff[3+2*read_len] = (uint8_t)(crc_cal>>8);
+        handler->ucTx_buff[3+2*read_len+1] = (uint8_t)crc_cal;
+        handler->usTx_len = 3+2*read_len+2;
     }
 
     return ret;
@@ -106,14 +106,14 @@ int8_t modbus_fun_parse_slave_04(stModbus_RTU_Handler_def *handler, uint8_t *buf
     ret = handler->read_input(&reader);
     if(ret == 0)
     {
-        handler->tx_buff[0] = handler->ucDev_addr;
-        handler->tx_buff[1] = 0x04;
-        handler->tx_buff[2] = 2*read_len;
-        memcpy(&handler->tx_buff[3], reader.ucReg_data_byte, 2*read_len);
-        uint16_t crc_cal = modbus_crc_cal(handler->tx_buff, 3+2*read_len);
-        handler->tx_buff[3+2*read_len] = (uint8_t)(crc_cal>>8);
-        handler->tx_buff[3+2*read_len+1] = (uint8_t)crc_cal;
-        handler->tx_len = 3+2*read_len+2;
+        handler->ucTx_buff[0] = handler->ucDev_addr;
+        handler->ucTx_buff[1] = 0x04;
+        handler->ucTx_buff[2] = 2*read_len;
+        memcpy(&handler->ucTx_buff[3], reader.ucReg_data_byte, 2*read_len);
+        uint16_t crc_cal = modbus_crc_cal(handler->ucTx_buff, 3+2*read_len);
+        handler->ucTx_buff[3+2*read_len] = (uint8_t)(crc_cal>>8);
+        handler->ucTx_buff[3+2*read_len+1] = (uint8_t)crc_cal;
+        handler->usTx_len = 3+2*read_len+2;
     }
 
     return ret;
@@ -141,8 +141,8 @@ int8_t modbus_fun_parse_slave_06(stModbus_RTU_Handler_def *handler, uint8_t *buf
     ret = handler->write_hold(&writer);
     if(ret == 0)
     {
-        memcpy(&handler->tx_buff[0], buff, 8);
-        handler->tx_len = 8;
+        memcpy(&handler->ucTx_buff[0], buff, 8);
+        handler->usTx_len = 8;
     }
 
     return ret;
@@ -177,8 +177,8 @@ int8_t modbus_fun_parse_slave_10(stModbus_RTU_Handler_def *handler, uint8_t *buf
     ret = handler->write_hold(&writer);
     if(ret == 0)
     {
-        memcpy(&handler->tx_buff[0], buff, len);
-        handler->tx_len = len;
+        memcpy(&handler->ucTx_buff[0], buff, len);
+        handler->usTx_len = len;
     }
 
     return ret;
@@ -203,7 +203,7 @@ void modbus_rtu_slave(stModbus_RTU_Handler_def *handler)
         handler->eState = eModbus_RTU_State_IDLE;
         break;
     case eModbus_RTU_State_IDLE:
-        if(handler->recv(handler->rx_buff, &handler->rx_len))
+        if(handler->recv(handler->ucRx_buff, &handler->ucRx_len))
         {
             mylog("bus recv\n");
             handler->eState = eModbus_RTU_State_Receive;
@@ -211,8 +211,8 @@ void modbus_rtu_slave(stModbus_RTU_Handler_def *handler)
         break;
     case eModbus_RTU_State_Receive:
     {
-        int8_t ret = modbus_fun_parse_slave(handler, handler->rx_buff, handler->rx_len);
-        if(handler->tx_len > 0)
+        int8_t ret = modbus_fun_parse_slave(handler, handler->ucRx_buff, handler->ucRx_len);
+        if(handler->usTx_len > 0)
         {
             handler->eState = eModbus_RTU_State_Send;
         }else{
@@ -221,9 +221,9 @@ void modbus_rtu_slave(stModbus_RTU_Handler_def *handler)
     }
         break;
     case eModbus_RTU_State_Send:
-        int8_t ret = handler->send(handler->tx_buff, handler->tx_len);
+        int8_t ret = handler->send(handler->ucTx_buff, handler->usTx_len);
         mylog("bus send\n");
-        handler->tx_len = 0;
+        handler->usTx_len = 0;
         handler->eState = eModbus_RTU_State_IDLE;
         break;
     default:
