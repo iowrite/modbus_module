@@ -39,7 +39,7 @@
 int8_t uart_pc_send(uint8_t *buff, uint16_t len);
 int8_t uart_pc_recv(uint8_t *buff, uint16_t *len);
 int8_t rtu_pc_read_input(stModbus_RTU_InputReader *reader);
-int8_t rtu_pc_read_hold(stModbus_RTU_HoldReader *reader);
+int8_t rtu_pc_read_hold(stModbus_RTU_HoldReader_def *reader);
 int8_t rtu_pc_write_hold(stModbus_RTU_HoldWriter_def *writer);
 
 
@@ -182,7 +182,7 @@ int8_t uart_pc_recv(uint8_t *buff, uint16_t *len)
 
 
 
-int8_t rtu_pc_read_hold(stModbus_RTU_HoldReader *reader)
+int8_t rtu_pc_read_hold(stModbus_RTU_HoldReader_def *reader)
 {
 
 }
