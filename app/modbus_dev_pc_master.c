@@ -45,7 +45,7 @@ int8_t rtu_pc_write_hold(stModbus_RTU_HoldWriter *writer);
 
 /* Private variable -----------------------------------------------------------------------------*/
 int g_fd;
-stModebus_RTU_Fun_Table_def rtu_fun_table_pc_master[] =
+stModebus_RTU_Fun_Table_def stRTU_fun_table_pc_master[] =
 {
     {0x03, modbus_fun_request_03, NULL, modbus_fun_parse_03_master},                // std: read hold 
     {0x04, modbus_fun_request_04, NULL, modbus_fun_parse_04_master},                                                     // std: read input
@@ -53,14 +53,14 @@ stModebus_RTU_Fun_Table_def rtu_fun_table_pc_master[] =
     {0x10, modbus_fun_request_10, NULL, modbus_fun_parse_10_master},                                                     // std: write multi  hold
 
 };
-#define RTU_FUN_TABLE_ITEMS (sizeof(rtu_fun_table_pc_master) / sizeof(stModebus_RTU_Fun_Table_def))
+#define RTU_FUN_TABLE_ITEMS (sizeof(stRTU_fun_table_pc_master) / sizeof(stModebus_RTU_Fun_Table_def))
 
 stModbus_RTU_Handler_def stModbus_RTU_Handler_PC_master ;
 stModbus_RTU_Handler_Attr rtu_pc_attr_master = {
     .mode = emModebus_RTU_Mode_Master,
     .send = uart_pc_send,
     .recv = uart_pc_recv,
-    .fun_table = rtu_fun_table_pc_master,
+    .fun_table = stRTU_fun_table_pc_master,
     .fun_table_items = RTU_FUN_TABLE_ITEMS,
 };
 
