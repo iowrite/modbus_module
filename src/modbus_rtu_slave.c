@@ -103,7 +103,7 @@ int8_t modbus_fun_parse_slave_04(stModbus_RTU_Handler_def *handler, uint8_t *buf
     reader.usReg_addr = usReg_addr;
     reader.ucReg_num = read_len;
 
-    ret = handler->read_input(&reader);
+    ret = handler->pRead_input_def(&reader);
     if(ret == 0)
     {
         handler->ucTx_buff[0] = handler->ucDev_addr;

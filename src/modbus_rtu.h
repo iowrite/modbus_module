@@ -122,7 +122,7 @@ typedef struct Modbus_RTU_Handler
         {
             uint8_t ucDev_addr;
             int8_t ucReg_map_id;                                          // reserve for select register map table
-            int8_t (*read_input)(stModbus_RTU_InputReader_def *reader);         //　应用层读输入寄存器回调
+            int8_t (*pRead_input_def)(stModbus_RTU_InputReader_def *reader);         //　应用层读输入寄存器回调
             int8_t (*read_hold)(stModbus_RTU_HoldReader_def *reader);           //　应用层读保持寄存器回调
             int8_t (*write_hold)(stModbus_RTU_HoldWriter_def *writer);          //　应用层写保持寄存器回调
         };
@@ -145,7 +145,7 @@ typedef struct Modbus_RTU_Handler_Attribute
     int8_t (*pSend_f)(uint8_t *buff, uint16_t len);                    
     int8_t (*pRecv_f)(uint8_t *buff, uint16_t *len);
     int8_t ucReg_map_id;                                          // reserve for select register map table
-    int8_t (*read_input)(stModbus_RTU_InputReader_def *reader);
+    int8_t (*pRead_input_def)(stModbus_RTU_InputReader_def *reader);
     int8_t (*read_hold)(stModbus_RTU_HoldReader_def *reader);
     int8_t (*write_hold)(stModbus_RTU_HoldWriter_def *writer);
     stModebus_RTU_Fun_Table_def *pstFun_table;                    // callback function table
