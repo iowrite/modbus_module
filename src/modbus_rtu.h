@@ -35,14 +35,14 @@ typedef enum Modebus_RTU_Erno
     
 }emModebus_RTU_Erno;
 
-typedef enum stModbus_RTU_State
+typedef enum eModbus_RTU_State_def
 {
-    emModbus_RTU_State_init,
-    emModbus_RTU_State_IDLE,
-    emModbus_RTU_State_Receive,
-    emModbus_RTU_State_Send,
-    emModbus_RTU_State_NUM
-}stModbus_RTU_State;
+    eModbus_RTU_State_Init,
+    eModbus_RTU_State_IDLE,
+    eModbus_RTU_State_Receive,
+    eModbus_RTU_State_Send,
+    eModbus_RTU_State_NUM
+}eModbus_RTU_State_def;
 
 
 typedef enum Modebus_RTU_Mode
@@ -108,7 +108,7 @@ typedef struct Modebus_RTU_Fun_Table
 
 typedef struct Modbus_RTU_Handler
 {
-    stModbus_RTU_State state, last_state;               // send/receive switch judge
+    eModbus_RTU_State_def state, last_state;               // send/receive switch judge
     eModebus_RTU_Mode_def mode, last_mode;                 // slave/master switch judge
     uint8_t tx_buff[300];
     uint16_t tx_len;
