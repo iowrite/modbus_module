@@ -217,11 +217,11 @@ int8_t modbus_rtu_init(stModbus_RTU_Handler_def *pstHandler, eModebus_RTU_Bus_de
 
     if(pstHandler->eMode == eModebus_RTU_Mode_Master)
     {
-        if(attr->master_recv_wait_limt == 0)
+        if(attr->usMaster_recv_wait_limt == 0)
         {
             pstHandler->uiMaster_Wait_Recv_Limt = DEFAULT_MASTER_RECEVIE_TIMEOUT;
         }else{
-            pstHandler->uiMaster_Wait_Recv_Limt = attr->master_recv_wait_limt;
+            pstHandler->uiMaster_Wait_Recv_Limt = attr->usMaster_recv_wait_limt;
         }
     }else if(pstHandler->eMode == eModebus_RTU_Mode_Slave){
         pstHandler->ucDev_addr = attr->ucDev_addr;

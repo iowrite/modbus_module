@@ -150,7 +150,7 @@ typedef struct Modbus_RTU_Handler_Attribute
     int8_t (*pWrite_hold_def)(stModbus_RTU_HoldWriter_def *writer);
     stModebus_RTU_Fun_Table_def *pstFun_table;                    // callback function table
     uint8_t ucFun_table_items;
-    uint16_t master_recv_wait_limt;
+    uint16_t usMaster_recv_wait_limt;
 }stModbus_RTU_Handler_Attr;
 
 
