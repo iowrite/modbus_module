@@ -77,10 +77,10 @@ void modbus_rtu_run(stModbus_RTU_Handler_def *pstHandler)
 {
     pstHandler->last_call_tick = modbus_port_get_time_ms();
 
-    if(pstHandler->mode == emModebus_RTU_Mode_Master)
+    if(pstHandler->mode == eModebus_RTU_Mode_Master)
     {
         modbus_rtu_master(pstHandler);
-    }else if(pstHandler->mode == emModebus_RTU_Mode_Slave){
+    }else if(pstHandler->mode == eModebus_RTU_Mode_Slave){
         modbus_rtu_slave(pstHandler);
     }
 
@@ -215,7 +215,7 @@ int8_t modbus_rtu_init(stModbus_RTU_Handler_def *pstHandler, eModebus_RTU_Bus_de
     pstHandler->send = attr->send;
     pstHandler->recv = attr->recv;
 
-    if(pstHandler->mode == emModebus_RTU_Mode_Master)
+    if(pstHandler->mode == eModebus_RTU_Mode_Master)
     {
         if(attr->master_recv_wait_limt == 0)
         {
@@ -223,7 +223,7 @@ int8_t modbus_rtu_init(stModbus_RTU_Handler_def *pstHandler, eModebus_RTU_Bus_de
         }else{
             pstHandler->Master_Wait_Recv_Limt = attr->master_recv_wait_limt;
         }
-    }else if(pstHandler->mode == emModebus_RTU_Mode_Slave){
+    }else if(pstHandler->mode == eModebus_RTU_Mode_Slave){
         pstHandler->dev_addr = attr->dev_addr;
         pstHandler->reg_map_id = attr->reg_map_id;
         pstHandler->read_input = attr->read_input;

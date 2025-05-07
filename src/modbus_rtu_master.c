@@ -273,7 +273,7 @@ int8_t modbus_rtu_opt_status(eModebus_RTU_Bus_def bus)
             break;
         }
     }
-    if(pstHandler->mode == emModebus_RTU_Mode_Slave)
+    if(pstHandler->mode == eModebus_RTU_Mode_Slave)
     {
         return -1;
     }
