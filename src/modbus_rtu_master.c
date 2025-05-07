@@ -4,13 +4,13 @@
 #include "./modbus_config.h"
 #include "./modbus_rtu.h"
 
-int8_t modbus_fun_request_03(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sender *sender)
+int8_t modbus_fun_request_03(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender *sender)
 {
     uint8_t dev_addr = sender->dev_addr;
     uint8_t fun_code = sender->fun_code;
     uint16_t reg_addr = sender->reg_addr;
     uint16_t reg_num = sender->reg_num;
-    uint8_t *buff = handler->tx_buff;
+    uint8_t *buff = pstHandler->tx_buff;
 
     buff[0] = dev_addr;
     buff[1] = fun_code;
@@ -23,18 +23,18 @@ int8_t modbus_fun_request_03(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sen
     buff[6] = crc>>8;
     buff[7] = (uint8_t)crc;
 
-    handler->tx_len = 8;
+    pstHandler->tx_len = 8;
 
     return 0;
 }
 
-int8_t modbus_fun_request_04(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sender *sender)
+int8_t modbus_fun_request_04(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender *sender)
 {
     uint8_t dev_addr = sender->dev_addr;
     uint8_t fun_code = sender->fun_code;
     uint16_t reg_addr = sender->reg_addr;
     uint16_t reg_num = sender->reg_num;
-    uint8_t *buff = handler->tx_buff;
+    uint8_t *buff = pstHandler->tx_buff;
 
     buff[0] = dev_addr;
     buff[1] = fun_code;
@@ -47,19 +47,19 @@ int8_t modbus_fun_request_04(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sen
     buff[6] = crc>>8;
     buff[7] = (uint8_t)crc;
 
-    handler->tx_len = 8;
+    pstHandler->tx_len = 8;
 
     return 0;
 }
 
-int8_t modbus_fun_request_06(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sender *sender)
+int8_t modbus_fun_request_06(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender *sender)
 {
     uint8_t dev_addr = sender->dev_addr;
     uint8_t fun_code = sender->fun_code;
     uint16_t reg_addr = sender->reg_addr;
     uint16_t reg_num = sender->reg_num;
     uint16_t *reg_data = sender->reg_data;
-    uint8_t *buff = handler->tx_buff;
+    uint8_t *buff = pstHandler->tx_buff;
 
     buff[0] = dev_addr;
     buff[1] = fun_code;
@@ -72,19 +72,19 @@ int8_t modbus_fun_request_06(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sen
     buff[6] = crc>>8;
     buff[7] = (uint8_t)crc;
 
-    handler->tx_len = 8;
+    pstHandler->tx_len = 8;
 
     return 0;
 }
 
-int8_t modbus_fun_request_10(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sender *sender)
+int8_t modbus_fun_request_10(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender *sender)
 {
     uint8_t dev_addr = sender->dev_addr;
     uint8_t fun_code = sender->fun_code;
     uint16_t reg_addr = sender->reg_addr;
     uint16_t reg_num = sender->reg_num;
     uint16_t *reg_data = sender->reg_data;
-    uint8_t *buff = handler->tx_buff;
+    uint8_t *buff = pstHandler->tx_buff;
 
     buff[0] = dev_addr;
     buff[1] = fun_code;
@@ -103,24 +103,24 @@ int8_t modbus_fun_request_10(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sen
     buff[7+2*reg_num] = crc>>8;
     buff[8+2*reg_num] = (uint8_t)crc;
 
-    handler->tx_len = 9+reg_num*2;
+    pstHandler->tx_len = 9+reg_num*2;
 
     return 0;
 }
 
 
 
-int8_t modbus_rtu_send(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sender sender)
+int8_t modbus_rtu_send(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender sender)
 {
     stModebus_RTU_Fun_Table_def match_item = {0};
     bool match = false;
-    for(int i = 0; i < handler->fun_table_items; i++)
+    for(int i = 0; i < pstHandler->fun_table_items; i++)
     {
-        if(handler->fun_table[i].fcode == sender.fun_code)
+        if(pstHandler->fun_table[i].fcode == sender.fun_code)
         {
             match = true;
-            match_item.fcode = handler->fun_table[i].fcode;
-            match_item.request = handler->fun_table[i].request;
+            match_item.fcode = pstHandler->fun_table[i].fcode;
+            match_item.request = pstHandler->fun_table[i].request;
             break;
         }
     }
@@ -128,11 +128,11 @@ int8_t modbus_rtu_send(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sender se
     {
         return -1;
     }
-    int8_t ret = match_item.request(handler, &sender);
+    int8_t ret = match_item.request(pstHandler, &sender);
     if(ret == 0)                                                        /// XXX 考虑广播与扩展功能码的情况,可能不需要这么做
     {
-        handler->master_request_addr = sender.dev_addr;
-        handler->master_request_code = sender.fun_code;
+        pstHandler->master_request_addr = sender.dev_addr;
+        pstHandler->master_request_code = sender.fun_code;
     }
     return ret;
 }
@@ -150,26 +150,26 @@ int8_t modbus_rtu_read_input(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_
     sender.reg_addr = reg_addr;
     sender.reg_num = reg_num;
 
-    stModbus_RTU_Handler_def *handler = NULL;
+    stModbus_RTU_Handler_def *pstHandler = NULL;
     for(int i = 0; i < MODBUS_INTERFACE_BIND_TABLE_ITEMS; i++)
     {
         if(stModbus_Interface_Bind_Table[i].bus == bus)
         {
-            handler = stModbus_Interface_Bind_Table[i].handler;
+            pstHandler = stModbus_Interface_Bind_Table[i].pstHandler;
             break;
         }
     }
-    if(handler->tx_len)
+    if(pstHandler->tx_len)
     {
         // send busy
         return -1;
     }
 
-    int8_t ret = modbus_rtu_send(handler, sender);
+    int8_t ret = modbus_rtu_send(pstHandler, sender);
     if(ret == 0)
     {
-        handler->master_request_rw_len = reg_num;
-        handler->master_parse_addr = output;
+        pstHandler->master_request_rw_len = reg_num;
+        pstHandler->master_parse_addr = output;
     }
     return ret;
     
@@ -189,26 +189,26 @@ int8_t modbus_rtu_read_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_t
     sender.reg_addr = reg_addr;
     sender.reg_num = reg_num;
 
-    stModbus_RTU_Handler_def *handler = NULL;
+    stModbus_RTU_Handler_def *pstHandler = NULL;
     for(int i = 0; i < MODBUS_INTERFACE_BIND_TABLE_ITEMS; i++)
     {
         if(stModbus_Interface_Bind_Table[i].bus == bus)
         {
-            handler = stModbus_Interface_Bind_Table[i].handler;
+            pstHandler = stModbus_Interface_Bind_Table[i].pstHandler;
             break;
         }
     }
-    if(handler->tx_len)
+    if(pstHandler->tx_len)
     {
         // send busy
         return -1;
     }
 
-    int8_t ret = modbus_rtu_send(handler, sender);
+    int8_t ret = modbus_rtu_send(pstHandler, sender);
     if(ret == 0)
     {
-        handler->master_request_rw_len = reg_num;
-        handler->master_parse_addr = output;
+        pstHandler->master_request_rw_len = reg_num;
+        pstHandler->master_parse_addr = output;
     }
     return ret;
     
@@ -235,22 +235,22 @@ int8_t modbus_rtu_write_hold(eModebus_RTU_Bus_def bus, uint8_t dev_addr, uint16_
     }
     
 
-    stModbus_RTU_Handler_def *handler = NULL;
+    stModbus_RTU_Handler_def *pstHandler = NULL;
     for(int i = 0; i < MODBUS_INTERFACE_BIND_TABLE_ITEMS; i++)
     {
         if(stModbus_Interface_Bind_Table[i].bus == bus)
         {
-            handler = stModbus_Interface_Bind_Table[i].handler;
+            pstHandler = stModbus_Interface_Bind_Table[i].pstHandler;
             break;
         }
     }
-    if(handler->tx_len)
+    if(pstHandler->tx_len)
     {
         // send busy
         return -1;
     }
 
-    int8_t ret = modbus_rtu_send(handler, sender);
+    int8_t ret = modbus_rtu_send(pstHandler, sender);
     if(ret == 0)
     {
 
@@ -264,24 +264,24 @@ int8_t modbus_rtu_opt_status(eModebus_RTU_Bus_def bus)
     {
         return -1;
     }
-    stModbus_RTU_Handler_def *handler = NULL;
+    stModbus_RTU_Handler_def *pstHandler = NULL;
     for(int i = 0; i < MODBUS_INTERFACE_BIND_TABLE_ITEMS; i++)
     {
         if(stModbus_Interface_Bind_Table[i].bus == bus)
         {
-            handler = stModbus_Interface_Bind_Table[i].handler;
+            pstHandler = stModbus_Interface_Bind_Table[i].pstHandler;
             break;
         }
     }
-    if(handler->mode == emModebus_RTU_Mode_Slave)
+    if(pstHandler->mode == emModebus_RTU_Mode_Slave)
     {
         return -1;
     }
-    if(handler->last_state == emModbus_RTU_State_Send && handler->state == emModbus_RTU_State_IDLE)
+    if(pstHandler->last_state == emModbus_RTU_State_Send && pstHandler->state == emModbus_RTU_State_IDLE)
     {
         return -1;
     }
-    if(handler->last_state == emModbus_RTU_State_Receive && handler->state == emModbus_RTU_State_IDLE)
+    if(pstHandler->last_state == emModbus_RTU_State_Receive && pstHandler->state == emModbus_RTU_State_IDLE)
     {
         return 0;
     }
@@ -289,7 +289,7 @@ int8_t modbus_rtu_opt_status(eModebus_RTU_Bus_def bus)
 }
 
 
-int8_t modbus_fun_parse_03_master(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len)
+int8_t modbus_fun_parse_03_master(stModbus_RTU_Handler_def *pstHandler, uint8_t *buff, uint16_t len)
 {
     int8_t ret = 0;
     uint8_t dev_addr = buff[0];
@@ -314,13 +314,13 @@ int8_t modbus_fun_parse_03_master(stModbus_RTU_Handler_def *handler, uint8_t *bu
         return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
 
-    if(value_len != 2*handler->master_request_rw_len)
+    if(value_len != 2*pstHandler->master_request_rw_len)
     {
         return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
 
     for(int i = 0; i < len-5; i+=2){
-        handler->master_parse_addr[i/2] = (buff[4+i]<<8) | buff[3+i];       // big endian to uin16_t
+        pstHandler->master_parse_addr[i/2] = (buff[4+i]<<8) | buff[3+i];       // big endian to uin16_t
     }
         
     
@@ -330,7 +330,7 @@ int8_t modbus_fun_parse_03_master(stModbus_RTU_Handler_def *handler, uint8_t *bu
 
 
 
-int8_t modbus_fun_parse_04_master(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len)
+int8_t modbus_fun_parse_04_master(stModbus_RTU_Handler_def *pstHandler, uint8_t *buff, uint16_t len)
 {
     int8_t ret = 0;
     uint8_t dev_addr = buff[0];
@@ -355,13 +355,13 @@ int8_t modbus_fun_parse_04_master(stModbus_RTU_Handler_def *handler, uint8_t *bu
         return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
 
-    if(value_len != 2*handler->master_request_rw_len)
+    if(value_len != 2*pstHandler->master_request_rw_len)
     {
         return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
 
     for(int i = 0; i < len-5; i+=2){
-        handler->master_parse_addr[i/2] = (buff[4+i]<<8) | buff[3+i];       // big endian to uin16_t
+        pstHandler->master_parse_addr[i/2] = (buff[4+i]<<8) | buff[3+i];       // big endian to uin16_t
     }
         
     return ret;
@@ -369,7 +369,7 @@ int8_t modbus_fun_parse_04_master(stModbus_RTU_Handler_def *handler, uint8_t *bu
 
 
 
-int8_t modbus_fun_parse_06_master(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len)
+int8_t modbus_fun_parse_06_master(stModbus_RTU_Handler_def *pstHandler, uint8_t *buff, uint16_t len)
 {
     int8_t ret = 0;
     uint8_t dev_addr = buff[0];
@@ -393,7 +393,7 @@ int8_t modbus_fun_parse_06_master(stModbus_RTU_Handler_def *handler, uint8_t *bu
         return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
 
-    if(memcmp(buff, handler->tx_buff, 10))
+    if(memcmp(buff, pstHandler->tx_buff, 10))
     {
         return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
@@ -401,7 +401,7 @@ int8_t modbus_fun_parse_06_master(stModbus_RTU_Handler_def *handler, uint8_t *bu
     return ret;
 }
 
-int8_t modbus_fun_parse_10_master(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len)
+int8_t modbus_fun_parse_10_master(stModbus_RTU_Handler_def *pstHandler, uint8_t *buff, uint16_t len)
 {
     int8_t ret = 0;
     uint8_t dev_addr = buff[0];
@@ -425,7 +425,7 @@ int8_t modbus_fun_parse_10_master(stModbus_RTU_Handler_def *handler, uint8_t *bu
         return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
 
-    if(memcmp(buff, handler->tx_buff, len))
+    if(memcmp(buff, pstHandler->tx_buff, len))
     {
         return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
     }
@@ -435,7 +435,7 @@ int8_t modbus_fun_parse_10_master(stModbus_RTU_Handler_def *handler, uint8_t *bu
 
 
 
-int8_t modbus_fun_parse_master(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len)
+int8_t modbus_fun_parse_master(stModbus_RTU_Handler_def *pstHandler, uint8_t *buff, uint16_t len)
 {
     int8_t ret = 0;
     uint16_t crc_local = modbus_crc_cal(buff, len-2);
@@ -444,14 +444,14 @@ int8_t modbus_fun_parse_master(stModbus_RTU_Handler_def *handler, uint8_t *buff,
     {
         // adu and addr parse
         uint8_t dev_addr = buff[0];
-        if(dev_addr == handler->master_request_addr){                                               /// XXX 考虑广播的情况       
+        if(dev_addr == pstHandler->master_request_addr){                                               /// XXX 考虑广播的情况       
             uint8_t f_code = buff[1];
-            int8_t (*parse)(stModbus_RTU_Handler_def *handler, uint8_t *buff, uint16_t len) = NULL;
-            for(int i = 0; i < handler->fun_table_items; i++)
+            int8_t (*parse)(stModbus_RTU_Handler_def *pstHandler, uint8_t *buff, uint16_t len) = NULL;
+            for(int i = 0; i < pstHandler->fun_table_items; i++)
             {
-                if(handler->master_request_code == handler->fun_table[i].fcode)
+                if(pstHandler->master_request_code == pstHandler->fun_table[i].fcode)
                 {
-                    parse = handler->fun_table[i].master_parse;
+                    parse = pstHandler->fun_table[i].master_parse;
                     break;
                 }
             }
@@ -459,7 +459,7 @@ int8_t modbus_fun_parse_master(stModbus_RTU_Handler_def *handler, uint8_t *buff,
             {
                 ret = Modebus_RTU_Erno_MASTER_PARSE_FUN_NOT_FOUND;
             }else{
-                ret = parse(handler, buff, len);
+                ret = parse(pstHandler, buff, len);
             }
         }else{
             ret = Modebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH;
@@ -471,51 +471,51 @@ int8_t modbus_fun_parse_master(stModbus_RTU_Handler_def *handler, uint8_t *buff,
 
 
 
-void modbus_rtu_master(stModbus_RTU_Handler_def *handler)
+void modbus_rtu_master(stModbus_RTU_Handler_def *pstHandler)
 {   
-    if(handler->mode != handler->last_mode)
+    if(pstHandler->mode != pstHandler->last_mode)
     {
-        handler->state = emModbus_RTU_State_init;
-        handler->last_mode = handler->mode;
+        pstHandler->state = emModbus_RTU_State_init;
+        pstHandler->last_mode = pstHandler->mode;
     }
-    switch (handler->state)
+    switch (pstHandler->state)
     {
     case emModbus_RTU_State_init:
         mylog("bus init\n");
-        handler->last_state = emModbus_RTU_State_init;
-        handler->state = emModbus_RTU_State_IDLE;
+        pstHandler->last_state = emModbus_RTU_State_init;
+        pstHandler->state = emModbus_RTU_State_IDLE;
         break;
     case emModbus_RTU_State_IDLE:
-        if(handler->tx_len != 0)
+        if(pstHandler->tx_len != 0)
         {
-            handler->last_mode = emModbus_RTU_State_IDLE;
-            handler->state = emModbus_RTU_State_Send;
+            pstHandler->last_mode = emModbus_RTU_State_IDLE;
+            pstHandler->state = emModbus_RTU_State_Send;
         }
         break;
     case emModbus_RTU_State_Receive:
         uint32_t now = modbus_port_get_time_ms();
-        if(now - handler->Master_Wait_Count > handler->Master_Wait_Recv_Limt)
+        if(now - pstHandler->Master_Wait_Count > pstHandler->Master_Wait_Recv_Limt)
         {
             mylog("bus receive timeout\n");
-            handler->tx_len = 0;
-            handler->state = emModbus_RTU_State_IDLE;
+            pstHandler->tx_len = 0;
+            pstHandler->state = emModbus_RTU_State_IDLE;
             break;
         }
-        if(handler->recv(handler->rx_buff, &handler->rx_len))
+        if(pstHandler->recv(pstHandler->rx_buff, &pstHandler->rx_len))
         {
-            int8_t ret = modbus_fun_parse_master(handler, handler->rx_buff, handler->rx_len);                   /// XXX 考虑广播的情况
+            int8_t ret = modbus_fun_parse_master(pstHandler, pstHandler->rx_buff, pstHandler->rx_len);                   /// XXX 考虑广播的情况
             if(ret == 0)                                                                // success
             {
-                handler->last_state = emModbus_RTU_State_Receive;
-                handler->state = emModbus_RTU_State_IDLE;
-                handler->tx_len = 0;
+                pstHandler->last_state = emModbus_RTU_State_Receive;
+                pstHandler->state = emModbus_RTU_State_IDLE;
+                pstHandler->tx_len = 0;
                 break;
             }else if(ret == Modebus_RTU_Erno_FRAME_FORMAT_ERROR ||                      // fail
                      ret == Modebus_RTU_Erno_FUN_CODE_NOT_FOUND || 
                      ret == Modebus_RTU_Erno_REG_ADDR_INVALID   ||
                      ret == Modebus_RTU_Erno_REG_VALUE_INVALID    ){
-                        handler->state = emModbus_RTU_State_IDLE;
-                        handler->tx_len = 0;
+                        pstHandler->state = emModbus_RTU_State_IDLE;
+                        pstHandler->tx_len = 0;
                         break; 
             }else if(ret == Modebus_RTU_Erno_MASTER_REQUEST_ADDR_NOT_MATCH){
                 break;                                                          // parse next frame(may be fail with time out if no next frame)
@@ -523,11 +523,11 @@ void modbus_rtu_master(stModbus_RTU_Handler_def *handler)
         }
         break;
     case emModbus_RTU_State_Send:
-        handler->send(handler->tx_buff, handler->tx_len);
+        pstHandler->send(pstHandler->tx_buff, pstHandler->tx_len);
         mylog("bus send\n");
-        handler->Master_Wait_Count = modbus_port_get_time_ms();
-        handler->last_state = emModbus_RTU_State_Send;
-        handler->state = emModbus_RTU_State_Receive;
+        pstHandler->Master_Wait_Count = modbus_port_get_time_ms();
+        pstHandler->last_state = emModbus_RTU_State_Send;
+        pstHandler->state = emModbus_RTU_State_Receive;
         break;
     default:
         break;

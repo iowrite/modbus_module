@@ -159,7 +159,7 @@ typedef struct Modbus_RTU_Handler_Attribute
 typedef struct Modbus_Interface_Bind
 {
     eModebus_RTU_Bus_def bus;
-    stModbus_RTU_Handler_def *handler;
+    stModbus_RTU_Handler_def *pstHandler;
 
 }stModbus_Interface_Bind;
 
