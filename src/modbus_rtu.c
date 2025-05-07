@@ -1,6 +1,6 @@
  /**
   *************************************************************************************************
-  * @file name : c_template.c
+  * @file name : modbus_rtu.c
   * @encoding  : UTF-8
   * @author    : HDY(803098)
   * @version   : V0.0.1
@@ -30,13 +30,9 @@
 
 /* Private typedef ------------------------------------------------------------------------------*/
 
-
-
 /* Private functions prototypes -----------------------------------------------------------------*/
-
-
-
 int8_t modbus_fun_request_03(stModbus_RTU_Handler_def *pstModbus_RTU_Handler, stModbus_RTU_Sender_def *sender);
+
 /* Private variable -----------------------------------------------------------------------------*/
 
 stModbus_Interface_Bind_def stModbus_Interface_Bind_Table[10];
@@ -54,9 +50,9 @@ stModbus_Interface_Bind_def stModbus_Interface_Bind_Table[10];
 
 /**
   *************************************************************************************************
-  * @Function    : main
+  * @Function    : modbus_rtu_run
   * @Description : 
-  * @Parameter   : 
+  * @Parameter   : pstHandler 处理句柄
   * @Return      : 
   * @Author      : HDY(803098)
   * @Date        : 2024.11.24
@@ -66,13 +62,6 @@ stModbus_Interface_Bind_def stModbus_Interface_Bind_Table[10];
   * 2025.12.12 >> HDY(803098) >> 创建函数
   *************************************************************************************************
   */
-
-
-
-
-
-
-
 void modbus_rtu_run(stModbus_RTU_Handler_def *pstHandler)
 {
     pstHandler->uiLast_call_tick = modbus_port_get_time_ms();
@@ -88,7 +77,21 @@ void modbus_rtu_run(stModbus_RTU_Handler_def *pstHandler)
 
 
 
-
+/**
+  *************************************************************************************************
+  * @Function    : modbus_rtu_set_mode
+  * @Description : 
+  * @Parameter   : pstHandler 处理句柄
+  * @Parameter   : eMode 模式
+  * @Return      : 
+  * @Author      : HDY(803098)
+  * @Date        : 2024.11.24
+  *************************************************************************************************
+  * @Edit History
+  * 时间       >> 姓名（工号）>> 修改内容
+  * 2025.12.12 >> HDY(803098) >> 创建函数
+  *************************************************************************************************
+  */
 int8_t modbus_rtu_set_mode(stModbus_RTU_Handler_def *pstHandler, eModebus_RTU_Mode_def eMode)
 {
     pstHandler->eMode = eMode;
@@ -164,6 +167,21 @@ static const uint8_t ucCrc16_LowTable[256] =
     0x43, 0x83, 0x41, 0x81, 0x80, 0x40
 };
 
+/**
+  *************************************************************************************************
+  * @Function    : modbus_crc_cal
+  * @Description : 
+  * @Parameter   : pData 待计算CRC的数据
+  * @Parameter   : Size 待计算CRC的数据长度
+  * @Return      : 
+  * @Author      : HDY(803098)
+  * @Date        : 2024.11.24
+  *************************************************************************************************
+  * @Edit History
+  * 时间       >> 姓名（工号）>> 修改内容
+  * 2025.12.12 >> HDY(803098) >> 创建函数
+  *************************************************************************************************
+  */
 uint16_t modbus_crc_cal(uint8_t *pData, uint32_t Size)
 {
     uint8_t ucCRCHi = 0xFFU;
@@ -186,11 +204,22 @@ uint16_t modbus_crc_cal(uint8_t *pData, uint32_t Size)
 }
 
 
-
-
-
-
-
+/**
+  *************************************************************************************************
+  * @Function    : modbus_rtu_init
+  * @Description : 
+  * @Parameter   : pstHandler 串口句柄
+  * @Parameter   : eBus 串口编号
+  * @Parameter   : attr 串口属性
+  * @Return      : 
+  * @Author      : HDY(803098)
+  * @Date        : 2024.11.24
+  *************************************************************************************************
+  * @Edit History
+  * 时间       >> 姓名（工号）>> 修改内容
+  * 2025.12.12 >> HDY(803098) >> 创建函数
+  *************************************************************************************************
+  */
 int8_t modbus_rtu_init(stModbus_RTU_Handler_def *pstHandler, eModebus_RTU_Bus_def eBus, stModbus_RTU_Handler_Attr *attr)
 {
     if(eBus == 0)
@@ -237,7 +266,21 @@ int8_t modbus_rtu_init(stModbus_RTU_Handler_def *pstHandler, eModebus_RTU_Bus_de
 }
 
 
-
+/**
+  *************************************************************************************************
+  * @Function    : modbus_rtu_set_send
+  * @Description : 
+  * @Parameter   : eBus 总线编号
+  * @Parameter   : pSend_f 发送函数
+  * @Return      : 
+  * @Author      : HDY(803098)
+  * @Date        : 2024.11.24
+  *************************************************************************************************
+  * @Edit History
+  * 时间       >> 姓名（工号）>> 修改内容
+  * 2025.12.12 >> HDY(803098) >> 创建函数
+  *************************************************************************************************
+  */
 int8_t modbus_rtu_set_send(eModebus_RTU_Bus_def eBus, int8_t (*pSend_f)(uint8_t *, uint16_t))
 {
     if(eBus == 0)
@@ -256,6 +299,22 @@ int8_t modbus_rtu_set_send(eModebus_RTU_Bus_def eBus, int8_t (*pSend_f)(uint8_t 
     pstHandler->pSend_f = pSend_f;
 }
 
+
+/**
+  *************************************************************************************************
+  * @Function    : modbus_rtu_set_recv
+  * @Description : 
+  * @Parameter   : eBus 总线编号
+  * @Parameter   : pRecv_f 接收函数
+  * @Return      : 
+  * @Author      : HDY(803098)
+  * @Date        : 2024.11.24
+  *************************************************************************************************
+  * @Edit History
+  * 时间       >> 姓名（工号）>> 修改内容
+  * 2025.12.12 >> HDY(803098) >> 创建函数
+  *************************************************************************************************
+  */
 int8_t modbus_rtu_set_recv(eModebus_RTU_Bus_def eBus, int8_t (*pRecv_f)(uint8_t *, uint16_t *))
 {
     if(eBus == 0)
@@ -274,6 +333,22 @@ int8_t modbus_rtu_set_recv(eModebus_RTU_Bus_def eBus, int8_t (*pRecv_f)(uint8_t 
     pstHandler->pRecv_f = pRecv_f;
 }
 
+
+/**
+  *************************************************************************************************
+  * @Function    : modbus_rtu_set_dev_addr
+  * @Description : 
+  * @Parameter   : eBus 总线编号
+  * @Parameter   : ucDev_addr 设备地址
+  * @Return      : 
+  * @Author      : HDY(803098)
+  * @Date        : 2024.11.24
+  *************************************************************************************************
+  * @Edit History
+  * 时间       >> 姓名（工号）>> 修改内容
+  * 2025.12.12 >> HDY(803098) >> 创建函数
+  *************************************************************************************************
+  */
 int8_t modbus_rtu_set_dev_addr(eModebus_RTU_Bus_def eBus, int8_t ucDev_addr)
 {
     if(eBus == 0)

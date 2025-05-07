@@ -48,7 +48,7 @@
   * 2025.12.12 >> zzy(801922) >> 创建函数
   *************************************************************************************************
   */
-uint32_t modbus_port_get_time_ms()
+uint32_t modbus_port_get_time_ms(void)
 {
     struct timeval tv; 
     gettimeofday(&tv, NULL);

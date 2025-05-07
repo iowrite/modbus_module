@@ -1,9 +1,55 @@
+ /**
+  *************************************************************************************************
+  * @file name : modbus_rtu_master.c
+  * @encoding  : UTF-8
+  * @author    : ZZY (801922)
+  * @version   : V0.0.1
+  * @date      : 2025.1.1
+  * @brief     : This file provides
+  * @attention 
+  * Copyright (c) 2024 HOYPower.
+  * All rights reserved.
+  *************************************************************************************************
+  * @Edit History
+  * 时间       >> 版本   >> 姓名（工号） >> 修改内容
+  * 2025.12.12 >> V0.0.1 >> zzy(801922) >> 创建文件
+  *************************************************************************************************
+  */
+/* Includes -------------------------------------------------------------------------------------*/
 #include <stddef.h>
 #include <stdbool.h>
 #include <string.h>
 #include "./modbus_config.h"
 #include "./modbus_rtu.h"
+/* Private define -------------------------------------------------------------------------------*/
 
+/* Private typedef ------------------------------------------------------------------------------*/
+
+/* Private functions prototypes -----------------------------------------------------------------*/
+
+/* Private variable -----------------------------------------------------------------------------*/
+
+/* Global  variable -----------------------------------------------------------------------------*/
+
+/* Extern  variable -----------------------------------------------------------------------------*/
+
+/* Function body --------------------------------------------------------------------------------*/
+
+/**
+  *************************************************************************************************
+  * @Function    : modbus_fun_request_03
+  * @Description : 
+  * @Parameter   : pstHandler 处理句柄
+  * @Parameter   : sender  发送数据结构体指针
+  * @Return      : 
+  * @Author      : zzy(801922)
+  * @Date        : 2024.11.24
+  *************************************************************************************************
+  * @Edit History
+  * 时间       >> 姓名（工号）>> 修改内容
+  * 2025.12.12 >> zzy(801922) >> 创建函数
+  *************************************************************************************************
+  */
 int8_t modbus_fun_request_03(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender_def *sender)
 {
     uint8_t ucDev_addr = sender->ucDev_addr;
@@ -28,6 +74,21 @@ int8_t modbus_fun_request_03(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
     return 0;
 }
 
+/**
+  *************************************************************************************************
+  * @Function    : modbus_fun_request_04
+  * @Description : 
+  * @Parameter   : pstHandler 处理句柄
+  * @Parameter   : sender  发送数据结构体指针
+  * @Return      : 
+  * @Author      : zzy(801922)
+  * @Date        : 2024.11.24
+  *************************************************************************************************
+  * @Edit History
+  * 时间       >> 姓名（工号）>> 修改内容
+  * 2025.12.12 >> zzy(801922) >> 创建函数
+  *************************************************************************************************
+  */
 int8_t modbus_fun_request_04(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender_def *sender)
 {
     uint8_t ucDev_addr = sender->ucDev_addr;
@@ -52,6 +113,21 @@ int8_t modbus_fun_request_04(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
     return 0;
 }
 
+/**
+  *************************************************************************************************
+  * @Function    : modbus_fun_request_06
+  * @Description : 
+  * @Parameter   : pstHandler 处理句柄
+  * @Parameter   : sender  发送数据结构体指针
+  * @Return      : 
+  * @Author      : zzy(801922)
+  * @Date        : 2024.11.24
+  *************************************************************************************************
+  * @Edit History
+  * 时间       >> 姓名（工号）>> 修改内容
+  * 2025.12.12 >> zzy(801922) >> 创建函数
+  *************************************************************************************************
+  */
 int8_t modbus_fun_request_06(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender_def *sender)
 {
     uint8_t ucDev_addr = sender->ucDev_addr;
@@ -77,6 +153,21 @@ int8_t modbus_fun_request_06(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
     return 0;
 }
 
+/**
+  *************************************************************************************************
+  * @Function    : modbus_fun_request_10
+  * @Description : 
+  * @Parameter   : pstHandler 处理句柄
+  * @Parameter   : sender  发送数据结构体指针
+  * @Return      : 
+  * @Author      : zzy(801922)
+  * @Date        : 2024.11.24
+  *************************************************************************************************
+  * @Edit History
+  * 时间       >> 姓名（工号）>> 修改内容
+  * 2025.12.12 >> zzy(801922) >> 创建函数
+  *************************************************************************************************
+  */
 int8_t modbus_fun_request_10(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender_def *sender)
 {
     uint8_t ucDev_addr = sender->ucDev_addr;
@@ -109,7 +200,21 @@ int8_t modbus_fun_request_10(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_
 }
 
 
-
+/**
+  *************************************************************************************************
+  * @Function    : modbus_rtu_send
+  * @Description : 
+  * @Parameter   : pstHandler 处理句柄
+  * @Parameter   : sender  发送数据结构体指针
+  * @Return      : 
+  * @Author      : zzy(801922)
+  * @Date        : 2024.11.24
+  *************************************************************************************************
+  * @Edit History
+  * 时间       >> 姓名（工号）>> 修改内容
+  * 2025.12.12 >> zzy(801922) >> 创建函数
+  *************************************************************************************************
+  */
 int8_t modbus_rtu_send(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender_def sender)
 {
     stModebus_RTU_Fun_Table_def match_item = {0};
@@ -137,7 +242,24 @@ int8_t modbus_rtu_send(stModbus_RTU_Handler_def *pstHandler, stModbus_RTU_Sender
     return ret;
 }
 
-
+/**
+  *************************************************************************************************
+  * @Function    : modbus_rtu_read_input
+  * @Description : 
+  * @Parameter   : eBus  总线类型
+  * @Parameter   : ucDev_addr  设备地址
+  * @Parameter   : usReg_addr  寄存器地址
+  * @Parameter   : ucReg_num  寄存器数量
+  * @Parameter   : output  输出数据
+  * @Return      : 
+  * @Author      : zzy(801922)
+  * @Date        : 2024.11.24
+  *************************************************************************************************
+  * @Edit History
+  * 时间       >> 姓名（工号）>> 修改内容
+  * 2025.12.12 >> zzy(801922) >> 创建函数
+  *************************************************************************************************
+  */
 int8_t modbus_rtu_read_input(eModebus_RTU_Bus_def eBus, uint8_t ucDev_addr, uint16_t usReg_addr, uint16_t ucReg_num, uint16_t *output)
 {
     if(eBus == 0)
@@ -176,7 +298,24 @@ int8_t modbus_rtu_read_input(eModebus_RTU_Bus_def eBus, uint8_t ucDev_addr, uint
 }
 
 
-
+/**
+  *************************************************************************************************
+  * @Function    : modbus_rtu_read_hold
+  * @Description : 
+  * @Parameter   : eBus  总线类型
+  * @Parameter   : ucDev_addr  设备地址
+  * @Parameter   : usReg_addr  寄存器地址
+  * @Parameter   : ucReg_num  寄存器数量
+  * @Parameter   : output  输出数据
+  * @Return      : 
+  * @Author      : zzy(801922)
+  * @Date        : 2024.11.24
+  *************************************************************************************************
+  * @Edit History
+  * 时间       >> 姓名（工号）>> 修改内容
+  * 2025.12.12 >> zzy(801922) >> 创建函数
+  *************************************************************************************************
+  */
 int8_t modbus_rtu_read_hold(eModebus_RTU_Bus_def eBus, uint8_t ucDev_addr, uint16_t usReg_addr, uint16_t ucReg_num, uint16_t *output)
 {
     if(eBus == 0)
@@ -214,7 +353,24 @@ int8_t modbus_rtu_read_hold(eModebus_RTU_Bus_def eBus, uint8_t ucDev_addr, uint1
     
 }
 
-
+/**
+  *************************************************************************************************
+  * @Function    : modbus_rtu_write_hold
+  * @Description : 
+  * @Parameter   : eBus  总线类型
+  * @Parameter   : ucDev_addr  设备地址
+  * @Parameter   : usReg_addr  寄存器地址
+  * @Parameter   : ucReg_num  寄存器数量
+  * @Parameter   : input  输入数据
+  * @Return      : 
+  * @Author      : zzy(801922)
+  * @Date        : 2024.11.24
+  *************************************************************************************************
+  * @Edit History
+  * 时间       >> 姓名（工号）>> 修改内容
+  * 2025.12.12 >> zzy(801922) >> 创建函数
+  *************************************************************************************************
+  */
 int8_t modbus_rtu_write_hold(eModebus_RTU_Bus_def eBus, uint8_t ucDev_addr, uint16_t usReg_addr, uint16_t ucReg_num, uint16_t *input)
 {
     if(eBus == 0)
@@ -258,6 +414,21 @@ int8_t modbus_rtu_write_hold(eModebus_RTU_Bus_def eBus, uint8_t ucDev_addr, uint
     return ret;
     
 }
+
+/**
+  *************************************************************************************************
+  * @Function    : modbus_rtu_opt_status
+  * @Description : 
+  * @Parameter   : eBus  总线类型
+  * @Return      : 
+  * @Author      : zzy(801922)
+  * @Date        : 2024.11.24
+  *************************************************************************************************
+  * @Edit History
+  * 时间       >> 姓名（工号）>> 修改内容
+  * 2025.12.12 >> zzy(801922) >> 创建函数
+  *************************************************************************************************
+  */
 int8_t modbus_rtu_opt_status(eModebus_RTU_Bus_def eBus)
 {
     if(eBus == 0)
@@ -289,6 +460,22 @@ int8_t modbus_rtu_opt_status(eModebus_RTU_Bus_def eBus)
 }
 
 
+/**
+  *************************************************************************************************
+  * @Function    : modbus_fun_parse_03_master
+  * @Description : 
+  * @Parameter   : pstHandler 处理句柄
+  * @Parameter   : buff 接收到的数据
+  * @Parameter   : len 接收到的数据长度
+  * @Return      : 
+  * @Author      : zzy(801922)
+  * @Date        : 2024.11.24
+  *************************************************************************************************
+  * @Edit History
+  * 时间       >> 姓名（工号）>> 修改内容
+  * 2025.12.12 >> zzy(801922) >> 创建函数
+  *************************************************************************************************
+  */
 int8_t modbus_fun_parse_03_master(stModbus_RTU_Handler_def *pstHandler, uint8_t *buff, uint16_t len)
 {
     int8_t ret = 0;
@@ -329,7 +516,22 @@ int8_t modbus_fun_parse_03_master(stModbus_RTU_Handler_def *pstHandler, uint8_t 
 }
 
 
-
+/**
+  *************************************************************************************************
+  * @Function    : modbus_fun_parse_04_master
+  * @Description : 
+  * @Parameter   : pstHandler 处理句柄
+  * @Parameter   : buff 接收到的数据
+  * @Parameter   : len 接收到的数据长度
+  * @Return      : 
+  * @Author      : zzy(801922)
+  * @Date        : 2024.11.24
+  *************************************************************************************************
+  * @Edit History
+  * 时间       >> 姓名（工号）>> 修改内容
+  * 2025.12.12 >> zzy(801922) >> 创建函数
+  *************************************************************************************************
+  */
 int8_t modbus_fun_parse_04_master(stModbus_RTU_Handler_def *pstHandler, uint8_t *buff, uint16_t len)
 {
     int8_t ret = 0;
@@ -368,7 +570,22 @@ int8_t modbus_fun_parse_04_master(stModbus_RTU_Handler_def *pstHandler, uint8_t 
 }
 
 
-
+/**
+  *************************************************************************************************
+  * @Function    : modbus_fun_parse_06_master
+  * @Description : 
+  * @Parameter   : pstHandler 处理句柄
+  * @Parameter   : buff 接收到的数据
+  * @Parameter   : len 接收到的数据长度
+  * @Return      : 
+  * @Author      : zzy(801922)
+  * @Date        : 2024.11.24
+  *************************************************************************************************
+  * @Edit History
+  * 时间       >> 姓名（工号）>> 修改内容
+  * 2025.12.12 >> zzy(801922) >> 创建函数
+  *************************************************************************************************
+  */
 int8_t modbus_fun_parse_06_master(stModbus_RTU_Handler_def *pstHandler, uint8_t *buff, uint16_t len)
 {
     int8_t ret = 0;
@@ -401,6 +618,23 @@ int8_t modbus_fun_parse_06_master(stModbus_RTU_Handler_def *pstHandler, uint8_t 
     return ret;
 }
 
+
+/**
+  *************************************************************************************************
+  * @Function    : modbus_fun_parse_10_master
+  * @Description : 
+  * @Parameter   : pstHandler 处理句柄
+  * @Parameter   : buff 接收到的数据
+  * @Parameter   : len 接收到数据的长度
+  * @Return      : 
+  * @Author      : zzy(801922)
+  * @Date        : 2024.11.24
+  *************************************************************************************************
+  * @Edit History
+  * 时间       >> 姓名（工号）>> 修改内容
+  * 2025.12.12 >> zzy(801922) >> 创建函数
+  *************************************************************************************************
+  */
 int8_t modbus_fun_parse_10_master(stModbus_RTU_Handler_def *pstHandler, uint8_t *buff, uint16_t len)
 {
     int8_t ret = 0;
@@ -434,7 +668,22 @@ int8_t modbus_fun_parse_10_master(stModbus_RTU_Handler_def *pstHandler, uint8_t 
 }
 
 
-
+/**
+  *************************************************************************************************
+  * @Function    : modbus_fun_parse_master
+  * @Description : 
+  * @Parameter   : pstHandler 处理句柄
+  * @Parameter   : buff 接收到的数据
+  * @Parameter   : len 接收到数据长度
+  * @Return      : 
+  * @Author      : zzy(801922)
+  * @Date        : 2024.11.24
+  *************************************************************************************************
+  * @Edit History
+  * 时间       >> 姓名（工号）>> 修改内容
+  * 2025.12.12 >> zzy(801922) >> 创建函数
+  *************************************************************************************************
+  */
 int8_t modbus_fun_parse_master(stModbus_RTU_Handler_def *pstHandler, uint8_t *buff, uint16_t len)
 {
     int8_t ret = 0;
@@ -470,7 +719,20 @@ int8_t modbus_fun_parse_master(stModbus_RTU_Handler_def *pstHandler, uint8_t *bu
 }
 
 
-
+/**
+  *************************************************************************************************
+  * @Function    : modbus_rtu_master
+  * @Description : 
+  * @Parameter   : pstHandler 处理句柄
+  * @Return      : 
+  * @Author      : zzy(801922)
+  * @Date        : 2024.11.24
+  *************************************************************************************************
+  * @Edit History
+  * 时间       >> 姓名（工号）>> 修改内容
+  * 2025.12.12 >> zzy(801922) >> 创建函数
+  *************************************************************************************************
+  */
 void modbus_rtu_master(stModbus_RTU_Handler_def *pstHandler)
 {   
     if(pstHandler->eMode != pstHandler->eLast_mode)

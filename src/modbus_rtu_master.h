@@ -1,8 +1,20 @@
 #include "./modbus_rtu.h"
 
-
 #ifndef _MODBUS_RTU_MASTER_H_
 #define _MODBUS_RTU_MASTER_H_
+#ifdef __cplusplus
+extern "C"
+{
+#endif
+
+/* Includes -------------------------------------------------------------------------------------*/
+
+/* Exported defines -----------------------------------------------------------------------------*/
+
+/* Exported typedef -----------------------------------------------------------------------------*/
+
+/* Exported functions prototypes ----------------------------------------------------------------*/
+
 void modbus_rtu_master(stModbus_RTU_Handler_def *handler);
 
 int8_t modbus_fun_request_03(stModbus_RTU_Handler_def *handler, stModbus_RTU_Sender_def *sender);
@@ -40,4 +52,10 @@ int8_t modbus_rtu_write_hold(eModebus_RTU_Bus_def eBus, uint8_t ucDev_addr, uint
  * @return 0 完成，1 未完成　-１失败
  */
 int8_t modbus_rtu_opt_status(eModebus_RTU_Bus_def eBus);
+
+
+#ifdef __cplusplus
+}
+#endif
+
 #endif
