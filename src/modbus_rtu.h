@@ -127,12 +127,12 @@ typedef struct Modbus_RTU_Handler
             int8_t (*pWrite_hold_def)(stModbus_RTU_HoldWriter_def *writer);          //　应用层写保持寄存器回调
         };
         struct{                                                // master eMode use only
-            uint16_t *master_parse_addr;                             // master parse address(master eMode use only)
-            uint32_t Master_Wait_Count;                              // master wait pRecv_f time count(master eMode use only)
-            uint32_t Master_Wait_Recv_Limt;                         // master wait pRecv_f limit(master eMode use only)
-            uint8_t master_request_addr;                               // master pRequest_f code(master eMode use only)
-            uint8_t master_request_code;                               // master pRequest_f code(master eMode use only)
-            uint8_t master_request_rw_len;                             // master pRequest_f read/write len(master eMode use only)
+            uint16_t *pusMaster_parse_addr;                             // master parse address(master eMode use only)
+            uint32_t uiMaster_Wait_Count;                              // master wait pRecv_f time count(master eMode use only)
+            uint32_t uiMaster_Wait_Recv_Limt;                         // master wait pRecv_f limit(master eMode use only)
+            uint8_t ucMaster_request_addr;                               // master pRequest_f code(master eMode use only)
+            uint8_t ucMaster_request_code;                               // master pRequest_f code(master eMode use only)
+            uint8_t ucMaster_request_rw_len;                             // master pRequest_f read/write len(master eMode use only)
         };
     };
 }stModbus_RTU_Handler_def;
