@@ -228,7 +228,7 @@ int8_t modbus_rtu_init(stModbus_RTU_Handler_def *pstHandler, eModebus_RTU_Bus_de
         pstHandler->ucReg_map_id = attr->ucReg_map_id;
         pstHandler->pRead_input_def = attr->pRead_input_def;
         pstHandler->pRead_hold_def = attr->pRead_hold_def;
-        pstHandler->write_hold = attr->write_hold;
+        pstHandler->pWrite_hold_def = attr->pWrite_hold_def;
     }else{
         return -1;
     }

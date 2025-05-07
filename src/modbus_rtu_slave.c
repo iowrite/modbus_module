@@ -138,7 +138,7 @@ int8_t modbus_fun_parse_slave_06(stModbus_RTU_Handler_def *handler, uint8_t *buf
     writer.ucReg_num = 1;
     writer.usReg_data[0] = write_value;
 
-    ret = handler->write_hold(&writer);
+    ret = handler->pWrite_hold_def(&writer);
     if(ret == 0)
     {
         memcpy(&handler->ucTx_buff[0], buff, 8);
@@ -174,7 +174,7 @@ int8_t modbus_fun_parse_slave_10(stModbus_RTU_Handler_def *handler, uint8_t *buf
         writer.usReg_data[i] = buff[7+2*i]<<8|buff[7+2*i+1];
     }
 
-    ret = handler->write_hold(&writer);
+    ret = handler->pWrite_hold_def(&writer);
     if(ret == 0)
     {
         memcpy(&handler->ucTx_buff[0], buff, len);
