@@ -86,7 +86,7 @@ typedef struct Modbus_RTU_HoldWriter
 typedef struct Modbus_RTU_Sender
 {
     uint8_t ucDev_addr;
-    uint8_t fun_code;
+    uint8_t ucFun_code;
     uint16_t usReg_addr;
     uint8_t ucReg_num;
     uint16_t usReg_data[128];
