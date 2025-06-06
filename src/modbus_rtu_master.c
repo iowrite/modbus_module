@@ -750,7 +750,7 @@ void modbus_rtu_master(stModbus_RTU_Handler_def *pstHandler)
     case eModbus_RTU_State_IDLE:
         if(pstHandler->usTx_len != 0)
         {
-            pstHandler->eLast_mode = eModbus_RTU_State_IDLE;
+            pstHandler->eLast_state = eModbus_RTU_State_IDLE;
             pstHandler->eState = eModbus_RTU_State_Send;
         }
         break;
