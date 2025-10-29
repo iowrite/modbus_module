@@ -2,6 +2,8 @@
 
 ## 1. 代码结构
 
+本代码由于使用了匿名联合体(union), 在移植到keil时需要勾选 `GNU extensions`
+
 ### 1.1 源码结构
 
 ![](./doc/源码结构.png)
@@ -135,3 +137,6 @@ uint32_t modbus_port_get_time_ms();
 [自测文档](./doc/selftest.md)
 
 [测试环境](./test/readme.md)
+
+
+

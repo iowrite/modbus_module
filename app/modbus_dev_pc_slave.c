@@ -44,7 +44,7 @@ int8_t rtu_pc_write_hold(stModbus_RTU_HoldWriter *writer);
 
 /* Private variable -----------------------------------------------------------------------------*/
 int g_fd;
-stModebus_RTU_Fun_Table rtu_fun_table_pc_slave[] =
+struct Modebus_RTU_Fun_Table rtu_fun_table_pc_slave[] =
 {
     {0x03, NULL, modbus_fun_parse_slave_03, NULL},                // std: read hold 
     {0x04, NULL, modbus_fun_parse_slave_04, NULL},                // std: read input
@@ -52,7 +52,7 @@ stModebus_RTU_Fun_Table rtu_fun_table_pc_slave[] =
     {0x10, NULL, modbus_fun_parse_slave_10, NULL},                // std: wirte multi hold
 
 };
-#define RTU_FUN_TABLE_ITEMS (sizeof(rtu_fun_table_pc_slave) / sizeof(stModebus_RTU_Fun_Table))
+#define RTU_FUN_TABLE_ITEMS (sizeof(rtu_fun_table_pc_slave) / sizeof(struct Modebus_RTU_Fun_Table))
 
 stModbus_RTU_Handler stModbus_RTU_Handler_PC_slave ;
 stModbus_RTU_Handler_Attr rtu_pc_attr_slave = {
@@ -270,17 +270,19 @@ int8_t modbus_dev_pc_slave_init(char *dev_name)
         return -1;
     }
     modbus_rtu_init(&stModbus_RTU_Handler_PC_slave,  emModebus_RTU_Bus_PC, &rtu_pc_attr_slave);
+    return 0;
 }
 
 int8_t modbus_dev_pc_slave_run()
 {
     modbus_rtu_run(&stModbus_RTU_Handler_PC_slave);
-
+    return 0;
 }
 
 int8_t modbus_dev_pc_slave_exit()
 {
     close(g_fd);
+    return 0;
 }
 
 

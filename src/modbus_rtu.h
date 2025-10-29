@@ -95,15 +95,15 @@ typedef struct Modbus_RTU_Sender
 }stModbus_RTU_Sender;
 
 
-typedef struct Modbus_RTU_Handler stModbus_RTU_Handler;                         // 前向声明 stModbus_RTU_Handler 与 Modbus_RTU_Handler 交叉声明
-typedef struct Modebus_RTU_Fun_Table
+struct Modbus_RTU_Handler;                         // 前向声明 stModbus_RTU_Handler 与 Modbus_RTU_Handler 交叉声明
+struct Modebus_RTU_Fun_Table
 {
     uint8_t fcode;
-    int8_t (*request)(stModbus_RTU_Handler *handler, stModbus_RTU_Sender *sender);
-    int8_t (*slave_parse)(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len);
-    int8_t (*master_parse)(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len);
+    int8_t (*request)(struct Modbus_RTU_Handler *handler, stModbus_RTU_Sender *sender);
+    int8_t (*slave_parse)(struct Modbus_RTU_Handler *handler, uint8_t *buff, uint16_t len);
+    int8_t (*master_parse)(struct Modbus_RTU_Handler *handler, uint8_t *buff, uint16_t len);
 
-}stModebus_RTU_Fun_Table;
+};
 
 typedef struct Modbus_RTU_Handler
 {
@@ -114,7 +114,7 @@ typedef struct Modbus_RTU_Handler
     uint8_t rx_buff[300];
     uint16_t rx_len;
     uint32_t last_call_tick;
-    stModebus_RTU_Fun_Table *fun_table;                    // callback function table
+    struct Modebus_RTU_Fun_Table *fun_table;                    // callback function table
     uint8_t fun_table_items;
     int8_t (*send)(uint8_t *buff, uint16_t len);                   // 驱动层读接口 
     int8_t (*recv)(uint8_t *buff, uint16_t *len);                   //　驱动层写接口
@@ -150,7 +150,7 @@ typedef struct Modbus_RTU_Handler_Attribute
     int8_t (*read_input)(stModbus_RTU_InputReader *reader);
     int8_t (*read_hold)(stModbus_RTU_HoldReader *reader);
     int8_t (*write_hold)(stModbus_RTU_HoldWriter *writer);
-    stModebus_RTU_Fun_Table *fun_table;                    // callback function table
+    struct Modebus_RTU_Fun_Table *fun_table;                    // callback function table
     uint8_t fun_table_items;
     uint16_t master_recv_wait_limt;
 }stModbus_RTU_Handler_Attr;

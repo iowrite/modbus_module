@@ -45,7 +45,7 @@ int8_t rtu_pc_write_hold(stModbus_RTU_HoldWriter *writer);
 
 /* Private variable -----------------------------------------------------------------------------*/
 int g_fd;
-stModebus_RTU_Fun_Table rtu_fun_table_pc_master[] =
+struct Modebus_RTU_Fun_Table rtu_fun_table_pc_master[] =
 {
     {0x03, modbus_fun_request_03, NULL, modbus_fun_parse_03_master},                // std: read hold 
     {0x04, modbus_fun_request_04, NULL, modbus_fun_parse_04_master},                                                     // std: read input
@@ -53,7 +53,7 @@ stModebus_RTU_Fun_Table rtu_fun_table_pc_master[] =
     {0x10, modbus_fun_request_10, NULL, modbus_fun_parse_10_master},                                                     // std: write multi  hold
 
 };
-#define RTU_FUN_TABLE_ITEMS (sizeof(rtu_fun_table_pc_master) / sizeof(stModebus_RTU_Fun_Table))
+#define RTU_FUN_TABLE_ITEMS (sizeof(rtu_fun_table_pc_master) / sizeof(struct Modebus_RTU_Fun_Table))
 
 stModbus_RTU_Handler stModbus_RTU_Handler_PC_master ;
 stModbus_RTU_Handler_Attr rtu_pc_attr_master = {
@@ -184,18 +184,18 @@ int8_t uart_pc_recv(uint8_t *buff, uint16_t *len)
 
 int8_t rtu_pc_read_hold(stModbus_RTU_HoldReader *reader)
 {
-
+    return 0;
 }
 
 int8_t rtu_pc_read_input(stModbus_RTU_InputReader *reader)
 {
-
+    return 0;
 }
 
 
 int8_t rtu_pc_write_hold(stModbus_RTU_HoldWriter *writer)
 {
-
+    return 0;
 }
 
 int8_t modbus_dev_pc_master_init(char *dev_name)
@@ -206,16 +206,19 @@ int8_t modbus_dev_pc_master_init(char *dev_name)
         return -1;
     }
     modbus_rtu_init(&stModbus_RTU_Handler_PC_master,  emModebus_RTU_Bus_PC, &rtu_pc_attr_master);
+    return 0;
 }
 
 int8_t modbus_dev_pc_master_run()
 {
     modbus_rtu_run(&stModbus_RTU_Handler_PC_master);
+    return 0;
 }
 
 int8_t modbus_dev_pc_master_exit()
 {
     close(g_fd);
+    return 0;
 }
 
 

@@ -50,11 +50,11 @@
 
 
 
-uint32_t modbus_port_get_time_ms()
+uint32_t modbus_port_get_time_ms(void)
 {
     struct timeval tv; 
     gettimeofday(&tv, NULL);
-    uint32_t now_ms = tv.tv_sec*1000+tv.tv_usec/1000;
+    uint32_t now_ms = (uint32_t)(tv.tv_sec*1000+tv.tv_usec/1000);
     return now_ms;
 }
 

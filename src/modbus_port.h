@@ -4,10 +4,7 @@
 #ifndef __MODBUS_PORT_H__
 #define __MODBUS_PORT_H__
 
-#ifdef __cplusplus
-extern "C"
-{
-#endif
+
 
 /* Includes -------------------------------------------------------------------------------------*/
 
@@ -49,12 +46,10 @@ typedef enum
 /* Exported functions prototypes ----------------------------------------------------------------*/
 
 
-uint32_t modbus_port_get_time_ms();
+uint32_t modbus_port_get_time_ms(void);
 
 
-#ifdef __cplusplus
-}
-#endif
+
 
 #endif /* __C_TEMPLATE_H__ */
 /******************************************* END OF FILE *****************************************/

@@ -41,3 +41,4 @@ int8_t modbus_rtu_write_hold(emModebus_RTU_Bus bus, uint8_t dev_addr, uint16_t r
  */
 int8_t modbus_rtu_opt_status(emModebus_RTU_Bus bus);
 #endif
+
