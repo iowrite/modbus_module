@@ -488,7 +488,7 @@ void modbus_rtu_master(stModbus_RTU_Handler *handler)
     case emModbus_RTU_State_IDLE:
         if(handler->tx_len != 0)
         {
-            handler->last_mode = emModbus_RTU_State_IDLE;
+            handler->last_state = emModbus_RTU_State_IDLE;
             handler->state = emModbus_RTU_State_Send;
         }
         break;
