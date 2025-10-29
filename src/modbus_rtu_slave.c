@@ -7,6 +7,10 @@
 int8_t modbus_fun_parse_slave(stModbus_RTU_Handler *handler, uint8_t *buff, uint16_t len)
 {
     int8_t ret = 0;
+    if(len < 4)
+    {
+        return -1;
+    }
     uint16_t crc_local = modbus_crc_cal(buff, len-2);
     uint16_t crc_remote = (buff[len-2]<<8) | buff[len-1];
     if(crc_local == crc_remote)
