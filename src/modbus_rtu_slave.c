@@ -102,6 +102,10 @@ int8_t modbus_fun_parse_slave_04(stModbus_RTU_Handler *handler, uint8_t *buff, u
     uint16_t reg_addr = buff[2]<<8|buff[3];     // big endian
     uint16_t read_len = buff[4]<<8|buff[5];     // big endian
 
+    if(read_len > 125 || read_len == 0)
+    {
+        return Modebus_RTU_Erno_FRAME_FORMAT_ERROR;
+    }
     stModbus_RTU_InputReader reader;
     reader.reg_map_id = handler->reg_map_id;
     reader.reg_addr = reg_addr;
